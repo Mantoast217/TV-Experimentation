@@ -212,50 +212,56 @@ export function MeetingScheduler() {
               Duration ({formatDurationLabel(durationHours)})
             </div>
             <div className="flex gap-2.5">
-              <Select.Root<TimeOption>
-                items={asItems(TIME_OPTIONS)}
-                selectedKey={startTime}
-                onSelectionChange={(key) => key != null && setStartTime(String(key))}
-                placeholder="Start time"
-                fullWidth
-                aria-label="Start time"
-              >
-                <Select.Trigger>
-                  <Select.Value />
-                  <Select.Indicator />
-                </Select.Trigger>
-                <Select.Popover>
-                  <ListBox<TimeOption> items={asItems(TIME_OPTIONS)}>
-                    {(item) => (
-                      <ListBox.Item id={item.id} textValue={item.label}>
-                        {item.label}
-                      </ListBox.Item>
-                    )}
-                  </ListBox>
-                </Select.Popover>
-              </Select.Root>
-              <Select.Root<TimeOption>
-                items={asItems(TIME_OPTIONS)}
-                selectedKey={endTime}
-                onSelectionChange={(key) => key != null && setEndTime(String(key))}
-                placeholder="End time"
-                fullWidth
-                aria-label="End time"
-              >
-                <Select.Trigger>
-                  <Select.Value />
-                  <Select.Indicator />
-                </Select.Trigger>
-                <Select.Popover>
-                  <ListBox<TimeOption> items={asItems(TIME_OPTIONS)}>
-                    {(item) => (
-                      <ListBox.Item id={item.id} textValue={item.label}>
-                        {item.label}
-                      </ListBox.Item>
-                    )}
-                  </ListBox>
-                </Select.Popover>
-              </Select.Root>
+              <div className="flex flex-1 flex-col gap-1.5">
+                <span className="text-xs text-muted">Start time</span>
+                <Select.Root<TimeOption>
+                  items={asItems(TIME_OPTIONS)}
+                  selectedKey={startTime}
+                  onSelectionChange={(key) => key != null && setStartTime(String(key))}
+                  placeholder="Start time"
+                  fullWidth
+                  aria-label="Start time"
+                >
+                  <Select.Trigger>
+                    <Select.Value />
+                    <Select.Indicator />
+                  </Select.Trigger>
+                  <Select.Popover>
+                    <ListBox<TimeOption> items={asItems(TIME_OPTIONS)}>
+                      {(item) => (
+                        <ListBox.Item id={item.id} textValue={item.label}>
+                          {item.label}
+                        </ListBox.Item>
+                      )}
+                    </ListBox>
+                  </Select.Popover>
+                </Select.Root>
+              </div>
+              <div className="flex flex-1 flex-col gap-1.5">
+                <span className="text-xs text-muted">End time</span>
+                <Select.Root<TimeOption>
+                  items={asItems(TIME_OPTIONS)}
+                  selectedKey={endTime}
+                  onSelectionChange={(key) => key != null && setEndTime(String(key))}
+                  placeholder="End time"
+                  fullWidth
+                  aria-label="End time"
+                >
+                  <Select.Trigger>
+                    <Select.Value />
+                    <Select.Indicator />
+                  </Select.Trigger>
+                  <Select.Popover>
+                    <ListBox<TimeOption> items={asItems(TIME_OPTIONS)}>
+                      {(item) => (
+                        <ListBox.Item id={item.id} textValue={item.label}>
+                          {item.label}
+                        </ListBox.Item>
+                      )}
+                    </ListBox>
+                  </Select.Popover>
+                </Select.Root>
+              </div>
             </div>
           </div>
         </div>
