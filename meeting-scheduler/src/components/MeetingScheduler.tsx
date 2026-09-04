@@ -167,7 +167,7 @@ export function MeetingScheduler() {
 
         <Separator />
 
-        <div className="flex flex-col gap-5 sm:flex-row">
+        <div className="flex flex-col gap-5">
           <div className="flex flex-1 flex-col gap-3">
             <div className="text-base font-medium text-foreground">Date</div>
             <Popover.Root isOpen={isDateOpen} onOpenChange={setIsDateOpen}>
