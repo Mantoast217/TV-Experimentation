@@ -182,7 +182,8 @@ export function MeetingScheduler() {
               </Button>
               <Popover.Content placement="bottom start">
                 <Popover.Dialog>
-                  <Calendar.Root
+                  <Calendar
+                    aria-label="Meeting date"
                     value={selectedDate}
                     onChange={(value) => {
                       if (!value) return;
@@ -191,8 +192,8 @@ export function MeetingScheduler() {
                     }}
                   >
                     <Calendar.Header>
-                      <Calendar.NavButton slot="previous" />
                       <Calendar.Heading />
+                      <Calendar.NavButton slot="previous" />
                       <Calendar.NavButton slot="next" />
                     </Calendar.Header>
                     <Calendar.Grid>
@@ -201,7 +202,7 @@ export function MeetingScheduler() {
                       </Calendar.GridHeader>
                       <Calendar.GridBody>{(date) => <Calendar.Cell date={date} />}</Calendar.GridBody>
                     </Calendar.Grid>
-                  </Calendar.Root>
+                  </Calendar>
                 </Popover.Dialog>
               </Popover.Content>
             </Popover.Root>
