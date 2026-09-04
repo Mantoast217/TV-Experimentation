@@ -18,6 +18,7 @@ import { ZoneTimeList } from "./ZoneTimeList";
 import {
   computeZoneTimes,
   findOptimalStartHour,
+  formatZoneTimesText,
   parseHourValue,
   TIME_OPTIONS,
   type TimeOption,
@@ -26,6 +27,7 @@ import {
   DEFAULT_TIMEZONE_ID,
   TIMEZONE_CATALOG,
   longDateLabel,
+  wallClockToUtcDate,
   zoneDisplayLabel,
   type TimeZoneCatalogEntry,
 } from "../lib/timezones";
@@ -75,17 +77,34 @@ export function MeetingScheduler() {
   const endHour = parseHourValue(endTime);
   const durationHours = endHour > startHour ? endHour - startHour : 1;
 
+  const hostOffset = zones[0]?.offsetHours ?? 0;
+
   const selectedSlots = useMemo(
     () => computeZoneTimes(zones, startHour, durationHours),
     [zones, startHour, durationHours],
   );
   const selectedDateLabel = longDateLabel(dateStr);
-  const selectedMeetingLabel = `${selectedDateLabel} · ${startTime}–${endTime}`;
+  const selectedStartUtc = useMemo(
+    () => wallClockToUtcDate(dateStr, startHour, hostOffset),
+    [dateStr, startHour, hostOffset],
+  );
+  const selectedEndUtc = useMemo(
+    () => wallClockToUtcDate(dateStr, startHour + durationHours, hostOffset),
+    [dateStr, startHour, durationHours, hostOffset],
+  );
 
   const optimalHour = useMemo(() => findOptimalStartHour(zones, durationHours), [zones, durationHours]);
   const optimalSlots = useMemo(
     () => computeZoneTimes(zones, optimalHour, durationHours),
     [zones, optimalHour, durationHours],
+  );
+  const optimalStartUtc = useMemo(
+    () => wallClockToUtcDate(dateStr, optimalHour, hostOffset),
+    [dateStr, optimalHour, hostOffset],
+  );
+  const optimalEndUtc = useMemo(
+    () => wallClockToUtcDate(dateStr, optimalHour + durationHours, hostOffset),
+    [dateStr, optimalHour, durationHours, hostOffset],
   );
 
   return (
@@ -248,7 +267,13 @@ export function MeetingScheduler() {
               <ZoneTimeList slots={selectedSlots} />
             </Card.Content>
             <div className="pr-5">
-              <SendInviteMenu meetingLabel={selectedMeetingLabel} variant="secondary" />
+              <SendInviteMenu
+                title="Meeting"
+                description={formatZoneTimesText(selectedSlots)}
+                start={selectedStartUtc}
+                end={selectedEndUtc}
+                variant="secondary"
+              />
             </div>
           </Card.Root>
 
@@ -263,7 +288,10 @@ export function MeetingScheduler() {
             </Card.Content>
             <div className="pr-5">
               <SendInviteMenu
-                meetingLabel={`${selectedDateLabel} · recommended`}
+                title="Meeting"
+                description={formatZoneTimesText(optimalSlots)}
+                start={optimalStartUtc}
+                end={optimalEndUtc}
                 variant="primary"
               />
             </div>

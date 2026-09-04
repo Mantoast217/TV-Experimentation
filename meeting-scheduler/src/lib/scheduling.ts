@@ -71,6 +71,17 @@ export function findOptimalStartHour(zones: TimeZoneCatalogEntry[], durationHour
   return bestHour;
 }
 
+/** Plain-text rendering of a set of zone slots, e.g. "London 16:00–17:00 / Tokyo 00:00–01:00 (+1)". */
+export function formatZoneTimesText(slots: ZoneTimeSlot[]): string {
+  if (slots.length === 0) return "";
+  return slots
+    .map((slot) => {
+      const dayTag = slot.dayOffset !== 0 ? ` (${slot.dayOffset > 0 ? "+" : ""}${slot.dayOffset})` : "";
+      return `${slot.zone.city} ${slot.startText}–${slot.endText}${dayTag}`;
+    })
+    .join(" / ");
+}
+
 export function parseHourValue(value: string): number {
   const [h, m] = value.split(":").map(Number);
   return h + (m || 0) / 60;
