@@ -18,6 +18,7 @@ import { ZoneTimeList } from "./ZoneTimeList";
 import {
   computeZoneTimes,
   findOptimalStartHour,
+  formatDurationLabel,
   formatZoneTimesText,
   parseHourValue,
   TIME_OPTIONS,
@@ -207,7 +208,9 @@ export function MeetingScheduler() {
           </div>
 
           <div className="flex flex-1 flex-col gap-3">
-            <div className="text-base font-medium text-foreground">Duration</div>
+            <div className="text-base font-medium text-foreground">
+              Duration ({formatDurationLabel(durationHours)})
+            </div>
             <div className="flex gap-2.5">
               <Select.Root<TimeOption>
                 items={asItems(TIME_OPTIONS)}
