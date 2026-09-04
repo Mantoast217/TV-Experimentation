@@ -166,7 +166,7 @@ export function MeetingScheduler() {
 
         <Separator />
 
-        <div className="flex gap-5">
+        <div className="flex flex-col gap-5 sm:flex-row">
           <div className="flex flex-1 flex-col gap-3">
             <div className="text-base font-medium text-foreground">Date</div>
             <Popover.Root isOpen={isDateOpen} onOpenChange={setIsDateOpen}>
@@ -261,12 +261,15 @@ export function MeetingScheduler() {
 
         <div className="flex flex-col gap-3">
           <div className="text-base font-medium text-foreground">Selected time</div>
-          <Card.Root variant="default" className="flex-row items-center justify-between gap-4 bg-zinc-800 p-0 text-zinc-50">
+          <Card.Root
+            variant="default"
+            className="flex-col gap-3 bg-zinc-800 p-0 text-zinc-50 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+          >
             <Card.Content className="flex flex-col gap-1 p-4 px-5 text-sm">
               <span>{selectedDateLabel}</span>
               <ZoneTimeList slots={selectedSlots} />
             </Card.Content>
-            <div className="pr-5">
+            <div className="px-5 pb-4 sm:px-0 sm:pb-0 sm:pr-5">
               <SendInviteMenu
                 title="Meeting"
                 description={formatZoneTimesText(selectedSlots)}
@@ -280,13 +283,13 @@ export function MeetingScheduler() {
           <div className="text-base font-medium text-foreground">Recommended time</div>
           <Card.Root
             variant="default"
-            className="flex-row items-center justify-between gap-4 border border-accent bg-accent/10 p-0"
+            className="flex-col gap-3 border border-accent bg-accent/10 p-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
           >
             <Card.Content className="flex flex-col gap-1 p-4 px-5 text-sm">
               <span>{selectedDateLabel}</span>
               <ZoneTimeList slots={optimalSlots} />
             </Card.Content>
-            <div className="pr-5">
+            <div className="px-5 pb-4 sm:px-0 sm:pb-0 sm:pr-5">
               <SendInviteMenu
                 title="Meeting"
                 description={formatZoneTimesText(optimalSlots)}
