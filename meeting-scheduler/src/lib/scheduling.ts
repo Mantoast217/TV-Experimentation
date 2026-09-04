@@ -1,10 +1,4 @@
-import {
-  daysBetween,
-  formatHm,
-  utcToWallTime,
-  wallTimeToUtc,
-  type TimeZoneCatalogEntry,
-} from "./timezones";
+import { formatHm, type TimeZoneCatalogEntry } from "./timezones";
 
 export interface ZoneTimeSlot {
   zone: TimeZoneCatalogEntry;
@@ -14,55 +8,57 @@ export interface ZoneTimeSlot {
   dayOffset: number;
 }
 
+/** Wraps a decimal hour into [0, 24). */
+function wrapHour(h: number): number {
+  return ((h % 24) + 24) % 24;
+}
+
+function hourMinuteText(decimalHour: number): string {
+  const totalMinutes = Math.round(wrapHour(decimalHour) * 60);
+  return formatHm(Math.floor(totalMinutes / 60) % 24, totalMinutes % 60);
+}
+
 /**
  * Computes each zone's local start/end time and day offset for a meeting that starts
- * at `startHour` (decimal, in the host zone's wall clock) on `dateStr` and runs `durationHours`.
- * `zones[0]` is the host/reference zone.
+ * at `startHour` (decimal, in the host zone's wall clock) and runs `durationHours`.
+ * `zones[0]` is the host/reference zone; every other zone's local time is derived from
+ * its fixed offset relative to the host's.
  */
 export function computeZoneTimes(
   zones: TimeZoneCatalogEntry[],
-  dateStr: string,
   startHour: number,
   durationHours: number,
 ): ZoneTimeSlot[] {
   if (zones.length === 0) return [];
-  const hostZone = zones[0];
-  const startUtc = wallTimeToUtc(hostZone.iana, dateStr, startHour);
-  const endUtc = startUtc + durationHours * 3600000;
+  const hostOffset = zones[0].offsetHours;
 
   return zones.map((zone) => {
-    const startWall = utcToWallTime(zone.iana, startUtc);
-    const endWall = utcToWallTime(zone.iana, endUtc);
+    const localStart = startHour + (zone.offsetHours - hostOffset);
+    const localEnd = localStart + durationHours;
     return {
       zone,
-      startText: formatHm(startWall.hour, startWall.minute),
-      endText: formatHm(endWall.hour, endWall.minute),
-      dayOffset: daysBetween(dateStr, startWall),
+      startText: hourMinuteText(localStart),
+      endText: hourMinuteText(localEnd),
+      dayOffset: Math.floor(localStart / 24),
     };
   });
 }
 
 /**
- * Scans candidate start hours (in the host zone) across `dateStr` and returns the one that
- * keeps every zone's meeting time as close as possible to typical working hours (9-18),
- * with staying within awake hours (6-24) weighted far more heavily so it always wins
- * when the two constraints conflict.
+ * Scans candidate start hours (in the host zone) and returns the one that keeps every
+ * zone's meeting time as close as possible to typical working hours (9-18), with staying
+ * within awake hours (6-24) weighted far more heavily so it always wins when the two
+ * constraints conflict.
  */
-export function findOptimalStartHour(
-  zones: TimeZoneCatalogEntry[],
-  dateStr: string,
-  durationHours: number,
-): number {
+export function findOptimalStartHour(zones: TimeZoneCatalogEntry[], durationHours: number): number {
   if (zones.length === 0) return 9;
-  const hostZone = zones[0];
+  const hostOffset = zones[0].offsetHours;
 
   let bestHour = 9;
   let bestScore = Infinity;
   for (let h = 0; h < 24; h += 0.25) {
-    const startUtc = wallTimeToUtc(hostZone.iana, dateStr, h);
     const score = zones.reduce((sum, zone) => {
-      const wall = utcToWallTime(zone.iana, startUtc);
-      const localHour = wall.hour + wall.minute / 60;
+      const localHour = wrapHour(h + (zone.offsetHours - hostOffset));
       const workingPenalty = Math.max(0, 9 - localHour) + Math.max(0, localHour + durationHours - 18);
       const awakePenalty = (Math.max(0, 6 - localHour) + Math.max(0, localHour + durationHours - 24)) * 10;
       return sum + workingPenalty + awakePenalty;

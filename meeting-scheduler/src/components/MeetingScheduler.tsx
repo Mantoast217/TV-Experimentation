@@ -37,7 +37,7 @@ function toDateStr(date: CalendarDate): string {
 function matchesQuery(zone: TimeZoneCatalogEntry, query: string): boolean {
   if (!query.trim()) return true;
   const q = query.trim().toLowerCase();
-  return zone.country.toLowerCase().includes(q) || (zone.city?.toLowerCase().includes(q) ?? false);
+  return zone.country.toLowerCase().includes(q) || zone.city.toLowerCase().includes(q);
 }
 
 export function MeetingScheduler() {
@@ -73,19 +73,16 @@ export function MeetingScheduler() {
   const durationHours = endHour > startHour ? endHour - startHour : 1;
 
   const selectedSlots = useMemo(
-    () => computeZoneTimes(zones, dateStr, startHour, durationHours),
-    [zones, dateStr, startHour, durationHours],
+    () => computeZoneTimes(zones, startHour, durationHours),
+    [zones, startHour, durationHours],
   );
   const selectedDateLabel = longDateLabel(dateStr);
   const selectedMeetingLabel = `${selectedDateLabel} · ${startTime}–${endTime}`;
 
-  const optimalHour = useMemo(
-    () => findOptimalStartHour(zones, dateStr, durationHours),
-    [zones, dateStr, durationHours],
-  );
+  const optimalHour = useMemo(() => findOptimalStartHour(zones, durationHours), [zones, durationHours]);
   const optimalSlots = useMemo(
-    () => computeZoneTimes(zones, dateStr, optimalHour, durationHours),
-    [zones, dateStr, optimalHour, durationHours],
+    () => computeZoneTimes(zones, optimalHour, durationHours),
+    [zones, optimalHour, durationHours],
   );
 
   return (
@@ -121,8 +118,8 @@ export function MeetingScheduler() {
             <ComboBox.Popover>
               <ListBox<TimeZoneCatalogEntry> items={asItems(availableZones)}>
                 {(zone) => (
-                  <ListBox.Item id={zone.id} textValue={zoneDisplayLabel(zone, dateStr)}>
-                    {zoneDisplayLabel(zone, dateStr)}
+                  <ListBox.Item id={zone.id} textValue={zoneDisplayLabel(zone)}>
+                    {zoneDisplayLabel(zone)}
                   </ListBox.Item>
                 )}
               </ListBox>
@@ -131,7 +128,7 @@ export function MeetingScheduler() {
           <div className="flex flex-wrap gap-2.5">
             {zones.map((zone) => (
               <Chip key={zone.id} variant="soft" color="default" size="lg" className="items-center gap-1.5">
-                <Chip.Label>{zoneDisplayLabel(zone, dateStr)}</Chip.Label>
+                <Chip.Label>{zoneDisplayLabel(zone)}</Chip.Label>
                 <button
                   type="button"
                   onClick={() => removeZone(zone.id)}

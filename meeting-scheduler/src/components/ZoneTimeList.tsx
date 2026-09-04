@@ -17,7 +17,7 @@ export function ZoneTimeList({ slots, className, chipClassName }: ZoneTimeListPr
         <span key={slot.zone.id} className="flex items-center gap-1">
           {i > 0 && <span className="text-muted">/</span>}
           <span>
-            {slot.zone.name} {slot.startText}–{slot.endText}
+            {slot.zone.city} {slot.startText}–{slot.endText}
           </span>
           {slot.dayOffset !== 0 && (
             <span
