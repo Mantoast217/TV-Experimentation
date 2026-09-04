@@ -1,32 +1,40 @@
-# React + TypeScript + Vite
+# Meeting Scheduler
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A multi-timezone meeting booking screen: add the timezones you need to coordinate
+across, pick a date and time range, and see local times (with day-offset chips)
+per zone — plus a recommended time slot that stays within everyone's working and
+awake hours. Built with React, Vite, TypeScript, Tailwind CSS v4, and the
+[HeroUI](https://heroui.com) v3 component library.
 
-Currently, two official plugins are available:
+## Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [Node.js](https://nodejs.org/) 20 or later
+- npm (ships with Node)
 
-## React Compiler
+## Running locally
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+cd meeting-scheduler
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+This starts the Vite dev server (with hot module reload) — open the URL it
+prints, typically [http://localhost:5173](http://localhost:5173).
+
+## Other scripts
+
+```bash
+npm run build    # type-check, then build a production bundle into dist/
+npm run preview  # serve the production build locally, to sanity-check it
+npm run lint      # run oxlint over src/
+```
+
+## Project structure
+
+```
+src/
+  components/    # MeetingScheduler screen + its subcomponents
+  lib/           # timezone math (real IANA/DST-aware conversion) and scheduling logic
+  App.tsx, main.tsx, index.css
+```
