@@ -16,6 +16,8 @@ import { asItems } from "../lib/collection";
 import { SendInviteMenu } from "./SendInviteMenu";
 import { ZoneTimeList } from "./ZoneTimeList";
 import {
+  buildEndTimeOptions,
+  computeDurationHours,
   computeZoneTimes,
   findOptimalStartHour,
   formatDurationLabel,
@@ -77,7 +79,9 @@ export function MeetingScheduler() {
 
   const startHour = parseHourValue(startTime);
   const endHour = parseHourValue(endTime);
-  const durationHours = endHour > startHour ? endHour - startHour : 1;
+  const durationHours = computeDurationHours(startHour, endHour);
+
+  const endTimeOptions = useMemo(() => buildEndTimeOptions(startTime), [startTime]);
 
   const handleStartTimeChange = (value: string) => {
     setStartTime(value);
@@ -255,7 +259,7 @@ export function MeetingScheduler() {
               <div className="flex flex-1 flex-col gap-1.5">
                 <span className="text-xs text-muted">End time</span>
                 <Select.Root<TimeOption>
-                  items={asItems(TIME_OPTIONS)}
+                  items={asItems(endTimeOptions)}
                   selectedKey={endTime}
                   onSelectionChange={(key) => key != null && setEndTime(String(key))}
                   placeholder="End time"
@@ -267,7 +271,7 @@ export function MeetingScheduler() {
                     <Select.Indicator />
                   </Select.Trigger>
                   <Select.Popover>
-                    <ListBox<TimeOption> items={asItems(TIME_OPTIONS)}>
+                    <ListBox<TimeOption> items={asItems(endTimeOptions)}>
                       {(item) => (
                         <ListBox.Item id={item.id} textValue={item.label}>
                           {item.label}

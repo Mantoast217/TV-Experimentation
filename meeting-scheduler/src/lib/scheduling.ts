@@ -98,16 +98,21 @@ export function parseHourValue(value: string): number {
   return h + (m || 0) / 60;
 }
 
-/** Last selectable time-of-day option (23:45), as a decimal hour. */
-const MAX_TIME_HOUR = 23 + 45 / 60;
+/**
+ * Duration from a start to an end time-of-day, wrapping past midnight when the end is
+ * not after the start (e.g. 23:00 -> 01:00 is 2 hours; 16:00 -> 16:00 is a full 24 hours).
+ */
+export function computeDurationHours(startHour: number, endHour: number): number {
+  const diff = endHour - startHour;
+  return diff > 0 ? diff : diff + 24;
+}
 
 /**
- * Shifts a "HH:MM" time-of-day value forward by `durationHours`, clamped to the last
- * selectable option (23:45) — used to keep a fixed duration when the start time moves.
+ * Shifts a "HH:MM" time-of-day value forward by `durationHours`, wrapping past midnight —
+ * used to keep a fixed duration when the start time moves.
  */
 export function shiftTimeValue(value: string, durationHours: number): string {
-  const shiftedHour = Math.min(parseHourValue(value) + durationHours, MAX_TIME_HOUR);
-  const totalMinutes = Math.round(shiftedHour * 60);
+  const totalMinutes = Math.round(wrapHour(parseHourValue(value) + durationHours) * 60);
   return formatHm(Math.floor(totalMinutes / 60), totalMinutes % 60);
 }
 
@@ -126,3 +131,14 @@ export const TIME_OPTIONS: TimeOption[] = (() => {
   }
   return options;
 })();
+
+/**
+ * End-time options reordered to start right after `startValue` and wrap around back to
+ * it — so the list reads as a continuous 24-hour span forward from the start time, with
+ * the start time itself (a full 24-hour meeting) as the last entry.
+ */
+export function buildEndTimeOptions(startValue: string): TimeOption[] {
+  const startIndex = TIME_OPTIONS.findIndex((option) => option.id === startValue);
+  if (startIndex === -1) return TIME_OPTIONS;
+  return [...TIME_OPTIONS.slice(startIndex + 1), ...TIME_OPTIONS.slice(0, startIndex + 1)];
+}
