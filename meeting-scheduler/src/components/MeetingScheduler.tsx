@@ -285,6 +285,7 @@ export function MeetingScheduler() {
                 start={selectedStartUtc}
                 end={selectedEndUtc}
                 variant="secondary"
+                buttonStyle={{ "--button-fg": "#0D3F9C" } as CSSProperties}
               />
             </div>
           </Card.Root>
@@ -292,7 +293,7 @@ export function MeetingScheduler() {
           <div className="text-base font-medium text-foreground">Recommended time</div>
           <Card.Root
             variant="default"
-            className="flex-col gap-3 border border-accent bg-accent/10 p-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+            className="flex-col gap-3 border border-[#0D3F9C] bg-accent/10 p-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
           >
             <Card.Content className="flex flex-col gap-1 p-4 px-5 text-sm">
               <span>{selectedDateLabel}</span>
