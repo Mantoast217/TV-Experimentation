@@ -12,7 +12,7 @@ export function gmtOffsetLabel(offsetHours: number): string {
 }
 
 export function zoneDisplayLabel(zone: TimeZoneCatalogEntry): string {
-  return `${zone.country} — ${zone.city} (${gmtOffsetLabel(zone.offsetHours)})`;
+  return `${zone.city} — ${zone.country} (${gmtOffsetLabel(zone.offsetHours)})`;
 }
 
 export function formatHm(hour: number, minute: number): string {

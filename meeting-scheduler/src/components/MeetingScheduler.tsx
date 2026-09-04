@@ -64,7 +64,10 @@ export function MeetingScheduler() {
   };
 
   const availableZones = useMemo(
-    () => TIMEZONE_CATALOG.filter((z) => !zones.some((added) => added.id === z.id) && matchesQuery(z, tzQuery)),
+    () =>
+      TIMEZONE_CATALOG.filter((z) => !zones.some((added) => added.id === z.id) && matchesQuery(z, tzQuery)).sort(
+        (a, b) => a.city.localeCompare(b.city),
+      ),
     [zones, tzQuery],
   );
 
