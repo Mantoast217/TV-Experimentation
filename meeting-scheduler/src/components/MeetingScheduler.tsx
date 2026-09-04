@@ -21,6 +21,7 @@ import {
   formatDurationLabel,
   formatZoneTimesText,
   parseHourValue,
+  shiftTimeValue,
   TIME_OPTIONS,
   type TimeOption,
 } from "../lib/scheduling";
@@ -77,6 +78,11 @@ export function MeetingScheduler() {
   const startHour = parseHourValue(startTime);
   const endHour = parseHourValue(endTime);
   const durationHours = endHour > startHour ? endHour - startHour : 1;
+
+  const handleStartTimeChange = (value: string) => {
+    setStartTime(value);
+    setEndTime(shiftTimeValue(value, durationHours));
+  };
 
   const hostOffset = zones[0]?.offsetHours ?? 0;
 
@@ -226,7 +232,7 @@ export function MeetingScheduler() {
                 <Select.Root<TimeOption>
                   items={asItems(TIME_OPTIONS)}
                   selectedKey={startTime}
-                  onSelectionChange={(key) => key != null && setStartTime(String(key))}
+                  onSelectionChange={(key) => key != null && handleStartTimeChange(String(key))}
                   placeholder="Start time"
                   fullWidth
                   aria-label="Start time"
