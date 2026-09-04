@@ -37,6 +37,7 @@ export function longDateLabel(dateStr: string): string {
     weekday: "long",
     day: "numeric",
     month: "long",
+    year: "numeric",
     timeZone: "UTC",
   }).format(date);
 }

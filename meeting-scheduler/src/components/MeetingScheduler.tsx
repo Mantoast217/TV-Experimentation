@@ -284,7 +284,7 @@ export function MeetingScheduler() {
             className="flex-col gap-3 bg-zinc-800 p-0 text-zinc-50 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
           >
             <Card.Content className="flex flex-col gap-1 p-4 px-5 text-sm">
-              <span>{selectedDateLabel}</span>
+              <span className="font-bold">{selectedDateLabel}</span>
               <ZoneTimeList slots={selectedSlots} />
             </Card.Content>
             <div className="px-5 pb-4 sm:px-0 sm:pb-0 sm:pr-5">
@@ -305,7 +305,7 @@ export function MeetingScheduler() {
             className="flex-col gap-3 border border-[#0D3F9C] bg-accent/10 p-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
           >
             <Card.Content className="flex flex-col gap-1 p-4 px-5 text-sm">
-              <span>{selectedDateLabel}</span>
+              <span className="font-bold">{selectedDateLabel}</span>
               <ZoneTimeList slots={optimalSlots} />
             </Card.Content>
             <div className="px-5 pb-4 sm:px-0 sm:pb-0 sm:pr-5">
