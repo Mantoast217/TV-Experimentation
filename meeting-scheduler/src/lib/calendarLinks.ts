@@ -53,17 +53,46 @@ export function googleMeetUrl({ title, description, start, end }: MeetingDetails
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
-/**
- * Zoom has no public, unauthenticated way to pre-fill a new meeting's details via URL —
- * creating one requires the Zoom API with OAuth. This just opens Zoom's own scheduler;
- * pair it with `meetingSummaryText` copied to the clipboard so the details can be pasted in.
- */
-export function zoomScheduleUrl(): string {
-  return "https://zoom.us/meeting/schedule";
+/** "YYYYMMDDTHHMMSSZ" — what the iCalendar (RFC 5545) DTSTART/DTEND/DTSTAMP fields expect. */
+function icsDateStamp(date: Date): string {
+  return googleDateStamp(date);
 }
 
-/** Human-readable summary for platforms (Zoom) that can't be pre-filled via URL. */
-export function meetingSummaryText({ title, description, start, end }: MeetingDetails): string {
-  const range = `${start.toLocaleString()} – ${end.toLocaleString()}`;
-  return [title, range, description].filter(Boolean).join("\n");
+/** Escapes text per RFC 5545 §3.3.11 (backslash, semicolon, comma, then literal newlines). */
+function escapeIcsText(text: string): string {
+  return text.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+}
+
+/** Builds a single-event .ics file, importable into Outlook, Apple Calendar, Google Calendar, etc. */
+export function icsContent({ title, description, start, end }: MeetingDetails): string {
+  const uid = `${crypto.randomUUID()}@meeting-scheduler`;
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Meeting Scheduler//EN",
+    "CALSCALE:GREGORIAN",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${icsDateStamp(new Date())}`,
+    `DTSTART:${icsDateStamp(start)}`,
+    `DTEND:${icsDateStamp(end)}`,
+    `SUMMARY:${escapeIcsText(title)}`,
+    `DESCRIPTION:${escapeIcsText(description)}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+  return lines.join("\r\n");
+}
+
+/** Triggers a browser download of the meeting as a .ics file. */
+export function downloadIcsFile(details: MeetingDetails, filename = "meeting.ics"): void {
+  const blob = new Blob([icsContent(details)], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 }

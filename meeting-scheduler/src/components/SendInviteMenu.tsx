@@ -1,11 +1,10 @@
 import { Button, Dropdown, type ButtonVariants } from "@heroui/react";
 import type { Key } from "react-aria-components";
 import {
+  downloadIcsFile,
   googleMeetUrl,
-  meetingSummaryText,
   outlookComposeUrl,
   teamsMeetingUrl,
-  zoomScheduleUrl,
   type MeetingDetails,
 } from "../lib/calendarLinks";
 
@@ -13,7 +12,7 @@ const PLATFORMS = [
   { id: "outlook", label: "Outlook", icon: "📧" },
   { id: "teams", label: "Microsoft Teams", icon: "💬" },
   { id: "google-meet", label: "Google Meet", icon: "📹" },
-  { id: "zoom", label: "Zoom", icon: "🎥" },
+  { id: "ical", label: "Download .ics", icon: "📅" },
 ] as const;
 
 function openInNewTab(url: string) {
@@ -38,11 +37,10 @@ export function SendInviteMenu({ title, description, start, end, variant = "seco
       case "google-meet":
         openInNewTab(googleMeetUrl(details));
         break;
-      case "zoom":
-        // Zoom has no unauthenticated pre-fill URL — copy the details so they can be
-        // pasted into Zoom's own scheduler, which we still open for convenience.
-        navigator.clipboard?.writeText(meetingSummaryText(details)).catch(() => {});
-        openInNewTab(zoomScheduleUrl());
+      case "ical":
+        // A universal fallback — importable into Outlook, Apple Calendar, Google Calendar,
+        // Zoom's desktop client, or anything else that reads .ics files.
+        downloadIcsFile(details);
         break;
     }
   };
