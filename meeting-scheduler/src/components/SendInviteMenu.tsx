@@ -48,7 +48,7 @@ export function SendInviteMenu({ title, description, start, end, variant = "seco
   return (
     <Dropdown.Root>
       <Button variant={variant} size="md" className="shrink-0">
-        Send invite
+        Create invite
       </Button>
       <Dropdown.Popover placement="bottom end">
         <Dropdown.Menu onAction={handleAction}>
