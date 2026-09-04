@@ -7,12 +7,13 @@ import {
   teamsMeetingUrl,
   type MeetingDetails,
 } from "../lib/calendarLinks";
+import { CalendarIcon, GoogleMeetIcon, OutlookIcon, TeamsIcon } from "./icons";
 
 const PLATFORMS = [
-  { id: "outlook", label: "Outlook", icon: "📧" },
-  { id: "teams", label: "Microsoft Teams", icon: "💬" },
-  { id: "google-meet", label: "Google Meet", icon: "📹" },
-  { id: "ical", label: "Download .ics", icon: "📅" },
+  { id: "outlook", label: "Outlook", Icon: OutlookIcon },
+  { id: "teams", label: "Microsoft Teams", Icon: TeamsIcon },
+  { id: "google-meet", label: "Google Meet", Icon: GoogleMeetIcon },
+  { id: "ical", label: "Download .ics", Icon: CalendarIcon },
 ] as const;
 
 function openInNewTab(url: string) {
@@ -52,10 +53,10 @@ export function SendInviteMenu({ title, description, start, end, variant = "seco
       </Button>
       <Dropdown.Popover placement="bottom end">
         <Dropdown.Menu onAction={handleAction}>
-          {PLATFORMS.map((platform) => (
-            <Dropdown.Item key={platform.id} id={platform.id} textValue={platform.label}>
-              <span aria-hidden="true">{platform.icon}</span>
-              {platform.label}
+          {PLATFORMS.map(({ id, label, Icon }) => (
+            <Dropdown.Item key={id} id={id} textValue={label}>
+              <Icon className="h-4 w-4 shrink-0" />
+              {label}
             </Dropdown.Item>
           ))}
         </Dropdown.Menu>
