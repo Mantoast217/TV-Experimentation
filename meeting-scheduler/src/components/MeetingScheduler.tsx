@@ -11,7 +11,7 @@ import {
   Select,
   Separator,
 } from "@heroui/react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { asItems } from "../lib/collection";
 import { SendInviteMenu } from "./SendInviteMenu";
 import { ZoneTimeList } from "./ZoneTimeList";
@@ -305,6 +305,13 @@ export function MeetingScheduler() {
                 start={optimalStartUtc}
                 end={optimalEndUtc}
                 variant="primary"
+                buttonStyle={
+                  {
+                    "--button-bg": "#0D3F9C",
+                    "--button-bg-hover": "#0D3F9C",
+                    "--button-bg-pressed": "#0D3F9C",
+                  } as CSSProperties
+                }
               />
             </div>
           </Card.Root>

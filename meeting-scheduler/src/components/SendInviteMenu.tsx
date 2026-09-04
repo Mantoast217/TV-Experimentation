@@ -1,4 +1,5 @@
 import { Button, Dropdown, type ButtonVariants } from "@heroui/react";
+import type { CSSProperties } from "react";
 import type { Key } from "react-aria-components";
 import {
   downloadIcsFile,
@@ -22,9 +23,17 @@ function openInNewTab(url: string) {
 
 interface SendInviteMenuProps extends MeetingDetails {
   variant?: ButtonVariants["variant"];
+  buttonStyle?: CSSProperties;
 }
 
-export function SendInviteMenu({ title, description, start, end, variant = "secondary" }: SendInviteMenuProps) {
+export function SendInviteMenu({
+  title,
+  description,
+  start,
+  end,
+  variant = "secondary",
+  buttonStyle,
+}: SendInviteMenuProps) {
   const details: MeetingDetails = { title, description, start, end };
 
   const handleAction = (key: Key) => {
@@ -48,7 +57,7 @@ export function SendInviteMenu({ title, description, start, end, variant = "seco
 
   return (
     <Dropdown.Root>
-      <Button variant={variant} size="md" className="shrink-0">
+      <Button variant={variant} size="md" className="shrink-0" style={buttonStyle}>
         Create invite
       </Button>
       <Dropdown.Popover placement="bottom end">
