@@ -185,6 +185,15 @@ export function MeetingScheduler() {
         <Separator />
 
         <div className="flex flex-col gap-5">
+          {zones.length > 0 && anchorZone && (
+            <AnchorZoneCallout
+              zones={zones}
+              anchorZone={anchorZone}
+              isAutoAnchor={isAutoAnchor}
+              onSelectAnchor={selectAnchor}
+            />
+          )}
+
           <div className="flex flex-1 flex-col gap-3">
             <div className="text-base font-medium text-foreground">Date</div>
             <Popover.Root isOpen={isDateOpen} onOpenChange={setIsDateOpen}>
@@ -235,14 +244,6 @@ export function MeetingScheduler() {
 
           <div className="flex flex-1 flex-col gap-3">
             <div className="text-base font-medium text-foreground">Meeting time</div>
-            {zones.length > 0 && anchorZone && (
-              <AnchorZoneCallout
-                zones={zones}
-                anchorZone={anchorZone}
-                isAutoAnchor={isAutoAnchor}
-                onSelectAnchor={selectAnchor}
-              />
-            )}
             <div className="flex gap-2.5">
               <div className="flex flex-1 flex-col gap-1.5">
                 <span className="text-xs text-muted">Start time</span>
