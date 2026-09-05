@@ -147,3 +147,35 @@ export function buildEndTimeOptions(startValue: string): TimeOption[] {
   if (startIndex === -1) return TIME_OPTIONS;
   return [...TIME_OPTIONS.slice(startIndex + 1), ...TIME_OPTIONS.slice(0, startIndex + 1)];
 }
+
+/** Whether a "HH:MM" value falls exactly on a `stepMinutes` boundary. */
+function isAlignedToStep(value: string, stepMinutes: number): boolean {
+  return Math.round(parseHourValue(value) * 60) % stepMinutes === 0;
+}
+
+/**
+ * The next "HH:MM" value strictly after `value` on the `stepMinutes` grid, wrapping past
+ * midnight — e.g. nextIncrementAfter("17:22", 15) is "17:30", and nextIncrementAfter
+ * "17:15" (already aligned) is "17:30" too, not "17:15" itself.
+ */
+export function nextIncrementAfter(value: string, stepMinutes: number): string {
+  const totalMinutes = Math.round(parseHourValue(value) * 60);
+  const next = (Math.floor(totalMinutes / stepMinutes) + 1) * stepMinutes;
+  const wrapped = wrapHour(next / 60) * 60;
+  return formatHm(Math.floor(wrapped / 60), Math.round(wrapped % 60));
+}
+
+/**
+ * Computes the new End time when Start changes to `newStart`. A custom typed Start that
+ * doesn't fall on the `stepMinutes` grid (e.g. "17:22") isn't itself a meaningful anchor
+ * for preserving the current duration, so End instead snaps to the next increment after
+ * it — the same "next increment ahead" rule the End dropdown's own ordering uses — rather
+ * than producing an equally off-grid End time. A grid-aligned Start (from stepping or
+ * picking from either dropdown) keeps the existing duration-preserving behavior.
+ */
+export function computeEndTimeOnStartChange(newStart: string, stepMinutes: number, durationHours: number): string {
+  if (!isAlignedToStep(newStart, stepMinutes)) {
+    return nextIncrementAfter(newStart, stepMinutes);
+  }
+  return shiftTimeValue(newStart, durationHours);
+}
