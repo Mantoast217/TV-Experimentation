@@ -128,7 +128,7 @@ export function MeetingScheduler() {
       <div className="flex w-full max-w-[640px] flex-col gap-7">
         <div>
           <h1 className="m-0 mb-1 text-xl font-medium text-foreground">Schedule a meeting</h1>
-          <p className="m-0 text-sm text-muted">
+          <p className="m-0 text-sm text-[#515158]">
             Add the timezones you need to coordinate across, then pick a date and meeting time to see
             the available options.
           </p>
@@ -235,11 +235,11 @@ export function MeetingScheduler() {
             <div className="@container">
               <div className="grid grid-cols-2 gap-2.5 @min-[480px]:grid-cols-3">
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-xs text-muted">Start time</span>
+                  <span className="text-xs text-[#515158]">Start time</span>
                   <TimePickerField value={startTime} onChange={handleStartTimeChange} aria-label="Start time" />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-xs text-muted">End time</span>
+                  <span className="text-xs text-[#515158]">End time</span>
                   <TimePickerField
                     value={endTime}
                     onChange={setEndTime}
@@ -248,7 +248,7 @@ export function MeetingScheduler() {
                   />
                 </div>
                 <div className="col-span-2 flex flex-col gap-1.5 @min-[480px]:col-span-1">
-                  <span className="text-xs text-muted">Duration (HH:MM)</span>
+                  <span className="text-xs text-[#515158]">Duration (HH:MM)</span>
                   <TimeField hourCycle={24} isReadOnly value={durationTime} aria-label="Duration" fullWidth>
                     <TimeField.Group fullWidth className="h-auto border border-[#767676]">
                       <TimeField.Input>{(segment) => <TimeField.Segment segment={segment} />}</TimeField.Input>
