@@ -6,10 +6,17 @@ export interface ZoneTimeSlot {
   endText: string;
   /** Day offset relative to the host's selected date: -1, 0, or +1 (rarely more). */
   dayOffset: number;
+  /**
+   * Unwrapped local start/end hour (not clamped to [0, 24)) — kept alongside the
+   * formatted text so callers (e.g. time-of-day quality classification) can find the
+   * true midpoint of a slot that crosses midnight without re-deriving it from text.
+   */
+  startHourRaw: number;
+  endHourRaw: number;
 }
 
 /** Wraps a decimal hour into [0, 24). */
-function wrapHour(h: number): number {
+export function wrapHour(h: number): number {
   return ((h % 24) + 24) % 24;
 }
 
@@ -40,6 +47,8 @@ export function computeZoneTimes(
       startText: hourMinuteText(localStart),
       endText: hourMinuteText(localEnd),
       dayOffset: Math.floor(localStart / 24),
+      startHourRaw: localStart,
+      endHourRaw: localEnd,
     };
   });
 }
