@@ -71,13 +71,13 @@ function bandsTouched(startHourRaw: number, endHourRaw: number): TimeQualityBand
 
 export interface TimeQuality {
   /**
-   * Periods the slot touches, in chronological order. Length 1 for a slot that stays
-   * within one period (solid dot). Length 2 for a slot spanning exactly two adjacent
-   * periods (split dot — note two adjacent periods can share a color, e.g. Morning and
-   * Afternoon are both green, or Late evening and Night are both grey, in which case the
-   * split dot renders as two same-colored halves but the label still shows both names).
-   * A slot touching 3+ periods has no agreed visual treatment and collapses to a single
-   * representative period by midpoint, same as a length-1 result.
+   * The first and last periods the slot touches, in chronological order. Length 1 for a
+   * slot that stays within one period, or that spans 24h+ and wraps back into its own
+   * starting period (solid dot either way). Otherwise length 2 — the slot's first and
+   * last periods only, even if it passes through others in between (split dot; note the
+   * two periods can share a color, e.g. Morning and Afternoon are both green, in which
+   * case the split dot renders as two same-colored halves but the label still shows both
+   * names).
    */
   bands: TimeQualityBand[];
   /** Sentence-case label(s) joined with " - " for a split dot, e.g. "Afternoon - Evening". */
@@ -86,20 +86,22 @@ export interface TimeQuality {
   dotColors: string[];
 }
 
+function soloBand(band: TimeQualityBand): TimeQuality {
+  return { bands: [band], label: BAND_INFO[band].label, dotColors: [BAND_INFO[band].dotColor] };
+}
+
 export function classifyTimeQuality(startHourRaw: number, endHourRaw: number): TimeQuality {
   const touched = bandsTouched(startHourRaw, endHourRaw);
+  const first = touched[0];
+  const last = touched[touched.length - 1];
 
-  if (touched.length === 2) {
-    return {
-      bands: touched,
-      label: touched.map((band) => BAND_INFO[band].label).join(" - "),
-      dotColors: touched.map((band) => BAND_INFO[band].dotColor),
-    };
-  }
+  // A slot spanning 24h+ can pass through every period and land back in the one it
+  // started in (e.g. 09:00-09:00 next day) — nothing distinct to show, so it's solid.
+  if (first === last) return soloBand(first);
 
-  // 0 crossings (touched already has exactly the 1 band the whole slot sits in) and 3+
-  // crossings (no visual spec yet for a 3-or-more-period split) both fall back to one
-  // representative band via the midpoint.
-  const band = classifyHour((startHourRaw + endHourRaw) / 2);
-  return { bands: [band], label: BAND_INFO[band].label, dotColors: [BAND_INFO[band].dotColor] };
+  return {
+    bands: [first, last],
+    label: `${BAND_INFO[first].label} - ${BAND_INFO[last].label}`,
+    dotColors: [BAND_INFO[first].dotColor, BAND_INFO[last].dotColor],
+  };
 }
