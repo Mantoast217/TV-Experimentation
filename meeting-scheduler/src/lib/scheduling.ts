@@ -110,16 +110,32 @@ export interface TimeOption {
   label: string;
 }
 
-export const TIME_OPTIONS: TimeOption[] = (() => {
+/** Generates a full 24-hour list of "HH:MM" options at a fixed minute increment. */
+export function buildTimeOptions(stepMinutes: number): TimeOption[] {
   const options: TimeOption[] = [];
-  for (let h = 0; h < 24; h++) {
-    for (let m = 0; m < 60; m += 15) {
-      const label = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-      options.push({ id: label, label });
-    }
+  for (let totalMinutes = 0; totalMinutes < 24 * 60; totalMinutes += stepMinutes) {
+    const label = formatHm(Math.floor(totalMinutes / 60), totalMinutes % 60);
+    options.push({ id: label, label });
   }
   return options;
-})();
+}
+
+export const TIME_OPTIONS: TimeOption[] = buildTimeOptions(15);
+
+/**
+ * Parses free-typed text into a canonical "HH:MM" 24-hour value, or null if it isn't a
+ * recognizable time. Accepts an optional ":" or "." separator, 1-2 digit hours, and
+ * tolerates no separator at all (e.g. "1722", "722"), but always requires two minute
+ * digits so "17:2" isn't misread as "17:02" or "17:20".
+ */
+export function parseTimeInput(raw: string): string | null {
+  const match = raw.trim().match(/^(\d{1,2})[:.]?(\d{2})$/);
+  if (!match) return null;
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  if (hour > 23 || minute > 59) return null;
+  return formatHm(hour, minute);
+}
 
 /**
  * End-time options reordered to start right after `startValue` and wrap around back to

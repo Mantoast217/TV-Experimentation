@@ -1,21 +1,11 @@
 import { CalendarDate, Time, today, getLocalTimeZone } from "@internationalized/date";
-import {
-  Button,
-  Calendar,
-  Card,
-  ComboBox,
-  Input,
-  ListBox,
-  Popover,
-  Select,
-  Separator,
-  TimeField,
-} from "@heroui/react";
+import { Button, Calendar, Card, ComboBox, Input, ListBox, Popover, Separator, TimeField } from "@heroui/react";
 import { useMemo, useRef, useState, type CSSProperties } from "react";
 import { asItems } from "../lib/collection";
 import { useAnchorZone } from "../lib/useAnchorZone";
 import { AnchorZoneCallout } from "./AnchorZoneCallout";
 import { SendInviteMenu } from "./SendInviteMenu";
+import { TimePickerField } from "./TimePickerField";
 import { TimezoneChipList } from "./TimezoneChipList";
 import { ZoneTimeList } from "./ZoneTimeList";
 import {
@@ -26,8 +16,6 @@ import {
   formatZoneTimesText,
   parseHourValue,
   shiftTimeValue,
-  TIME_OPTIONS,
-  type TimeOption,
 } from "../lib/scheduling";
 import {
   DEFAULT_TIMEZONE_ID,
@@ -248,53 +236,16 @@ export function MeetingScheduler() {
               <div className="grid grid-cols-2 gap-2.5 @min-[480px]:grid-cols-3">
                 <div className="flex flex-col gap-1.5">
                   <span className="text-xs text-muted">Start time</span>
-                  <Select.Root<TimeOption>
-                    items={asItems(TIME_OPTIONS)}
-                    selectedKey={startTime}
-                    onSelectionChange={(key) => key != null && handleStartTimeChange(String(key))}
-                    placeholder="Start time"
-                    fullWidth
-                    aria-label="Start time"
-                  >
-                    <Select.Trigger className="border border-[#767676]">
-                      <Select.Value />
-                      <Select.Indicator />
-                    </Select.Trigger>
-                    <Select.Popover>
-                      <ListBox<TimeOption> items={asItems(TIME_OPTIONS)}>
-                        {(item) => (
-                          <ListBox.Item id={item.id} textValue={item.label}>
-                            {item.label}
-                          </ListBox.Item>
-                        )}
-                      </ListBox>
-                    </Select.Popover>
-                  </Select.Root>
+                  <TimePickerField value={startTime} onChange={handleStartTimeChange} aria-label="Start time" />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <span className="text-xs text-muted">End time</span>
-                  <Select.Root<TimeOption>
-                    items={asItems(endTimeOptions)}
-                    selectedKey={endTime}
-                    onSelectionChange={(key) => key != null && setEndTime(String(key))}
-                    placeholder="End time"
-                    fullWidth
+                  <TimePickerField
+                    value={endTime}
+                    onChange={setEndTime}
+                    options={endTimeOptions}
                     aria-label="End time"
-                  >
-                    <Select.Trigger className="border border-[#767676]">
-                      <Select.Value />
-                      <Select.Indicator />
-                    </Select.Trigger>
-                    <Select.Popover>
-                      <ListBox<TimeOption> items={asItems(endTimeOptions)}>
-                        {(item) => (
-                          <ListBox.Item id={item.id} textValue={item.label}>
-                            {item.label}
-                          </ListBox.Item>
-                        )}
-                      </ListBox>
-                    </Select.Popover>
-                  </Select.Root>
+                  />
                 </div>
                 <div className="col-span-2 flex flex-col gap-1.5 @min-[480px]:col-span-1">
                   <span className="text-xs text-muted">Duration (HH:MM)</span>
