@@ -1,0 +1,32 @@
+name: Nightly property-test fuzz run
+
+# Runs only the property-based ("fuzz") test files, at a much higher iteration count than
+# every-PR CI (see ci.yml, which runs the full suite at FC_NUM_RUNS=1000). This finds
+# rarer edge cases without slowing down normal PRs. fast-check reports a reproducible
+# seed on any failure (see the file header comment in src/test/arbitraries.ts) — copy it
+# into a local `FC_NUM_RUNS=50000 npm run test:property` run to reproduce.
+on:
+  schedule:
+    - cron: "0 3 * * *" # 03:00 UTC daily
+  workflow_dispatch: {}
+
+env:
+  FC_NUM_RUNS: "50000"
+
+jobs:
+  fuzz:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: meeting-scheduler
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: meeting-scheduler/package-lock.json
+
+      - run: npm ci
+      - run: npm run test:property

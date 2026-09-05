@@ -1,0 +1,34 @@
+name: CI
+
+# Runs the full test suite (including the property-based/fuzz tests) on every push and
+# pull request. There was no test-running CI in this repo before — the timezone-data and
+# Dependabot workflows are separate, narrower jobs — this is the one that gates PRs.
+on:
+  push:
+    branches: [main]
+  pull_request: {}
+
+env:
+  # Standard per-PR iteration count for property-based tests — see
+  # src/test/arbitraries.ts. The nightly fuzz workflow overrides this much higher.
+  FC_NUM_RUNS: "1000"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: meeting-scheduler
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: meeting-scheduler/package-lock.json
+
+      - run: npm ci
+      - run: npx tsc -b --noEmit
+      - run: npx oxlint src scripts
+      - run: npm test
