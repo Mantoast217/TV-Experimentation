@@ -1,77 +1,120 @@
 import { describe, expect, it } from "vitest";
 import { classifyTimeQuality } from "./timeQuality";
 
-/** A zero-length slot at `hour` — midpoint equals the hour itself. */
+/** A zero-length slot at `hour` — never crosses a boundary, so always a solid dot. */
 function at(hour: number) {
   return classifyTimeQuality(hour, hour);
 }
 
-describe("classifyTimeQuality", () => {
-  it("labels the green band as Daytime", () => {
-    expect(at(9).label).toBe("Daytime");
-    expect(at(13).label).toBe("Daytime");
-    expect(at(16.99).label).toBe("Daytime");
+describe("classifyTimeQuality — single-band slots", () => {
+  it("labels 00:00-06:00 as Night, grey", () => {
+    expect(at(0).label).toBe("Night");
+    expect(at(3).label).toBe("Night");
+    expect(at(5.99).label).toBe("Night");
+    expect(at(0).dotColors).toEqual(["var(--color-muted)"]);
   });
 
-  it("splits the amber band into Early morning and Early evening", () => {
-    expect(at(7).label).toBe("Early morning");
+  it("labels 06:00-09:00 as Early morning, amber", () => {
+    expect(at(6).label).toBe("Early morning");
     expect(at(8).label).toBe("Early morning");
-    expect(at(17).label).toBe("Early evening");
-    expect(at(18.5).label).toBe("Early evening");
+    expect(at(6).dotColors).toEqual(["var(--color-warning)"]);
   });
 
-  it("labels the grey band as Overnight", () => {
-    expect(at(0).label).toBe("Overnight");
-    expect(at(3.5).label).toBe("Overnight");
-    expect(at(19).label).toBe("Overnight");
-    expect(at(23.75).label).toBe("Overnight");
+  it("labels 09:00-12:00 as Morning, green", () => {
+    expect(at(9).label).toBe("Morning");
+    expect(at(11).label).toBe("Morning");
+    expect(at(9).dotColors).toEqual(["var(--color-success)"]);
   });
 
-  it("resolves each of the four sub-range boundaries to the band that starts there", () => {
-    expect(at(7).label).toBe("Early morning");
-    expect(at(9).label).toBe("Daytime");
-    expect(at(17).label).toBe("Early evening");
-    expect(at(19).label).toBe("Overnight");
+  it("labels 12:00-17:00 as Afternoon, green", () => {
+    expect(at(12).label).toBe("Afternoon");
+    expect(at(16).label).toBe("Afternoon");
+    expect(at(12).dotColors).toEqual(["var(--color-success)"]);
   });
 
-  it("assigns green/amber/amber/grey dot colors matching the four bands", () => {
-    expect(at(12).dotColor).toBe("var(--color-success)");
-    expect(at(8).dotColor).toBe("var(--color-warning)");
-    expect(at(18).dotColor).toBe("var(--color-warning)");
-    expect(at(2).dotColor).toBe("var(--color-muted)");
+  it("labels 17:00-21:00 as Evening, amber", () => {
+    expect(at(17).label).toBe("Evening");
+    expect(at(20).label).toBe("Evening");
+    expect(at(17).dotColors).toEqual(["var(--color-warning)"]);
   });
 
-  it("classifies by the slot's midpoint, not its start, and always returns a single label", () => {
-    // 08:00-10:00 midpoints at 09:00 (Daytime), even though it starts in the
-    // Early-morning band — the result is one label, not "Early morning-Daytime".
+  it("labels 21:00-00:00 as Late evening, grey", () => {
+    expect(at(21).label).toBe("Late evening");
+    expect(at(22).label).toBe("Late evening");
+    expect(at(23.99).label).toBe("Late evening");
+    expect(at(21).dotColors).toEqual(["var(--color-muted)"]);
+  });
+
+  it("resolves each of the six boundaries to the band that starts there", () => {
+    expect(at(6).label).toBe("Early morning");
+    expect(at(9).label).toBe("Morning");
+    expect(at(12).label).toBe("Afternoon");
+    expect(at(17).label).toBe("Evening");
+    expect(at(21).label).toBe("Late evening");
+    expect(at(24).label).toBe("Night");
+  });
+
+  it("classifies by the slot's midpoint when it doesn't cross a color boundary", () => {
+    expect(classifyTimeQuality(9, 11).bands).toEqual(["morning"]);
+  });
+
+  it("finds the correct band for a slot that crosses midnight without crossing a color boundary", () => {
+    // 22:00 -> 23:00 next-cycle-equivalent stays entirely in Late evening.
+    const quality = classifyTimeQuality(22, 23);
+    expect(quality.bands).toEqual(["late-evening"]);
+  });
+});
+
+describe("classifyTimeQuality — slots spanning exactly two bands (split dot)", () => {
+  it("splits Afternoon/Evening for a slot crossing the 17:00 boundary, as in the example", () => {
+    const quality = classifyTimeQuality(16, 18);
+    expect(quality.bands).toEqual(["afternoon", "evening"]);
+    expect(quality.label).toBe("Afternoon - Evening");
+    expect(quality.dotColors).toEqual(["var(--color-success)", "var(--color-warning)"]);
+  });
+
+  it("splits Night/Early morning for a slot ending exactly on the 06:00 boundary", () => {
+    const quality = classifyTimeQuality(5.5, 6);
+    expect(quality.bands).toEqual(["night", "early-morning"]);
+    expect(quality.label).toBe("Night - Early morning");
+  });
+
+  it("splits Early morning/Morning for a slot crossing the 09:00 boundary", () => {
     const quality = classifyTimeQuality(8, 10);
-    expect(quality.label).toBe("Daytime");
-    expect(quality.label).not.toContain("–");
+    expect(quality.bands).toEqual(["early-morning", "morning"]);
+    expect(quality.label).toBe("Early morning - Morning");
   });
 
-  it("finds the correct midpoint for a slot that crosses midnight", () => {
-    // 23:00 -> 01:00 next day (raw 23 -> 25) midpoints at 00:00 (Overnight), not at
-    // the wrapped average of 23 and 1.
-    expect(classifyTimeQuality(23, 25).label).toBe("Overnight");
+  it("splits Morning/Afternoon for a slot crossing the 12:00 boundary", () => {
+    const quality = classifyTimeQuality(11, 13);
+    expect(quality.bands).toEqual(["morning", "afternoon"]);
+    expect(quality.label).toBe("Morning - Afternoon");
   });
 
-  it("regression: a 06:00-07:00 slot resolves to the single label Overnight, not a compound string", () => {
-    // This is the exact New York slot that previously rendered as the concatenated
-    // "Overnight–Early morning". Midpoint is 06:30, entirely within Overnight.
-    const quality = classifyTimeQuality(6, 7);
-    expect(quality.label).toBe("Overnight");
-    expect(quality.label).not.toBe("Overnight–Early morning");
-    expect(quality.label).not.toContain("–");
+  it("splits Evening/Late evening for a slot crossing the 21:00 boundary", () => {
+    const quality = classifyTimeQuality(20, 22);
+    expect(quality.bands).toEqual(["evening", "late-evening"]);
+    expect(quality.label).toBe("Evening - Late evening");
   });
 
-  it("resolves a slot centered exactly on each of the four boundaries to a single label", () => {
-    // Centered on 07:00 (06:30-07:30): the boundary itself is the midpoint.
-    expect(classifyTimeQuality(6.5, 7.5).label).toBe("Early morning");
-    // Centered on 09:00 (08:30-09:30).
-    expect(classifyTimeQuality(8.5, 9.5).label).toBe("Daytime");
-    // Centered on 17:00 (16:30-17:30).
-    expect(classifyTimeQuality(16.5, 17.5).label).toBe("Early evening");
-    // Centered on 19:00 (18:30-19:30).
-    expect(classifyTimeQuality(18.5, 19.5).label).toBe("Overnight");
+  it("splits Late evening/Night for a slot crossing midnight", () => {
+    const quality = classifyTimeQuality(23, 25);
+    expect(quality.bands).toEqual(["late-evening", "night"]);
+    expect(quality.label).toBe("Late evening - Night");
+  });
+
+  it("does not split when the slot merely starts on a boundary", () => {
+    // 06:00-07:00 starts exactly where Night ends, but the slot doesn't occupy any
+    // time before its own start, so it's Early morning only.
+    expect(classifyTimeQuality(6, 7).bands).toEqual(["early-morning"]);
+  });
+});
+
+describe("classifyTimeQuality — slots spanning 3+ bands", () => {
+  it("falls back to a single midpoint-based band until a 3+-band visual is decided", () => {
+    // 08:00-13:00: Early morning -> Morning -> Afternoon.
+    const quality = classifyTimeQuality(8, 13);
+    expect(quality.bands).toHaveLength(1);
+    expect(quality.dotColors).toHaveLength(1);
   });
 });

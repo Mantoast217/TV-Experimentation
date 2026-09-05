@@ -23,7 +23,7 @@ function slot(city: string, startHour: number, endHour: number, dayOffset = 0): 
 
 describe("ZoneTimeList", () => {
   it("renders attendees as a semantic list, one per item", () => {
-    render(<ZoneTimeList slots={[slot("London", 9, 10), slot("Tokyo", 17, 18)]} />);
+    render(<ZoneTimeList slots={[slot("London", 9, 10), slot("Tokyo", 12, 13)]} />);
 
     expect(screen.getByRole("list")).toBeInTheDocument();
     const items = screen.getAllByRole("listitem");
@@ -32,12 +32,12 @@ describe("ZoneTimeList", () => {
     // utility strips the implicit list/listitem role in real browsers (Chromium/WebKit),
     // a gap jsdom's role inference alone wouldn't catch.
     items.forEach((item) => expect(item).toHaveAttribute("role", "listitem"));
-    expect(items[0]).toHaveTextContent("London 09:00–10:00 (Daytime)");
-    expect(items[1]).toHaveTextContent("Tokyo 17:00–18:00 (Early evening)");
+    expect(items[0]).toHaveTextContent("London 09:00–10:00 (Morning)");
+    expect(items[1]).toHaveTextContent("Tokyo 12:00–13:00 (Afternoon)");
   });
 
   it("does not join attendees with a slash separator", () => {
-    const { container } = render(<ZoneTimeList slots={[slot("London", 9, 10), slot("Tokyo", 17, 18)]} />);
+    const { container } = render(<ZoneTimeList slots={[slot("London", 9, 10), slot("Tokyo", 12, 13)]} />);
     expect(container.textContent).not.toContain("/");
   });
 
@@ -50,15 +50,24 @@ describe("ZoneTimeList", () => {
     cities.forEach((city, i) => expect(items[i]).toHaveTextContent(city));
   });
 
-  it("shows a single time-quality label per attendee, never a compound string", () => {
-    // The regression case: a 06:00-07:00 New York slot must read as one word.
-    render(<ZoneTimeList slots={[slot("New York", 6, 7)]} />);
-    const item = screen.getByRole("listitem");
-    expect(item).toHaveTextContent("New York 06:00–07:00 (Overnight)");
-    expect(item.textContent).not.toContain("–Early morning)");
+  it("resolves each attendee's label independently, including a split-dot label for one of them", () => {
+    // London sits entirely in Morning; Paris straddles the Afternoon/Evening boundary
+    // and should show a compound label, entirely independently of London's.
+    render(<ZoneTimeList slots={[slot("London", 9, 10), slot("Paris", 16, 18)]} />);
+    const items = screen.getAllByRole("listitem");
+    expect(items[0]).toHaveTextContent("London 09:00–10:00 (Morning)");
+    expect(items[1]).toHaveTextContent("Paris 16:00–18:00 (Afternoon - Evening)");
   });
 
-  it("renders the status dot as a solid color, not a gradient", () => {
+  it("renders a split dot as a two-color gradient for a slot spanning two bands", () => {
+    render(<ZoneTimeList slots={[slot("Paris", 16, 18)]} />);
+    const dot = screen.getByRole("listitem").querySelector("[aria-hidden='true']");
+    expect(dot?.getAttribute("style")).toContain("linear-gradient");
+    expect(dot?.getAttribute("style")).toContain("var(--color-success)");
+    expect(dot?.getAttribute("style")).toContain("var(--color-warning)");
+  });
+
+  it("renders the status dot as a solid color (no gradient) for a slot within one band", () => {
     render(<ZoneTimeList slots={[slot("London", 9, 10)]} />);
     const dot = screen.getByRole("listitem").querySelector("[aria-hidden='true']");
     expect(dot).toHaveStyle({ backgroundColor: "var(--color-success)" });
