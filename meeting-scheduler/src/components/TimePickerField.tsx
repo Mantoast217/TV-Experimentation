@@ -74,7 +74,7 @@ export function TimePickerField({
 
   return (
     <div
-      className={`flex h-[38px] items-center gap-0.5 rounded-lg border border-[#767676] bg-field pl-3 pr-0.5 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#0D3F9C] ${className ?? ""}`}
+      className={`flex h-[38px] items-center gap-0.5 rounded-field border border-[#767676] bg-field shadow-field pl-3 pr-0.5 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#0D3F9C] ${className ?? ""}`}
     >
       <ComboBox.Root<TimeOption>
         items={asItems(timeOptions)}
