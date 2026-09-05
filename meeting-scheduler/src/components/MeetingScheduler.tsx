@@ -3,7 +3,6 @@ import {
   Button,
   Calendar,
   Card,
-  Chip,
   ComboBox,
   Input,
   ListBox,
@@ -12,9 +11,10 @@ import {
   Separator,
   TimeField,
 } from "@heroui/react";
-import { useMemo, useState, type CSSProperties } from "react";
+import { useMemo, useRef, useState, type CSSProperties } from "react";
 import { asItems } from "../lib/collection";
 import { SendInviteMenu } from "./SendInviteMenu";
+import { TimezoneChipList } from "./TimezoneChipList";
 import { ZoneTimeList } from "./ZoneTimeList";
 import {
   buildEndTimeOptions,
@@ -56,6 +56,7 @@ export function MeetingScheduler() {
   const [endTime, setEndTime] = useState("17:00");
   const [isDateOpen, setIsDateOpen] = useState(false);
   const [tzQuery, setTzQuery] = useState("");
+  const addZoneInputRef = useRef<HTMLInputElement>(null);
 
   const dateStr = useMemo(() => toDateStr(selectedDate), [selectedDate]);
 
@@ -150,7 +151,11 @@ export function MeetingScheduler() {
             aria-label="Add timezone"
           >
             <ComboBox.InputGroup>
-              <Input placeholder="Search for a city or country" className="border border-[#767676]" />
+              <Input
+                ref={addZoneInputRef}
+                placeholder="Search for a city or country"
+                className="border border-[#767676]"
+              />
               <ComboBox.Trigger />
             </ComboBox.InputGroup>
             <ComboBox.Popover>
@@ -163,27 +168,7 @@ export function MeetingScheduler() {
               </ListBox>
             </ComboBox.Popover>
           </ComboBox.Root>
-          <div className="flex flex-wrap gap-2.5">
-            {zones.map((zone) => (
-              <Chip
-                key={zone.id}
-                variant="soft"
-                color="default"
-                size="lg"
-                className="items-center gap-1.5 border border-[#767676]"
-              >
-                <Chip.Label>{zoneDisplayLabel(zone)}</Chip.Label>
-                <button
-                  type="button"
-                  onClick={() => removeZone(zone.id)}
-                  aria-label={`Remove ${zone.country}`}
-                  className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-current/70 hover:text-current"
-                >
-                  ×
-                </button>
-              </Chip>
-            ))}
-          </div>
+          <TimezoneChipList zones={zones} onRemove={removeZone} addInputRef={addZoneInputRef} />
         </div>
 
         <Separator />
