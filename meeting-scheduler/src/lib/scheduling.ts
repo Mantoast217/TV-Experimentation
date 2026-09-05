@@ -138,12 +138,33 @@ export function parseTimeInput(raw: string): string | null {
 }
 
 /**
+ * The next "HH:MM" value strictly after `value` on the `stepMinutes` grid, wrapping past
+ * midnight — e.g. nextIncrementAfter("17:22", 15) is "17:30", and nextIncrementAfter
+ * "17:15" (already aligned) is "17:30" too, not "17:15" itself.
+ */
+export function nextIncrementAfter(value: string, stepMinutes: number): string {
+  const totalMinutes = Math.round(parseHourValue(value) * 60);
+  const next = (Math.floor(totalMinutes / stepMinutes) + 1) * stepMinutes;
+  const wrapped = wrapHour(next / 60) * 60;
+  return formatHm(Math.floor(wrapped / 60), Math.round(wrapped % 60));
+}
+
+/**
  * End-time options reordered to start right after `startValue` and wrap around back to
  * it — so the list reads as a continuous 24-hour span forward from the start time, with
  * the start time itself (a full 24-hour meeting) as the last entry.
+ *
+ * `startValue` doesn't have to be grid-aligned: a custom typed Start (e.g. "17:22")
+ * rotates the list to begin at the next 15-minute increment after it ("17:30"), the same
+ * "next increment ahead" starting point a grid-aligned Start would produce.
  */
 export function buildEndTimeOptions(startValue: string): TimeOption[] {
   const startIndex = TIME_OPTIONS.findIndex((option) => option.id === startValue);
-  if (startIndex === -1) return TIME_OPTIONS;
-  return [...TIME_OPTIONS.slice(startIndex + 1), ...TIME_OPTIONS.slice(0, startIndex + 1)];
+  if (startIndex !== -1) {
+    return [...TIME_OPTIONS.slice(startIndex + 1), ...TIME_OPTIONS.slice(0, startIndex + 1)];
+  }
+
+  const nextIndex = TIME_OPTIONS.findIndex((option) => option.id === nextIncrementAfter(startValue, 15));
+  if (nextIndex === -1) return TIME_OPTIONS;
+  return [...TIME_OPTIONS.slice(nextIndex), ...TIME_OPTIONS.slice(0, nextIndex)];
 }
