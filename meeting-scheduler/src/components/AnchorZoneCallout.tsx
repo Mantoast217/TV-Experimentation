@@ -35,7 +35,7 @@ export function AnchorZoneCallout({ zones, anchorZone, isAutoAnchor, onSelectAnc
       >
         <Select.Trigger
           style={changeTriggerHitArea}
-          className="h-auto min-h-0 shrink-0 justify-center border-0 bg-transparent p-0 text-xs font-normal text-default-soft-foreground underline underline-offset-2 shadow-none hover:bg-transparent"
+          className="h-auto min-h-0 shrink-0 items-center justify-center border-0 bg-transparent p-0 text-xs font-normal text-default-soft-foreground underline underline-offset-2 shadow-none hover:bg-transparent"
         >
           Change
         </Select.Trigger>
