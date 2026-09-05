@@ -128,7 +128,7 @@ export function MeetingScheduler() {
       <div className="flex w-full max-w-[640px] flex-col gap-7">
         <div>
           <h1 className="m-0 mb-1 text-xl font-medium text-foreground">
-            Schedule a meeting across time zones that works for everyone, everywhere
+            Schedule a meeting across time zones for everyone, everywhere
           </h1>
           <p className="m-0 text-sm text-[#515158]">
             Add everyone's time zone, pick a date and find the time that fits. Whether you are coordinating a
