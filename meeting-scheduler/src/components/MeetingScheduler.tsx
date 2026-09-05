@@ -13,6 +13,8 @@ import {
 } from "@heroui/react";
 import { useMemo, useRef, useState, type CSSProperties } from "react";
 import { asItems } from "../lib/collection";
+import { useAnchorZone } from "../lib/useAnchorZone";
+import { AnchorZoneCallout } from "./AnchorZoneCallout";
 import { SendInviteMenu } from "./SendInviteMenu";
 import { TimezoneChipList } from "./TimezoneChipList";
 import { ZoneTimeList } from "./ZoneTimeList";
@@ -94,11 +96,17 @@ export function MeetingScheduler() {
     setEndTime(shiftTimeValue(value, durationHours));
   };
 
-  const hostOffset = zones[0]?.offsetHours ?? 0;
+  const { anchorZone, isAutoAnchor, selectAnchor } = useAnchorZone(zones);
+
+  const orderedZones = useMemo(
+    () => (anchorZone ? [anchorZone, ...zones.filter((zone) => zone.id !== anchorZone.id)] : zones),
+    [zones, anchorZone],
+  );
+  const hostOffset = anchorZone?.offsetHours ?? 0;
 
   const selectedSlots = useMemo(
-    () => computeZoneTimes(zones, startHour, durationHours),
-    [zones, startHour, durationHours],
+    () => computeZoneTimes(orderedZones, startHour, durationHours),
+    [orderedZones, startHour, durationHours],
   );
   const selectedDateLabel = longDateLabel(dateStr);
   const selectedStartUtc = useMemo(
@@ -110,10 +118,13 @@ export function MeetingScheduler() {
     [dateStr, startHour, durationHours, hostOffset],
   );
 
-  const optimalHour = useMemo(() => findOptimalStartHour(zones, durationHours), [zones, durationHours]);
+  const optimalHour = useMemo(
+    () => findOptimalStartHour(orderedZones, durationHours),
+    [orderedZones, durationHours],
+  );
   const optimalSlots = useMemo(
-    () => computeZoneTimes(zones, optimalHour, durationHours),
-    [zones, optimalHour, durationHours],
+    () => computeZoneTimes(orderedZones, optimalHour, durationHours),
+    [orderedZones, optimalHour, durationHours],
   );
   const optimalStartUtc = useMemo(
     () => wallClockToUtcDate(dateStr, optimalHour, hostOffset),
@@ -169,6 +180,14 @@ export function MeetingScheduler() {
             </ComboBox.Popover>
           </ComboBox.Root>
           <TimezoneChipList zones={zones} onRemove={removeZone} addInputRef={addZoneInputRef} />
+          {zones.length > 0 && anchorZone && (
+            <AnchorZoneCallout
+              zones={zones}
+              anchorZone={anchorZone}
+              isAutoAnchor={isAutoAnchor}
+              onSelectAnchor={selectAnchor}
+            />
+          )}
         </div>
 
         <Separator />
