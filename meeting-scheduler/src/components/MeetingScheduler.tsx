@@ -11,11 +11,11 @@ import { ZoneTimeList } from "./ZoneTimeList";
 import {
   buildEndTimeOptions,
   computeDurationHours,
-  computeEndTimeOnStartChange,
   computeZoneTimes,
   findOptimalStartHour,
   formatZoneTimesText,
   parseHourValue,
+  shiftTimeValue,
 } from "../lib/scheduling";
 import {
   DEFAULT_TIMEZONE_ID,
@@ -81,7 +81,7 @@ export function MeetingScheduler() {
 
   const handleStartTimeChange = (value: string) => {
     setStartTime(value);
-    setEndTime(computeEndTimeOnStartChange(value, 15, durationHours));
+    setEndTime(shiftTimeValue(value, durationHours));
   };
 
   const { anchorZone, isAutoAnchor, selectAnchor } = useAnchorZone(zones);
