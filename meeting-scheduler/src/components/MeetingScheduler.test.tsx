@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { MeetingScheduler } from "./MeetingScheduler";
 
@@ -7,7 +8,7 @@ describe("MeetingScheduler — copy", () => {
     render(<MeetingScheduler />);
     expect(
       screen.getByText(
-        "Add the timezones you're coordinating across, then choose a date and time to see your best options.",
+        "Add everyone's time zone, pick a date and find the time that fits. Whether you are coordinating a team meeting or just checking what time it is for someone.",
       ),
     ).toBeInTheDocument();
   });
@@ -45,8 +46,14 @@ describe("MeetingScheduler — accessibility punch list", () => {
     expect(icon).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("gives the two Create invite buttons distinct accessible names including their date/time", () => {
+  it("gives the two Create invite buttons distinct accessible names including their date/time", async () => {
+    const user = userEvent.setup();
     render(<MeetingScheduler />);
+    // Default Start time (09:00) coincides with the default Best-time suggestion for a
+    // single, host-only zone, so nudge Start time away from it to exercise the general
+    // case where the Selected time and Best time differ.
+    await user.click(screen.getByRole("button", { name: /^Increase start time by/ }));
+
     const inviteButtons = screen.getAllByRole("button", { name: /^Create invite for/ });
     expect(inviteButtons).toHaveLength(2);
     expect(inviteButtons[0]).toHaveAccessibleName(inviteButtons[0].getAttribute("aria-label") ?? "");

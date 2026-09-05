@@ -42,8 +42,8 @@ export function MeetingScheduler() {
     return [uk];
   });
   const [selectedDate, setSelectedDate] = useState<CalendarDate>(() => today(getLocalTimeZone()));
-  const [startTime, setStartTime] = useState("16:00");
-  const [endTime, setEndTime] = useState("17:00");
+  const [startTime, setStartTime] = useState("09:00");
+  const [endTime, setEndTime] = useState("10:00");
   const [isDateOpen, setIsDateOpen] = useState(false);
   const [tzQuery, setTzQuery] = useState("");
   const addZoneInputRef = useRef<HTMLInputElement>(null);
