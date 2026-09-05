@@ -124,7 +124,7 @@ export function MeetingScheduler() {
   );
 
   return (
-    <div className="flex min-h-screen justify-center px-6 py-12">
+    <main className="flex min-h-screen justify-center px-6 py-12">
       <div className="flex w-full max-w-[640px] flex-col gap-7">
         <div>
           <h1 className="m-0 mb-1 text-xl font-medium text-foreground">
@@ -137,7 +137,7 @@ export function MeetingScheduler() {
         </div>
 
         <div className="flex flex-col gap-3">
-          <div className="text-base font-medium text-foreground">Add timezone</div>
+          <h2 className="m-0 text-base font-medium text-foreground">Add timezone</h2>
           <ComboBox.Root<TimeZoneCatalogEntry>
             items={asItems(availableZones)}
             inputValue={tzQuery}
@@ -185,7 +185,7 @@ export function MeetingScheduler() {
           )}
 
           <div className="flex flex-1 flex-col gap-3">
-            <div className="text-base font-medium text-foreground">Date</div>
+            <h2 className="m-0 text-base font-medium text-foreground">Date</h2>
             <Popover.Root isOpen={isDateOpen} onOpenChange={setIsDateOpen}>
               <Button
                 variant="outline"
@@ -245,7 +245,7 @@ export function MeetingScheduler() {
           </div>
 
           <div className="flex flex-1 flex-col gap-3">
-            <div className="text-base font-medium text-foreground">Meeting time</div>
+            <h2 className="m-0 text-base font-medium text-foreground">Meeting time</h2>
             <div className="@container">
               <div className="grid grid-cols-2 gap-2.5 @min-[480px]:grid-cols-3">
                 <div className="flex flex-col gap-1.5">
@@ -277,7 +277,7 @@ export function MeetingScheduler() {
         <Separator />
 
         <div className="flex flex-col gap-3">
-          <div className="text-base font-medium text-foreground">Selected time</div>
+          <h2 className="m-0 text-base font-medium text-foreground">Selected time</h2>
           <Card.Root
             variant="default"
             className="flex-col gap-3 bg-zinc-800 p-0 text-zinc-50 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
@@ -299,7 +299,7 @@ export function MeetingScheduler() {
             </div>
           </Card.Root>
 
-          <div className="text-base font-medium text-foreground">Best time for everyone</div>
+          <h2 className="m-0 text-base font-medium text-foreground">Best time for everyone</h2>
           <Card.Root
             variant="default"
             className="flex-col gap-3 border border-[#0D3F9C] bg-accent/10 p-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
@@ -328,6 +328,6 @@ export function MeetingScheduler() {
           </Card.Root>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
