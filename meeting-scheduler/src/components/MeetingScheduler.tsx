@@ -244,64 +244,68 @@ export function MeetingScheduler() {
 
           <div className="flex flex-1 flex-col gap-3">
             <div className="text-base font-medium text-foreground">Meeting time</div>
-            <div className="flex gap-2.5">
-              <div className="flex flex-1 flex-col gap-1.5">
-                <span className="text-xs text-muted">Start time</span>
-                <Select.Root<TimeOption>
-                  items={asItems(TIME_OPTIONS)}
-                  selectedKey={startTime}
-                  onSelectionChange={(key) => key != null && handleStartTimeChange(String(key))}
-                  placeholder="Start time"
-                  fullWidth
-                  aria-label="Start time"
-                >
-                  <Select.Trigger className="border border-[#767676]">
-                    <Select.Value />
-                    <Select.Indicator />
-                  </Select.Trigger>
-                  <Select.Popover>
-                    <ListBox<TimeOption> items={asItems(TIME_OPTIONS)}>
-                      {(item) => (
-                        <ListBox.Item id={item.id} textValue={item.label}>
-                          {item.label}
-                        </ListBox.Item>
-                      )}
-                    </ListBox>
-                  </Select.Popover>
-                </Select.Root>
+            <div className="flex flex-wrap gap-2.5">
+              <div className="flex min-w-[220px] flex-1 gap-2.5">
+                <div className="flex flex-1 flex-col gap-1.5">
+                  <span className="text-xs text-muted">Start time</span>
+                  <Select.Root<TimeOption>
+                    items={asItems(TIME_OPTIONS)}
+                    selectedKey={startTime}
+                    onSelectionChange={(key) => key != null && handleStartTimeChange(String(key))}
+                    placeholder="Start time"
+                    fullWidth
+                    aria-label="Start time"
+                  >
+                    <Select.Trigger className="border border-[#767676]">
+                      <Select.Value />
+                      <Select.Indicator />
+                    </Select.Trigger>
+                    <Select.Popover>
+                      <ListBox<TimeOption> items={asItems(TIME_OPTIONS)}>
+                        {(item) => (
+                          <ListBox.Item id={item.id} textValue={item.label}>
+                            {item.label}
+                          </ListBox.Item>
+                        )}
+                      </ListBox>
+                    </Select.Popover>
+                  </Select.Root>
+                </div>
+                <div className="flex flex-1 flex-col gap-1.5">
+                  <span className="text-xs text-muted">End time</span>
+                  <Select.Root<TimeOption>
+                    items={asItems(endTimeOptions)}
+                    selectedKey={endTime}
+                    onSelectionChange={(key) => key != null && setEndTime(String(key))}
+                    placeholder="End time"
+                    fullWidth
+                    aria-label="End time"
+                  >
+                    <Select.Trigger className="border border-[#767676]">
+                      <Select.Value />
+                      <Select.Indicator />
+                    </Select.Trigger>
+                    <Select.Popover>
+                      <ListBox<TimeOption> items={asItems(endTimeOptions)}>
+                        {(item) => (
+                          <ListBox.Item id={item.id} textValue={item.label}>
+                            {item.label}
+                          </ListBox.Item>
+                        )}
+                      </ListBox>
+                    </Select.Popover>
+                  </Select.Root>
+                </div>
               </div>
-              <div className="flex flex-1 flex-col gap-1.5">
-                <span className="text-xs text-muted">End time</span>
-                <Select.Root<TimeOption>
-                  items={asItems(endTimeOptions)}
-                  selectedKey={endTime}
-                  onSelectionChange={(key) => key != null && setEndTime(String(key))}
-                  placeholder="End time"
-                  fullWidth
-                  aria-label="End time"
-                >
-                  <Select.Trigger className="border border-[#767676]">
-                    <Select.Value />
-                    <Select.Indicator />
-                  </Select.Trigger>
-                  <Select.Popover>
-                    <ListBox<TimeOption> items={asItems(endTimeOptions)}>
-                      {(item) => (
-                        <ListBox.Item id={item.id} textValue={item.label}>
-                          {item.label}
-                        </ListBox.Item>
-                      )}
-                    </ListBox>
-                  </Select.Popover>
-                </Select.Root>
-              </div>
-              <div className="flex flex-1 flex-col gap-1.5">
-                <span className="text-xs text-muted">Duration (HH:MM)</span>
-                <TimeField hourCycle={24} isReadOnly value={durationTime} aria-label="Duration" fullWidth>
-                  <TimeField.Group fullWidth className="border border-[#767676]">
-                    <TimeField.Input>{(segment) => <TimeField.Segment segment={segment} />}</TimeField.Input>
-                  </TimeField.Group>
-                </TimeField>
+              <div className="min-w-[140px] flex-1">
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-xs text-muted">Duration (HH:MM)</span>
+                  <TimeField hourCycle={24} isReadOnly value={durationTime} aria-label="Duration" fullWidth>
+                    <TimeField.Group fullWidth className="h-auto border border-[#767676]">
+                      <TimeField.Input>{(segment) => <TimeField.Segment segment={segment} />}</TimeField.Input>
+                    </TimeField.Group>
+                  </TimeField>
+                </div>
               </div>
             </div>
           </div>
