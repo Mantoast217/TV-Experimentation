@@ -16,7 +16,7 @@ export function AnchorZoneCallout({ zones, anchorZone, isAutoAnchor, onSelectAnc
   return (
     <div className="flex min-h-[34px] w-full items-center justify-between gap-3 rounded-lg border border-[#767676] bg-default-soft px-3 py-2 text-default-soft-foreground">
       <p aria-live="polite" className="m-0 text-xs leading-snug">
-        Times below are shown relative to <strong>{anchorZone.city}</strong> (<strong>{qualifier}</strong>).
+        Times below are shown in <strong>{anchorZone.city}</strong>'s time (<strong>{qualifier}</strong>).
       </p>
 
       <Select.Root<TimeZoneCatalogEntry>

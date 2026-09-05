@@ -13,17 +13,16 @@ export function ZoneTimeList({ slots, className, chipClassName }: ZoneTimeListPr
   }
 
   return (
-    <p className={`flex flex-wrap items-center gap-1 ${className ?? ""}`}>
-      {slots.map((slot, i) => {
+    <ul role="list" className={`m-0 flex list-none flex-col gap-1 p-0 ${className ?? ""}`}>
+      {slots.map((slot) => {
         const quality = classifyTimeQuality(slot.startHourRaw, slot.endHourRaw);
-        const dotStyle =
-          quality.dotColors.length === 2
-            ? { background: `linear-gradient(90deg, ${quality.dotColors[0]} 50%, ${quality.dotColors[1]} 50%)` }
-            : { backgroundColor: quality.dotColors[0] };
         return (
-          <span key={slot.zone.id} className="flex items-center gap-1">
-            {i > 0 && <span className="text-muted">/</span>}
-            <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={dotStyle} />
+          <li key={slot.zone.id} role="listitem" className="flex items-center gap-1.5">
+            <span
+              aria-hidden="true"
+              className="h-2 w-2 shrink-0 rounded-full"
+              style={{ backgroundColor: quality.dotColor }}
+            />
             <span>
               {slot.zone.city} {slot.startText}–{slot.endText} ({quality.label})
             </span>
@@ -34,9 +33,9 @@ export function ZoneTimeList({ slots, className, chipClassName }: ZoneTimeListPr
                 {slot.dayOffset > 0 ? `+${slot.dayOffset}` : slot.dayOffset}
               </span>
             )}
-          </span>
+          </li>
         );
       })}
-    </p>
+    </ul>
   );
 }

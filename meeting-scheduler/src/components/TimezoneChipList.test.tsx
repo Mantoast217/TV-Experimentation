@@ -54,7 +54,12 @@ describe("TimezoneChipList", () => {
   it("renders the chips as a semantic list", () => {
     render(<Harness initialZones={[LONDON, TOKYO]} />);
     expect(screen.getByRole("list")).toBeInTheDocument();
-    expect(screen.getAllByRole("listitem")).toHaveLength(2);
+    const items = screen.getAllByRole("listitem");
+    expect(items).toHaveLength(2);
+    // Explicit role attributes, not just implicit <ul>/<li> semantics: the list-none
+    // utility strips the implicit list/listitem role in real browsers (Chromium/WebKit),
+    // a gap jsdom's role inference alone wouldn't catch.
+    items.forEach((item) => expect(item).toHaveAttribute("role", "listitem"));
   });
 
   it("gives each remove control a real <button> with an accessible name naming its own chip", () => {

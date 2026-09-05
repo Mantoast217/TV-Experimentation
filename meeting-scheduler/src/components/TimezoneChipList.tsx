@@ -57,7 +57,7 @@ export function TimezoneChipList({ zones, onRemove, addInputRef }: TimezoneChipL
         {zones.map((zone) => {
           const label = zoneDisplayLabel(zone);
           return (
-            <li key={zone.id}>
+            <li key={zone.id} role="listitem">
               <Chip variant="soft" color="default" size="lg" className="items-center gap-1.5 border border-[#767676]">
                 <Chip.Label>{label}</Chip.Label>
                 <button

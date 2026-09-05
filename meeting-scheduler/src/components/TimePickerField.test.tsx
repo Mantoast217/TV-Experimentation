@@ -21,11 +21,11 @@ function field() {
 }
 
 function decreaseButton() {
-  return screen.getByRole("button", { name: /^Decrease time by/ });
+  return screen.getByRole("button", { name: /^Decrease start time by/ });
 }
 
 function increaseButton() {
-  return screen.getByRole("button", { name: /^Increase time by/ });
+  return screen.getByRole("button", { name: /^Increase start time by/ });
 }
 
 describe("TimePickerField", () => {
@@ -157,10 +157,24 @@ describe("TimePickerField", () => {
   it("gives the step buttons a 24x24 minimum hit area and a value-describing accessible name", () => {
     render(<Harness initialValue="16:00" />);
 
-    expect(decreaseButton()).toHaveAccessibleName("Decrease time by 15 minutes, currently 16:00");
-    expect(increaseButton()).toHaveAccessibleName("Increase time by 15 minutes, currently 16:00");
+    expect(decreaseButton()).toHaveAccessibleName("Decrease start time by 15 minutes, currently 16:00");
+    expect(increaseButton()).toHaveAccessibleName("Increase start time by 15 minutes, currently 16:00");
     expect(decreaseButton()).toHaveClass("h-6", "w-6");
     expect(increaseButton()).toHaveClass("h-6", "w-6");
+  });
+
+  it("names the step buttons after whichever field they belong to, so Start and End are distinguishable", () => {
+    render(
+      <div>
+        <TimePickerField value="09:00" onChange={() => {}} aria-label="Start time" />
+        <TimePickerField value="17:00" onChange={() => {}} aria-label="End time" />
+      </div>,
+    );
+
+    expect(screen.getByRole("button", { name: "Decrease start time by 15 minutes, currently 09:00" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Increase start time by 15 minutes, currently 09:00" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Decrease end time by 15 minutes, currently 17:00" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Increase end time by 15 minutes, currently 17:00" })).toBeInTheDocument();
   });
 
   it("has no axe-detectable accessibility violations", async () => {

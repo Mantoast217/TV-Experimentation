@@ -40,13 +40,13 @@ function changeTrigger(name: RegExp | string = /Change reference timezone/) {
 describe("AnchorZoneCallout", () => {
   it("shows the auto-anchor sentence with the GMT qualifier for the first-added zone", () => {
     render(<Harness initialZones={[LONDON, TOKYO]} />);
-    const text = screen.getByText(/Times below are shown relative to/);
-    expect(text).toHaveTextContent("Times below are shown relative to London (first added, GMT+1).");
+    const text = screen.getByText(/Times below are shown in/);
+    expect(text).toHaveTextContent("Times below are shown in London's time (first added, GMT+1).");
   });
 
   it("puts the sentence in a polite live region", () => {
     render(<Harness initialZones={[LONDON, TOKYO]} />);
-    const text = screen.getByText(/Times below are shown relative to/);
+    const text = screen.getByText(/Times below are shown in/);
     expect(text).toHaveAttribute("aria-live", "polite");
   });
 
@@ -74,8 +74,8 @@ describe("AnchorZoneCallout", () => {
     await user.keyboard("{ArrowDown}");
     await user.keyboard("{Enter}");
 
-    const text = await screen.findByText(/Times below are shown relative to/);
-    expect(text).toHaveTextContent("Times below are shown relative to Tokyo (selected).");
+    const text = await screen.findByText(/Times below are shown in/);
+    expect(text).toHaveTextContent("Times below are shown in Tokyo's time (selected).");
   });
 
   it("swaps the qualifier to \"(selected)\" once a manual pick is made", async () => {
@@ -86,8 +86,8 @@ describe("AnchorZoneCallout", () => {
     await user.keyboard("{ArrowDown}{Enter}");
 
     await waitFor(() => {
-      expect(screen.getByText(/Times below are shown relative to/)).toHaveTextContent(
-        "Times below are shown relative to Tokyo (selected).",
+      expect(screen.getByText(/Times below are shown in/)).toHaveTextContent(
+        "Times below are shown in Tokyo's time (selected).",
       );
     });
   });
@@ -135,13 +135,13 @@ describe("AnchorZoneCallout visibility", () => {
       );
     }
     render(<ZeroZoneHarness />);
-    expect(screen.queryByText(/Times below are shown relative to/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Times below are shown in/)).not.toBeInTheDocument();
   });
 
   it("is still shown with exactly one zone added", () => {
     render(<Harness initialZones={[LONDON]} />);
-    expect(screen.getByText(/Times below are shown relative to/)).toHaveTextContent(
-      "Times below are shown relative to London (first added, GMT+1).",
+    expect(screen.getByText(/Times below are shown in/)).toHaveTextContent(
+      "Times below are shown in London's time (first added, GMT+1).",
     );
   });
 });

@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { classifyTimeQuality } from "./timeQuality";
 
-/** A zero-length slot at `hour` — never crosses a boundary, so always a solid dot. */
+/** A zero-length slot at `hour` — midpoint equals the hour itself. */
 function at(hour: number) {
   return classifyTimeQuality(hour, hour);
 }
 
-describe("classifyTimeQuality — single-band slots", () => {
+describe("classifyTimeQuality", () => {
   it("labels the green band as Daytime", () => {
     expect(at(9).label).toBe("Daytime");
     expect(at(13).label).toBe("Daytime");
@@ -35,78 +35,43 @@ describe("classifyTimeQuality — single-band slots", () => {
   });
 
   it("assigns green/amber/amber/grey dot colors matching the four bands", () => {
-    expect(at(12).dotColors).toEqual(["var(--color-success)"]);
-    expect(at(8).dotColors).toEqual(["var(--color-warning)"]);
-    expect(at(18).dotColors).toEqual(["var(--color-warning)"]);
-    expect(at(2).dotColors).toEqual(["var(--color-muted)"]);
+    expect(at(12).dotColor).toBe("var(--color-success)");
+    expect(at(8).dotColor).toBe("var(--color-warning)");
+    expect(at(18).dotColor).toBe("var(--color-warning)");
+    expect(at(2).dotColor).toBe("var(--color-muted)");
   });
 
-  it("a real (non-zero) slot that stays within one band doesn't split", () => {
-    expect(classifyTimeQuality(9, 10).bands).toEqual(["daytime"]);
-    expect(classifyTimeQuality(9, 10).label).toBe("Daytime");
-  });
-
-  it("finds the correct band for a slot that crosses midnight without crossing a color boundary", () => {
-    // 23:00 -> 01:00 next day (raw 23 -> 25) stays entirely in Overnight.
-    const quality = classifyTimeQuality(23, 25);
-    expect(quality.bands).toEqual(["overnight"]);
-    expect(quality.label).toBe("Overnight");
-  });
-});
-
-describe("classifyTimeQuality — slots spanning exactly two bands (split dot)", () => {
-  it("splits Overnight/Early morning for a slot ending exactly on the 07:00 boundary", () => {
-    // The example from the request: 05:30-07:00.
-    const quality = classifyTimeQuality(5.5, 7);
-    expect(quality.bands).toEqual(["overnight", "early-morning"]);
-    expect(quality.label).toBe("Overnight–Early morning");
-    expect(quality.dotColors).toEqual(["var(--color-muted)", "var(--color-warning)"]);
-  });
-
-  it("splits Early morning/Daytime for a slot crossing the 09:00 boundary", () => {
+  it("classifies by the slot's midpoint, not its start, and always returns a single label", () => {
+    // 08:00-10:00 midpoints at 09:00 (Daytime), even though it starts in the
+    // Early-morning band — the result is one label, not "Early morning-Daytime".
     const quality = classifyTimeQuality(8, 10);
-    expect(quality.bands).toEqual(["early-morning", "daytime"]);
-    expect(quality.label).toBe("Early morning–Daytime");
+    expect(quality.label).toBe("Daytime");
+    expect(quality.label).not.toContain("–");
   });
 
-  it("splits Daytime/Early evening for a slot crossing the 17:00 boundary", () => {
-    const quality = classifyTimeQuality(16, 18);
-    expect(quality.bands).toEqual(["daytime", "early-evening"]);
-    expect(quality.label).toBe("Daytime–Early evening");
+  it("finds the correct midpoint for a slot that crosses midnight", () => {
+    // 23:00 -> 01:00 next day (raw 23 -> 25) midpoints at 00:00 (Overnight), not at
+    // the wrapped average of 23 and 1.
+    expect(classifyTimeQuality(23, 25).label).toBe("Overnight");
   });
 
-  it("splits Early evening/Overnight for a slot crossing the 19:00 boundary", () => {
-    const quality = classifyTimeQuality(18, 20);
-    expect(quality.bands).toEqual(["early-evening", "overnight"]);
-    expect(quality.label).toBe("Early evening–Overnight");
+  it("regression: a 06:00-07:00 slot resolves to the single label Overnight, not a compound string", () => {
+    // This is the exact New York slot that previously rendered as the concatenated
+    // "Overnight–Early morning". Midpoint is 06:30, entirely within Overnight.
+    const quality = classifyTimeQuality(6, 7);
+    expect(quality.label).toBe("Overnight");
+    expect(quality.label).not.toBe("Overnight–Early morning");
+    expect(quality.label).not.toContain("–");
   });
 
-  it("does not split when the slot merely starts on a boundary", () => {
-    // 09:00-10:00 starts exactly where Early morning ends, but the slot doesn't occupy
-    // any time before its own start, so it's Daytime only.
-    expect(classifyTimeQuality(9, 10).bands).toEqual(["daytime"]);
-  });
-
-  it("splits correctly using raw (unwrapped) hours across a midnight boundary", () => {
-    // Same 06:45-07:15 crossing as the wall-clock case above, but expressed as raw
-    // hours from a slot that started the previous day (30.75 -> 31.25 wraps to the
-    // same 06:45 -> 07:15): the boundary crossing must still be found correctly.
-    const quality = classifyTimeQuality(30.75, 31.25);
-    expect(quality.bands).toEqual(["overnight", "early-morning"]);
-  });
-});
-
-describe("classifyTimeQuality — slots spanning 3+ bands", () => {
-  it("falls back to a single midpoint-based band until a 3+-band visual is decided", () => {
-    // 05:00-13:00: Overnight -> Early morning -> Daytime. No agreed 3-way visual yet
-    // (flagged separately), so this collapses to one representative band.
-    const quality = classifyTimeQuality(5, 13);
-    expect(quality.bands).toHaveLength(1);
-    expect(quality.dotColors).toHaveLength(1);
-  });
-
-  it("falls back for a full 24-hour slot that touches every band", () => {
-    const quality = classifyTimeQuality(16, 40);
-    expect(quality.bands).toHaveLength(1);
+  it("resolves a slot centered exactly on each of the four boundaries to a single label", () => {
+    // Centered on 07:00 (06:30-07:30): the boundary itself is the midpoint.
+    expect(classifyTimeQuality(6.5, 7.5).label).toBe("Early morning");
+    // Centered on 09:00 (08:30-09:30).
+    expect(classifyTimeQuality(8.5, 9.5).label).toBe("Daytime");
+    // Centered on 17:00 (16:30-17:30).
+    expect(classifyTimeQuality(16.5, 17.5).label).toBe("Early evening");
+    // Centered on 19:00 (18:30-19:30).
+    expect(classifyTimeQuality(18.5, 19.5).label).toBe("Overnight");
   });
 });
