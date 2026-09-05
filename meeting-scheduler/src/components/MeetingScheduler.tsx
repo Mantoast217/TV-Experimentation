@@ -130,7 +130,7 @@ export function MeetingScheduler() {
           <h1 className="m-0 mb-1 text-xl font-medium text-foreground">Schedule a meeting</h1>
           <p className="m-0 text-sm text-muted">
             Add the timezones you need to coordinate across, then pick a date and meeting time to see
-            the avalaible options.
+            the available options.
           </p>
         </div>
 
