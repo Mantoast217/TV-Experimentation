@@ -1,4 +1,4 @@
-import { CalendarDate, today, getLocalTimeZone } from "@internationalized/date";
+import { CalendarDate, Time, today, getLocalTimeZone } from "@internationalized/date";
 import {
   Button,
   Calendar,
@@ -10,6 +10,7 @@ import {
   Popover,
   Select,
   Separator,
+  TimeField,
 } from "@heroui/react";
 import { useMemo, useState, type CSSProperties } from "react";
 import { asItems } from "../lib/collection";
@@ -20,7 +21,6 @@ import {
   computeDurationHours,
   computeZoneTimes,
   findOptimalStartHour,
-  formatDurationLabel,
   formatZoneTimesText,
   parseHourValue,
   shiftTimeValue,
@@ -82,6 +82,11 @@ export function MeetingScheduler() {
   const durationHours = computeDurationHours(startHour, endHour);
 
   const endTimeOptions = useMemo(() => buildEndTimeOptions(startTime), [startTime]);
+
+  const durationTime = useMemo(() => {
+    const totalMinutes = Math.round(durationHours * 60) % (24 * 60);
+    return new Time(Math.floor(totalMinutes / 60), totalMinutes % 60);
+  }, [durationHours]);
 
   const handleStartTimeChange = (value: string) => {
     setStartTime(value);
@@ -227,9 +232,7 @@ export function MeetingScheduler() {
           </div>
 
           <div className="flex flex-1 flex-col gap-3">
-            <div className="text-base font-medium text-foreground">
-              Duration ({formatDurationLabel(durationHours)})
-            </div>
+            <div className="text-base font-medium text-foreground">Meeting time</div>
             <div className="flex gap-2.5">
               <div className="flex flex-1 flex-col gap-1.5">
                 <span className="text-xs text-muted">Start time</span>
@@ -280,6 +283,14 @@ export function MeetingScheduler() {
                     </ListBox>
                   </Select.Popover>
                 </Select.Root>
+              </div>
+              <div className="flex flex-1 flex-col gap-1.5">
+                <span className="text-xs text-muted">Duration</span>
+                <TimeField hourCycle={24} isReadOnly value={durationTime} aria-label="Duration" fullWidth>
+                  <TimeField.Group fullWidth>
+                    <TimeField.Input>{(segment) => <TimeField.Segment segment={segment} />}</TimeField.Input>
+                  </TimeField.Group>
+                </TimeField>
               </div>
             </div>
           </div>

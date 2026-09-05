@@ -82,17 +82,6 @@ export function formatZoneTimesText(slots: ZoneTimeSlot[]): string {
     .join(" / ");
 }
 
-/** e.g. 1.5 -> "1hr 30mins", 1 -> "1hr", 0.75 -> "45mins", 0 -> "0mins". */
-export function formatDurationLabel(durationHours: number): string {
-  const totalMinutes = Math.round(durationHours * 60);
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-  const parts: string[] = [];
-  if (hours > 0) parts.push(`${hours}hr`);
-  if (minutes > 0) parts.push(`${minutes}mins`);
-  return parts.length > 0 ? parts.join(" ") : "0mins";
-}
-
 export function parseHourValue(value: string): number {
   const [h, m] = value.split(":").map(Number);
   return h + (m || 0) / 60;
