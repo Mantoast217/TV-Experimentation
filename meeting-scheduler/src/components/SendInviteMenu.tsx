@@ -8,7 +8,7 @@ import {
   teamsMeetingUrl,
   type MeetingDetails,
 } from "../lib/calendarLinks";
-import { CalendarIcon, GoogleMeetIcon, OutlookIcon, TeamsIcon } from "./icons";
+import { CalendarIcon, ExternalLinkIcon, GoogleMeetIcon, OutlookIcon, TeamsIcon } from "./icons";
 
 const PLATFORMS = [
   { id: "outlook", label: "Outlook", Icon: OutlookIcon },
@@ -26,6 +26,8 @@ interface SendInviteMenuProps extends MeetingDetails {
   buttonStyle?: CSSProperties;
   /** Accessible name for the trigger button; falls back to the visible "Set up invite" text. */
   ariaLabel?: string;
+  /** id of an element (e.g. the shared "invites open your calendar app" note) to expose as this button's accessible description. */
+  describedById?: string;
 }
 
 export function SendInviteMenu({
@@ -36,6 +38,7 @@ export function SendInviteMenu({
   variant = "secondary",
   buttonStyle,
   ariaLabel,
+  describedById,
 }: SendInviteMenuProps) {
   const details: MeetingDetails = { title, description, start, end };
 
@@ -60,8 +63,18 @@ export function SendInviteMenu({
 
   return (
     <Dropdown.Root>
-      <Button variant={variant} size="md" className="shrink-0" style={buttonStyle} aria-label={ariaLabel}>
-        Set up invite
+      <Button
+        variant={variant}
+        size="md"
+        className="shrink-0"
+        style={buttonStyle}
+        aria-label={ariaLabel}
+        aria-describedby={describedById}
+      >
+        <span className="inline-flex items-center gap-1.5">
+          Set up invite
+          <ExternalLinkIcon className="h-3.5 w-3.5" />
+        </span>
       </Button>
       <Dropdown.Popover placement="bottom end">
         <Dropdown.Menu onAction={handleAction}>

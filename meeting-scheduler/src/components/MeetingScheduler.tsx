@@ -286,16 +286,17 @@ export function MeetingScheduler() {
         <Separator />
 
         <div className="flex flex-col gap-3">
+          <p id="invite-note" className="m-0 text-xs text-[#515158]">
+            Invites are set up through your own calendar app.
+          </p>
+
           <h2 className="m-0 text-base font-medium text-foreground">Selected time</h2>
-          <Card.Root
-            variant="default"
-            className="flex-col gap-3 bg-zinc-800 p-0 text-zinc-50 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
-          >
-            <Card.Content className="flex flex-col gap-1 p-4 px-5 text-sm">
+          <Card.Root variant="default" className="relative flex-col gap-3 bg-zinc-800 p-0 text-zinc-50">
+            <Card.Content className="flex flex-col gap-1 p-4 px-5 pr-32 text-sm sm:pr-36">
               <span className="font-bold">{selectedDateLabel}</span>
               <ZoneTimeList slots={selectedSlots} />
             </Card.Content>
-            <div className="flex flex-col items-start gap-1 px-5 pb-4 sm:items-end sm:px-0 sm:pb-0 sm:pr-5">
+            <div className="absolute top-4 right-4 sm:right-5">
               <SendInviteMenu
                 title="Meeting"
                 description={formatZoneTimesText(selectedSlots)}
@@ -304,21 +305,18 @@ export function MeetingScheduler() {
                 variant="secondary"
                 buttonStyle={{ "--button-fg": "#0D3F9C" } as CSSProperties}
                 ariaLabel={`Set up invite for your selected time, ${selectedDateLabel}, ${startTime}–${endTime}`}
+                describedById="invite-note"
               />
-              <span className="text-[11px] text-zinc-300">Choose a calendar app, then send it from there</span>
             </div>
           </Card.Root>
 
           <h2 className="m-0 text-base font-medium text-foreground">Best time for everyone</h2>
-          <Card.Root
-            variant="default"
-            className="flex-col gap-3 border border-[#0D3F9C] bg-accent/10 p-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
-          >
-            <Card.Content className="flex flex-col gap-1 p-4 px-5 text-sm">
+          <Card.Root variant="default" className="relative flex-col gap-3 border border-[#0D3F9C] bg-accent/10 p-0">
+            <Card.Content className="flex flex-col gap-1 p-4 px-5 pr-32 text-sm sm:pr-36">
               <span className="font-bold">{selectedDateLabel}</span>
               <ZoneTimeList slots={optimalSlots} />
             </Card.Content>
-            <div className="flex flex-col items-start gap-1 px-5 pb-4 sm:items-end sm:px-0 sm:pb-0 sm:pr-5">
+            <div className="absolute top-4 right-4 sm:right-5">
               <SendInviteMenu
                 title="Meeting"
                 description={formatZoneTimesText(optimalSlots)}
@@ -333,8 +331,8 @@ export function MeetingScheduler() {
                   } as CSSProperties
                 }
                 ariaLabel={`Set up invite for the best time for everyone, ${selectedDateLabel}, ${optimalSlots[0]?.startText ?? ""}–${optimalSlots[0]?.endText ?? ""}`}
+                describedById="invite-note"
               />
-              <span className="text-[11px] text-[#515158]">Choose a calendar app, then send it from there</span>
             </div>
           </Card.Root>
         </div>
