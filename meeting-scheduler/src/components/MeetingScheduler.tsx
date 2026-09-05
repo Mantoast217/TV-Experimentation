@@ -124,8 +124,9 @@ export function MeetingScheduler() {
   );
 
   return (
-    <main className="flex min-h-screen justify-center px-6 py-12">
-      <div className="flex w-full max-w-[640px] flex-col gap-7">
+    <div className="flex min-h-screen flex-col">
+      <main className="flex flex-1 justify-center px-6 pt-12 pb-6">
+        <div className="flex w-full max-w-[640px] flex-col gap-7">
         <div>
           <h1 className="m-0 mb-1 text-xl font-medium text-foreground">
             Schedule a meeting across time zones for everyone, everywhere
@@ -266,7 +267,14 @@ export function MeetingScheduler() {
                   <span className="text-xs text-[#515158]">Duration</span>
                   <TimeField hourCycle={24} isReadOnly value={durationTime} aria-label="Duration" fullWidth>
                     <TimeField.Group fullWidth className="h-auto border border-[#767676]">
-                      <TimeField.Input>{(segment) => <TimeField.Segment segment={segment} />}</TimeField.Input>
+                      <TimeField.Input>
+                      {(segment) => (
+                        <TimeField.Segment
+                          segment={segment}
+                          className="rounded-sm focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#0D3F9C]"
+                        />
+                      )}
+                    </TimeField.Input>
                     </TimeField.Group>
                   </TimeField>
                 </div>
@@ -287,7 +295,7 @@ export function MeetingScheduler() {
               <span className="font-bold">{selectedDateLabel}</span>
               <ZoneTimeList slots={selectedSlots} />
             </Card.Content>
-            <div className="px-5 pb-4 sm:px-0 sm:pb-0 sm:pr-5">
+            <div className="flex flex-col items-start gap-1 px-5 pb-4 sm:items-end sm:px-0 sm:pb-0 sm:pr-5">
               <SendInviteMenu
                 title="Meeting"
                 description={formatZoneTimesText(selectedSlots)}
@@ -295,8 +303,9 @@ export function MeetingScheduler() {
                 end={selectedEndUtc}
                 variant="secondary"
                 buttonStyle={{ "--button-fg": "#0D3F9C" } as CSSProperties}
-                ariaLabel={`Set up invite for ${selectedDateLabel}, ${startTime}–${endTime}`}
+                ariaLabel={`Set up invite for your selected time, ${selectedDateLabel}, ${startTime}–${endTime}`}
               />
+              <span className="text-[11px] text-zinc-300">Choose a calendar app, then send it from there</span>
             </div>
           </Card.Root>
 
@@ -309,7 +318,7 @@ export function MeetingScheduler() {
               <span className="font-bold">{selectedDateLabel}</span>
               <ZoneTimeList slots={optimalSlots} />
             </Card.Content>
-            <div className="px-5 pb-4 sm:px-0 sm:pb-0 sm:pr-5">
+            <div className="flex flex-col items-start gap-1 px-5 pb-4 sm:items-end sm:px-0 sm:pb-0 sm:pr-5">
               <SendInviteMenu
                 title="Meeting"
                 description={formatZoneTimesText(optimalSlots)}
@@ -323,12 +332,37 @@ export function MeetingScheduler() {
                     "--button-bg-pressed": "#0D3F9C",
                   } as CSSProperties
                 }
-                ariaLabel={`Set up invite for ${selectedDateLabel}, ${optimalSlots[0]?.startText ?? ""}–${optimalSlots[0]?.endText ?? ""}`}
+                ariaLabel={`Set up invite for the best time for everyone, ${selectedDateLabel}, ${optimalSlots[0]?.startText ?? ""}–${optimalSlots[0]?.endText ?? ""}`}
               />
+              <span className="text-[11px] text-[#515158]">Choose a calendar app, then send it from there</span>
             </div>
           </Card.Root>
         </div>
-      </div>
-    </main>
+        </div>
+      </main>
+      <footer className="flex justify-center px-6 pb-8">
+        <div className="flex w-full max-w-[640px] flex-wrap gap-x-4 gap-y-1 text-xs text-[#515158]">
+          <a
+            href="/privacy.html"
+            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0D3F9C]"
+          >
+            Privacy Policy
+          </a>
+          <a
+            href="/terms.html"
+            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0D3F9C]"
+          >
+            Terms of Use
+          </a>
+          {/* Placeholder — a real feedback destination will replace this href later. */}
+          <a
+            href=""
+            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0D3F9C]"
+          >
+            Feedback
+          </a>
+        </div>
+      </footer>
+    </div>
   );
 }

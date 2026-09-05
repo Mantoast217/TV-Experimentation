@@ -1,7 +1,12 @@
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { MeetingScheduler } from "./components/MeetingScheduler";
 
 function App() {
-  return <MeetingScheduler />;
+  return (
+    <ErrorBoundary>
+      <MeetingScheduler />
+    </ErrorBoundary>
+  );
 }
 
 export default App;
