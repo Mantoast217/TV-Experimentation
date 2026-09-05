@@ -118,10 +118,7 @@ describe("TimePickerField", () => {
     render(<Harness initialValue="16:00" />);
 
     await user.tab(); // "Somewhere else" input
-    await user.tab(); // decrease button
-    expect(decreaseButton()).toHaveFocus();
-
-    await user.tab(); // the field itself
+    await user.tab(); // the field itself (visually first, left-aligned, ahead of the grouped arrows)
     expect(field()).toHaveFocus();
 
     await user.keyboard("{ArrowDown}");
@@ -135,6 +132,9 @@ describe("TimePickerField", () => {
     await waitFor(() => expect(field()).toHaveValue("16:30"));
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
     expect(field()).toHaveFocus();
+
+    await user.tab(); // decrease button (arrows are grouped together after the field)
+    expect(decreaseButton()).toHaveFocus();
 
     await user.tab(); // increase button
     expect(increaseButton()).toHaveFocus();

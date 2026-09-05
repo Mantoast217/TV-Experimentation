@@ -74,17 +74,8 @@ export function TimePickerField({
 
   return (
     <div
-      className={`flex h-[38px] items-center gap-0.5 rounded-lg border border-[#767676] bg-field pl-0.5 pr-0.5 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#0D3F9C] ${className ?? ""}`}
+      className={`flex h-[38px] items-center gap-0.5 rounded-lg border border-[#767676] bg-field pl-3 pr-0.5 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#0D3F9C] ${className ?? ""}`}
     >
-      <button
-        type="button"
-        onClick={() => step(-1)}
-        aria-label={`Decrease time by ${stepMinutes} minutes, currently ${value}`}
-        className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0D3F9C]"
-      >
-        <ChevronLeftIcon className="h-4 w-4" />
-      </button>
-
       <ComboBox.Root<TimeOption>
         items={asItems(timeOptions)}
         inputValue={inputValue}
@@ -106,7 +97,7 @@ export function TimePickerField({
       >
         <ComboBox.InputGroup className="border-0 bg-transparent p-0 shadow-none">
           <Input
-            className="border-0 bg-transparent p-0 text-center shadow-none"
+            className="border-0 bg-transparent p-0 text-left shadow-none"
             onBlur={(e) => commitTyped(e.target.value)}
             onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
               if (e.key === "Enter") commitTyped(e.currentTarget.value);
@@ -135,14 +126,24 @@ export function TimePickerField({
         </ComboBox.Popover>
       </ComboBox.Root>
 
-      <button
-        type="button"
-        onClick={() => step(1)}
-        aria-label={`Increase time by ${stepMinutes} minutes, currently ${value}`}
-        className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0D3F9C]"
-      >
-        <ChevronRightIcon className="h-4 w-4" />
-      </button>
+      <div className="flex shrink-0 items-center gap-0.5">
+        <button
+          type="button"
+          onClick={() => step(-1)}
+          aria-label={`Decrease time by ${stepMinutes} minutes, currently ${value}`}
+          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0D3F9C]"
+        >
+          <ChevronLeftIcon className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => step(1)}
+          aria-label={`Increase time by ${stepMinutes} minutes, currently ${value}`}
+          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0D3F9C]"
+        >
+          <ChevronRightIcon className="h-4 w-4" />
+        </button>
+      </div>
 
       <div role="status" aria-live="polite" className="sr-only">
         {stepAnnouncement}
