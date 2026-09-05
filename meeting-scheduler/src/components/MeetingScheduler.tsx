@@ -244,9 +244,9 @@ export function MeetingScheduler() {
 
           <div className="flex flex-1 flex-col gap-3">
             <div className="text-base font-medium text-foreground">Meeting time</div>
-            <div className="flex flex-wrap gap-2.5">
-              <div className="flex min-w-[220px] flex-1 gap-2.5">
-                <div className="flex flex-1 flex-col gap-1.5">
+            <div className="@container">
+              <div className="grid grid-cols-2 gap-2.5 @min-[480px]:grid-cols-3">
+                <div className="flex flex-col gap-1.5">
                   <span className="text-xs text-muted">Start time</span>
                   <Select.Root<TimeOption>
                     items={asItems(TIME_OPTIONS)}
@@ -271,7 +271,7 @@ export function MeetingScheduler() {
                     </Select.Popover>
                   </Select.Root>
                 </div>
-                <div className="flex flex-1 flex-col gap-1.5">
+                <div className="flex flex-col gap-1.5">
                   <span className="text-xs text-muted">End time</span>
                   <Select.Root<TimeOption>
                     items={asItems(endTimeOptions)}
@@ -296,9 +296,7 @@ export function MeetingScheduler() {
                     </Select.Popover>
                   </Select.Root>
                 </div>
-              </div>
-              <div className="min-w-[140px] flex-1">
-                <div className="flex flex-col gap-1.5">
+                <div className="col-span-2 flex flex-col gap-1.5 @min-[480px]:col-span-1">
                   <span className="text-xs text-muted">Duration (HH:MM)</span>
                   <TimeField hourCycle={24} isReadOnly value={durationTime} aria-label="Duration" fullWidth>
                     <TimeField.Group fullWidth className="h-auto border border-[#767676]">
