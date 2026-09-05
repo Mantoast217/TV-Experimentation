@@ -24,7 +24,7 @@ function openInNewTab(url: string) {
 interface SendInviteMenuProps extends MeetingDetails {
   variant?: ButtonVariants["variant"];
   buttonStyle?: CSSProperties;
-  /** Accessible name for the trigger button; falls back to the visible "Create invite" text. */
+  /** Accessible name for the trigger button; falls back to the visible "Set up invite" text. */
   ariaLabel?: string;
 }
 
@@ -61,7 +61,7 @@ export function SendInviteMenu({
   return (
     <Dropdown.Root>
       <Button variant={variant} size="md" className="shrink-0" style={buttonStyle} aria-label={ariaLabel}>
-        Create invite
+        Set up invite
       </Button>
       <Dropdown.Popover placement="bottom end">
         <Dropdown.Menu onAction={handleAction}>

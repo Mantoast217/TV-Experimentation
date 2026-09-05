@@ -295,7 +295,7 @@ export function MeetingScheduler() {
                 end={selectedEndUtc}
                 variant="secondary"
                 buttonStyle={{ "--button-fg": "#0D3F9C" } as CSSProperties}
-                ariaLabel={`Create invite for ${selectedDateLabel}, ${startTime}–${endTime}`}
+                ariaLabel={`Set up invite for ${selectedDateLabel}, ${startTime}–${endTime}`}
               />
             </div>
           </Card.Root>
@@ -323,7 +323,7 @@ export function MeetingScheduler() {
                     "--button-bg-pressed": "#0D3F9C",
                   } as CSSProperties
                 }
-                ariaLabel={`Create invite for ${selectedDateLabel}, ${optimalSlots[0]?.startText ?? ""}–${optimalSlots[0]?.endText ?? ""}`}
+                ariaLabel={`Set up invite for ${selectedDateLabel}, ${optimalSlots[0]?.startText ?? ""}–${optimalSlots[0]?.endText ?? ""}`}
               />
             </div>
           </Card.Root>

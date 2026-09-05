@@ -46,7 +46,7 @@ describe("MeetingScheduler — accessibility punch list", () => {
     expect(icon).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("gives the two Create invite buttons distinct accessible names including their date/time", async () => {
+  it("gives the two Set up invite buttons distinct accessible names including their date/time", async () => {
     const user = userEvent.setup();
     render(<MeetingScheduler />);
     // Default Start time (09:00) coincides with the default Best-time suggestion for a
@@ -54,7 +54,7 @@ describe("MeetingScheduler — accessibility punch list", () => {
     // case where the Selected time and Best time differ.
     await user.click(screen.getByRole("button", { name: /^Increase start time by/ }));
 
-    const inviteButtons = screen.getAllByRole("button", { name: /^Create invite for/ });
+    const inviteButtons = screen.getAllByRole("button", { name: /^Set up invite for/ });
     expect(inviteButtons).toHaveLength(2);
     expect(inviteButtons[0]).toHaveAccessibleName(inviteButtons[0].getAttribute("aria-label") ?? "");
     expect(inviteButtons[0].getAttribute("aria-label")).not.toBe(inviteButtons[1].getAttribute("aria-label"));
