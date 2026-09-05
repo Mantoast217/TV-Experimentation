@@ -285,7 +285,7 @@ export function MeetingScheduler() {
                 </Select.Root>
               </div>
               <div className="flex flex-1 flex-col gap-1.5">
-                <span className="text-xs text-muted">Duration</span>
+                <span className="text-xs text-muted">Duration (HH:MM)</span>
                 <TimeField hourCycle={24} isReadOnly value={durationTime} aria-label="Duration" fullWidth>
                   <TimeField.Group fullWidth>
                     <TimeField.Input>{(segment) => <TimeField.Segment segment={segment} />}</TimeField.Input>
