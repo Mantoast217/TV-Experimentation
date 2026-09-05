@@ -129,8 +129,8 @@ export function MeetingScheduler() {
         <div>
           <h1 className="m-0 mb-1 text-xl font-medium text-foreground">Schedule a meeting</h1>
           <p className="m-0 text-sm text-muted">
-            Add the timezones you need to coordinate across, then pick a date and time range to see
-            overlapping slots.
+            Add the timezones you need to coordinate across, then pick a date and meeting time to see
+            the avalaible options.
           </p>
         </div>
 
