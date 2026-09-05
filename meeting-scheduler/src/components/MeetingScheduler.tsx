@@ -127,10 +127,12 @@ export function MeetingScheduler() {
     <div className="flex min-h-screen justify-center px-6 py-12">
       <div className="flex w-full max-w-[640px] flex-col gap-7">
         <div>
-          <h1 className="m-0 mb-1 text-xl font-medium text-foreground">Schedule a meeting</h1>
+          <h1 className="m-0 mb-1 text-xl font-medium text-foreground">
+            Schedule a meeting across time zones that works for everyone, everywhere
+          </h1>
           <p className="m-0 text-sm text-[#515158]">
-            Add the timezones you're coordinating across, then choose a date and time to see your best
-            options.
+            Add everyone's time zone, pick a date and find the time that fits. Whether you are coordinating a
+            team meeting or just checking what time it is for someone.
           </p>
         </div>
 
