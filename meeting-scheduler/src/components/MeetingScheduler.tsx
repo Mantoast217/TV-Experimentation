@@ -150,7 +150,7 @@ export function MeetingScheduler() {
             aria-label="Add timezone"
           >
             <ComboBox.InputGroup>
-              <Input placeholder="Search for a city or country" />
+              <Input placeholder="Search for a city or country" className="border border-[#767676]" />
               <ComboBox.Trigger />
             </ComboBox.InputGroup>
             <ComboBox.Popover>
@@ -165,7 +165,13 @@ export function MeetingScheduler() {
           </ComboBox.Root>
           <div className="flex flex-wrap gap-2.5">
             {zones.map((zone) => (
-              <Chip key={zone.id} variant="soft" color="default" size="lg" className="items-center gap-1.5">
+              <Chip
+                key={zone.id}
+                variant="soft"
+                color="default"
+                size="lg"
+                className="items-center gap-1.5 border border-[#767676]"
+              >
                 <Chip.Label>{zoneDisplayLabel(zone)}</Chip.Label>
                 <button
                   type="button"
@@ -186,7 +192,7 @@ export function MeetingScheduler() {
           <div className="flex flex-1 flex-col gap-3">
             <div className="text-base font-medium text-foreground">Date</div>
             <Popover.Root isOpen={isDateOpen} onOpenChange={setIsDateOpen}>
-              <Button variant="outline" className="w-full justify-between font-normal">
+              <Button variant="outline" className="w-full justify-between border-[#767676] font-normal">
                 <span>{selectedDateLabel}</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -244,7 +250,7 @@ export function MeetingScheduler() {
                   fullWidth
                   aria-label="Start time"
                 >
-                  <Select.Trigger>
+                  <Select.Trigger className="border border-[#767676]">
                     <Select.Value />
                     <Select.Indicator />
                   </Select.Trigger>
@@ -269,7 +275,7 @@ export function MeetingScheduler() {
                   fullWidth
                   aria-label="End time"
                 >
-                  <Select.Trigger>
+                  <Select.Trigger className="border border-[#767676]">
                     <Select.Value />
                     <Select.Indicator />
                   </Select.Trigger>
@@ -287,7 +293,7 @@ export function MeetingScheduler() {
               <div className="flex flex-1 flex-col gap-1.5">
                 <span className="text-xs text-muted">Duration (HH:MM)</span>
                 <TimeField hourCycle={24} isReadOnly value={durationTime} aria-label="Duration" fullWidth>
-                  <TimeField.Group fullWidth>
+                  <TimeField.Group fullWidth className="border border-[#767676]">
                     <TimeField.Input>{(segment) => <TimeField.Segment segment={segment} />}</TimeField.Input>
                   </TimeField.Group>
                 </TimeField>
