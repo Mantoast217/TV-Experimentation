@@ -286,9 +286,11 @@ export function MeetingScheduler() {
         <Separator />
 
         <div className="flex flex-col gap-3">
-          <p id="invite-note" className="m-0 text-xs text-[#515158]">
-            Invites are set up through your own calendar app.
-          </p>
+          <div className="flex min-h-[34px] w-full items-center rounded-lg border border-[#767676] bg-default-soft px-3 py-2 text-default-soft-foreground">
+            <p id="invite-note" className="m-0 text-xs leading-snug">
+              Invites are set up through your own calendar app.
+            </p>
+          </div>
 
           <h2 className="m-0 text-base font-medium text-foreground">Selected time</h2>
           <Card.Root variant="default" className="relative flex-col gap-3 bg-zinc-800 p-0 text-zinc-50">
