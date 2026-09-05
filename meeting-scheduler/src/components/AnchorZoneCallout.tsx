@@ -8,6 +8,8 @@ interface AnchorZoneCalloutProps {
   anchorZone: TimeZoneCatalogEntry;
   isAutoAnchor: boolean;
   onSelectAnchor: (id: string) => void;
+  /** Reference date ("YYYY-MM-DD") the GMT qualifier and picker offsets are computed against. */
+  dateStr: string;
 }
 
 /**
@@ -18,8 +20,8 @@ interface AnchorZoneCalloutProps {
  */
 const changeTriggerHitArea = { minHeight: 24, minWidth: 24 };
 
-export function AnchorZoneCallout({ zones, anchorZone, isAutoAnchor, onSelectAnchor }: AnchorZoneCalloutProps) {
-  const qualifier = isAutoAnchor ? `first added, ${gmtOffsetLabel(anchorZone.offsetHours)}` : "selected";
+export function AnchorZoneCallout({ zones, anchorZone, isAutoAnchor, onSelectAnchor, dateStr }: AnchorZoneCalloutProps) {
+  const qualifier = isAutoAnchor ? `first added, ${gmtOffsetLabel(anchorZone.timezone, dateStr)}` : "selected";
 
   return (
     <div className="flex min-h-[34px] w-full items-center justify-between gap-3 rounded-lg border border-[#767676] bg-default-soft px-3 py-2 text-default-soft-foreground">
@@ -42,8 +44,8 @@ export function AnchorZoneCallout({ zones, anchorZone, isAutoAnchor, onSelectAnc
         <Select.Popover placement="bottom end">
           <ListBox<TimeZoneCatalogEntry> items={asItems(zones)} aria-label="Reference timezone options">
             {(zone) => (
-              <ListBox.Item id={zone.id} textValue={zoneDisplayLabel(zone)}>
-                {zoneDisplayLabel(zone)}
+              <ListBox.Item id={zone.id} textValue={zoneDisplayLabel(zone, dateStr)}>
+                {zoneDisplayLabel(zone, dateStr)}
               </ListBox.Item>
             )}
           </ListBox>

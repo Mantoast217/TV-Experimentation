@@ -90,37 +90,37 @@ export function MeetingScheduler() {
     () => (anchorZone ? [anchorZone, ...zones.filter((zone) => zone.id !== anchorZone.id)] : zones),
     [zones, anchorZone],
   );
-  const hostOffset = anchorZone?.offsetHours ?? 0;
+  const hostZone = anchorZone?.timezone ?? "UTC";
 
   const selectedSlots = useMemo(
-    () => computeZoneTimes(orderedZones, startHour, durationHours),
-    [orderedZones, startHour, durationHours],
+    () => computeZoneTimes(orderedZones, dateStr, startHour, durationHours),
+    [orderedZones, dateStr, startHour, durationHours],
   );
   const selectedDateLabel = longDateLabel(dateStr);
   const selectedStartUtc = useMemo(
-    () => wallClockToUtcDate(dateStr, startHour, hostOffset),
-    [dateStr, startHour, hostOffset],
+    () => wallClockToUtcDate(dateStr, startHour, hostZone),
+    [dateStr, startHour, hostZone],
   );
   const selectedEndUtc = useMemo(
-    () => wallClockToUtcDate(dateStr, startHour + durationHours, hostOffset),
-    [dateStr, startHour, durationHours, hostOffset],
+    () => wallClockToUtcDate(dateStr, startHour + durationHours, hostZone),
+    [dateStr, startHour, durationHours, hostZone],
   );
 
   const optimalHour = useMemo(
-    () => findOptimalStartHour(orderedZones, durationHours),
-    [orderedZones, durationHours],
+    () => findOptimalStartHour(orderedZones, dateStr, durationHours),
+    [orderedZones, dateStr, durationHours],
   );
   const optimalSlots = useMemo(
-    () => computeZoneTimes(orderedZones, optimalHour, durationHours),
-    [orderedZones, optimalHour, durationHours],
+    () => computeZoneTimes(orderedZones, dateStr, optimalHour, durationHours),
+    [orderedZones, dateStr, optimalHour, durationHours],
   );
   const optimalStartUtc = useMemo(
-    () => wallClockToUtcDate(dateStr, optimalHour, hostOffset),
-    [dateStr, optimalHour, hostOffset],
+    () => wallClockToUtcDate(dateStr, optimalHour, hostZone),
+    [dateStr, optimalHour, hostZone],
   );
   const optimalEndUtc = useMemo(
-    () => wallClockToUtcDate(dateStr, optimalHour + durationHours, hostOffset),
-    [dateStr, optimalHour, durationHours, hostOffset],
+    () => wallClockToUtcDate(dateStr, optimalHour + durationHours, hostZone),
+    [dateStr, optimalHour, durationHours, hostZone],
   );
 
   return (
@@ -162,14 +162,14 @@ export function MeetingScheduler() {
             <ComboBox.Popover>
               <ListBox<TimeZoneCatalogEntry> items={asItems(availableZones)}>
                 {(zone) => (
-                  <ListBox.Item id={zone.id} textValue={zoneDisplayLabel(zone)}>
-                    {zoneDisplayLabel(zone)}
+                  <ListBox.Item id={zone.id} textValue={zoneDisplayLabel(zone, dateStr)}>
+                    {zoneDisplayLabel(zone, dateStr)}
                   </ListBox.Item>
                 )}
               </ListBox>
             </ComboBox.Popover>
           </ComboBox.Root>
-          <TimezoneChipList zones={zones} onRemove={removeZone} addInputRef={addZoneInputRef} />
+          <TimezoneChipList zones={zones} onRemove={removeZone} addInputRef={addZoneInputRef} dateStr={dateStr} />
         </div>
 
         <Separator />
@@ -181,6 +181,7 @@ export function MeetingScheduler() {
               anchorZone={anchorZone}
               isAutoAnchor={isAutoAnchor}
               onSelectAnchor={selectAnchor}
+              dateStr={dateStr}
             />
           )}
 

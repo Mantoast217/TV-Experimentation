@@ -5,7 +5,7 @@ import type { TimeZoneCatalogEntry } from "../lib/timezones";
 import { ZoneTimeList } from "./ZoneTimeList";
 
 function zone(id: string, city: string): TimeZoneCatalogEntry {
-  return { id, country: "Testland", city, abbr: "TST", offsetHours: 0 };
+  return { id, country: "Testland", city, countryCode: "TL", timezone: "UTC" };
 }
 
 /** A slot for `city`, given as start/end wall-clock hours (no midnight crossing). */

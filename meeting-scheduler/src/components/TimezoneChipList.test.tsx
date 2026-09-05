@@ -10,25 +10,28 @@ const LONDON: TimeZoneCatalogEntry = {
   id: "united-kingdom-london",
   country: "United Kingdom",
   city: "London",
-  abbr: "BST",
-  offsetHours: 1,
+  countryCode: "GB",
+  timezone: "Europe/London",
 };
 
 const TOKYO: TimeZoneCatalogEntry = {
   id: "japan-tokyo",
   country: "Japan",
   city: "Tokyo",
-  abbr: "JST",
-  offsetHours: 9,
+  countryCode: "JP",
+  timezone: "Asia/Tokyo",
 };
 
 const NEW_YORK: TimeZoneCatalogEntry = {
   id: "united-states-new-york",
   country: "United States",
   city: "New York",
-  abbr: "EDT",
-  offsetHours: -4,
+  countryCode: "US",
+  timezone: "America/New_York",
 };
+
+/** A July date so London (Europe/London) is on BST, i.e. GMT+1 — Tokyo has no DST either way. */
+const TEST_DATE = "2026-07-15";
 
 /** Mirrors how MeetingScheduler wires zones/removeZone/the add-timezone input. */
 function Harness({ initialZones }: { initialZones: TimeZoneCatalogEntry[] }) {
@@ -41,6 +44,7 @@ function Harness({ initialZones }: { initialZones: TimeZoneCatalogEntry[] }) {
         zones={zones}
         onRemove={(id) => setZones((prev) => prev.filter((z) => z.id !== id))}
         addInputRef={inputRef}
+        dateStr={TEST_DATE}
       />
     </div>
   );
@@ -131,15 +135,15 @@ describe("TimezoneChipList", () => {
     const onRemove = vi.fn();
     const inputRef = { current: null } as { current: HTMLInputElement | null };
     const { rerender } = render(
-      <TimezoneChipList zones={[LONDON]} onRemove={onRemove} addInputRef={inputRef} />,
+      <TimezoneChipList zones={[LONDON]} onRemove={onRemove} addInputRef={inputRef} dateStr={TEST_DATE} />,
     );
 
     expect(screen.getByRole("status")).toHaveTextContent("");
 
-    rerender(<TimezoneChipList zones={[LONDON, TOKYO]} onRemove={onRemove} addInputRef={inputRef} />);
+    rerender(<TimezoneChipList zones={[LONDON, TOKYO]} onRemove={onRemove} addInputRef={inputRef} dateStr={TEST_DATE} />);
     expect(await screen.findByRole("status")).toHaveTextContent("Tokyo added");
 
-    rerender(<TimezoneChipList zones={[TOKYO]} onRemove={onRemove} addInputRef={inputRef} />);
+    rerender(<TimezoneChipList zones={[TOKYO]} onRemove={onRemove} addInputRef={inputRef} dateStr={TEST_DATE} />);
     expect(await screen.findByRole("status")).toHaveTextContent("London removed");
   });
 

@@ -7,24 +7,24 @@ const LONDON: TimeZoneCatalogEntry = {
   id: "united-kingdom-london",
   country: "United Kingdom",
   city: "London",
-  abbr: "BST",
-  offsetHours: 1,
+  countryCode: "GB",
+  timezone: "Europe/London",
 };
 
 const TOKYO: TimeZoneCatalogEntry = {
   id: "japan-tokyo",
   country: "Japan",
   city: "Tokyo",
-  abbr: "JST",
-  offsetHours: 9,
+  countryCode: "JP",
+  timezone: "Asia/Tokyo",
 };
 
 const NEW_YORK: TimeZoneCatalogEntry = {
   id: "united-states-new-york",
   country: "United States",
   city: "New York",
-  abbr: "EDT",
-  offsetHours: -4,
+  countryCode: "US",
+  timezone: "America/New_York",
 };
 
 describe("useAnchorZone", () => {

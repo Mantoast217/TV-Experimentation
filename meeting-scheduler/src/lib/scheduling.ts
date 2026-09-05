@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { formatHm, type TimeZoneCatalogEntry } from "./timezones";
 
 export interface ZoneTimeSlot {
@@ -10,6 +11,7 @@ export interface ZoneTimeSlot {
    * Unwrapped local start/end hour (not clamped to [0, 24)) — kept alongside the
    * formatted text so callers (e.g. time-of-day quality classification) can find the
    * true midpoint of a slot that crosses midnight without re-deriving it from text.
+   * Relative to the host's own selected calendar day (day 0), same frame as `dayOffset`.
    */
   startHourRaw: number;
   endHourRaw: number;
@@ -25,49 +27,104 @@ function hourMinuteText(decimalHour: number): string {
   return formatHm(Math.floor(totalMinutes / 60) % 24, totalMinutes % 60);
 }
 
+/** A pure calendar-date index (no time-of-day/zone component) — safe to subtract. */
+function calendarDayIndex(dt: DateTime): number {
+  return Date.UTC(dt.year, dt.month - 1, dt.day) / 86_400_000;
+}
+
+function calendarDayIndexOf(dateStr: string): number {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return Date.UTC(y, m - 1, d) / 86_400_000;
+}
+
 /**
- * Computes each zone's local start/end time and day offset for a meeting that starts
- * at `startHour` (decimal, in the host zone's wall clock) and runs `durationHours`.
- * `zones[0]` is the host/reference zone; every other zone's local time is derived from
- * its fixed offset relative to the host's.
+ * The real UTC instant for `hourDecimal` wall-clock hours into `dateStr` in `timezone`.
+ *
+ * Builds the target hour/minute directly via `DateTime.fromObject` rather than adding
+ * `hourDecimal * 60` minutes to midnight: Luxon's `.plus({ minutes })` adds real elapsed
+ * time, not wall-clock time, so on a DST transition day that would silently land on the
+ * wrong clock reading (e.g. midnight + 9 real hours lands on 10:00 local, not 09:00, once
+ * one of those hours was skipped by a spring-forward jump). Whole-day overflow (for an
+ * `hourDecimal` outside [0, 24), e.g. a duration pushing past midnight) is applied via
+ * `.plus({ days })` instead, which — unlike sub-day units — Luxon does treat as calendar
+ * arithmetic, correctly preserving the requested wall-clock time across any DST shift.
+ */
+function instantAt(dateStr: string, hourDecimal: number, timezone: string): DateTime {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const totalMinutes = Math.round(hourDecimal * 60);
+  const dayOverflow = Math.floor(totalMinutes / 1440);
+  const minutesWithinDay = totalMinutes - dayOverflow * 1440;
+
+  const base = DateTime.fromObject(
+    { year: y, month: m, day: d, hour: Math.floor(minutesWithinDay / 60), minute: minutesWithinDay % 60 },
+    { zone: timezone },
+  );
+  return dayOverflow !== 0 ? base.plus({ days: dayOverflow }) : base;
+}
+
+/**
+ * Expresses a real instant as an unwrapped decimal hour relative to `hostDateStr` (the
+ * host's selected calendar day, day 0) — e.g. 25.5 for 01:30 the day after, or -2 for
+ * 22:00 the day before. Calendar-date arithmetic throughout, so this reflects the actual
+ * wall-clock reading in `zoneInstant`'s zone regardless of DST transitions in between.
+ */
+function unwrappedLocalHour(zoneInstant: DateTime, hostDateStr: string): number {
+  const dayDelta = calendarDayIndex(zoneInstant) - calendarDayIndexOf(hostDateStr);
+  return dayDelta * 24 + zoneInstant.hour + zoneInstant.minute / 60 + zoneInstant.second / 3600;
+}
+
+/**
+ * Computes each zone's local start/end time and day offset for a meeting on `dateStr`
+ * that starts at `startHour` (decimal, in the host zone's wall clock) and runs
+ * `durationHours`. `zones[0]` is the host/reference zone; every other zone's local time
+ * is derived by converting the same real UTC instant into that zone's calendar via its
+ * IANA identifier, so DST transitions (in the host zone, another zone, or both) are
+ * handled automatically and correctly.
  */
 export function computeZoneTimes(
   zones: TimeZoneCatalogEntry[],
+  dateStr: string,
   startHour: number,
   durationHours: number,
 ): ZoneTimeSlot[] {
   if (zones.length === 0) return [];
-  const hostOffset = zones[0].offsetHours;
+  const hostZone = zones[0].timezone;
+  const startInstant = instantAt(dateStr, startHour, hostZone);
+  const endInstant = startInstant.plus({ minutes: Math.round(durationHours * 60) });
 
   return zones.map((zone) => {
-    const localStart = startHour + (zone.offsetHours - hostOffset);
-    const localEnd = localStart + durationHours;
+    const localStart = startInstant.setZone(zone.timezone);
+    const localEnd = endInstant.setZone(zone.timezone);
+    const startHourRaw = unwrappedLocalHour(localStart, dateStr);
+    const endHourRaw = unwrappedLocalHour(localEnd, dateStr);
     return {
       zone,
-      startText: hourMinuteText(localStart),
-      endText: hourMinuteText(localEnd),
-      dayOffset: Math.floor(localStart / 24),
-      startHourRaw: localStart,
-      endHourRaw: localEnd,
+      startText: hourMinuteText(startHourRaw),
+      endText: hourMinuteText(endHourRaw),
+      dayOffset: calendarDayIndex(localStart) - calendarDayIndexOf(dateStr),
+      startHourRaw,
+      endHourRaw,
     };
   });
 }
 
 /**
- * Scans candidate start hours (in the host zone) and returns the one that keeps every
- * zone's meeting time as close as possible to typical working hours (9-18), with staying
- * within awake hours (6-24) weighted far more heavily so it always wins when the two
- * constraints conflict.
+ * Scans candidate start hours (in the host zone, on `dateStr`) and returns the one that
+ * keeps every zone's meeting time as close as possible to typical working hours (9-18),
+ * with staying within awake hours (6-24) weighted far more heavily so it always wins when
+ * the two constraints conflict. Each candidate's per-zone local hour is resolved via a
+ * real DST-aware instant conversion, same as computeZoneTimes.
  */
-export function findOptimalStartHour(zones: TimeZoneCatalogEntry[], durationHours: number): number {
+export function findOptimalStartHour(zones: TimeZoneCatalogEntry[], dateStr: string, durationHours: number): number {
   if (zones.length === 0) return 9;
-  const hostOffset = zones[0].offsetHours;
+  const hostZone = zones[0].timezone;
 
   let bestHour = 9;
   let bestScore = Infinity;
   for (let h = 0; h < 24; h += 0.25) {
+    const startInstant = instantAt(dateStr, h, hostZone);
     const score = zones.reduce((sum, zone) => {
-      const localHour = wrapHour(h + (zone.offsetHours - hostOffset));
+      const localHour = wrapHour(unwrappedLocalHour(startInstant.setZone(zone.timezone), dateStr));
       const workingPenalty = Math.max(0, 9 - localHour) + Math.max(0, localHour + durationHours - 18);
       const awakePenalty = (Math.max(0, 6 - localHour) + Math.max(0, localHour + durationHours - 24)) * 10;
       return sum + workingPenalty + awakePenalty;

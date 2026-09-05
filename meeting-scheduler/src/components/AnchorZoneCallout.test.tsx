@@ -11,17 +11,20 @@ const LONDON: TimeZoneCatalogEntry = {
   id: "united-kingdom-london",
   country: "United Kingdom",
   city: "London",
-  abbr: "BST",
-  offsetHours: 1,
+  countryCode: "GB",
+  timezone: "Europe/London",
 };
 
 const TOKYO: TimeZoneCatalogEntry = {
   id: "japan-tokyo",
   country: "Japan",
   city: "Tokyo",
-  abbr: "JST",
-  offsetHours: 9,
+  countryCode: "JP",
+  timezone: "Asia/Tokyo",
 };
+
+/** A July date so London (Europe/London) is on BST, i.e. GMT+1 — Tokyo has no DST either way. */
+const TEST_DATE = "2026-07-15";
 
 /** Wires the callout to the real hook, mirroring how MeetingScheduler uses it. */
 function Harness({ initialZones }: { initialZones: TimeZoneCatalogEntry[] }) {
@@ -29,7 +32,13 @@ function Harness({ initialZones }: { initialZones: TimeZoneCatalogEntry[] }) {
   const { anchorZone, isAutoAnchor, selectAnchor } = useAnchorZone(zones);
   if (!anchorZone) return null;
   return (
-    <AnchorZoneCallout zones={zones} anchorZone={anchorZone} isAutoAnchor={isAutoAnchor} onSelectAnchor={selectAnchor} />
+    <AnchorZoneCallout
+      zones={zones}
+      anchorZone={anchorZone}
+      isAutoAnchor={isAutoAnchor}
+      onSelectAnchor={selectAnchor}
+      dateStr={TEST_DATE}
+    />
   );
 }
 
@@ -129,7 +138,13 @@ describe("AnchorZoneCallout visibility", () => {
       return (
         <div>
           {zones.length > 0 && anchorZone && (
-            <AnchorZoneCallout zones={zones} anchorZone={anchorZone} isAutoAnchor={isAutoAnchor} onSelectAnchor={selectAnchor} />
+            <AnchorZoneCallout
+              zones={zones}
+              anchorZone={anchorZone}
+              isAutoAnchor={isAutoAnchor}
+              onSelectAnchor={selectAnchor}
+              dateStr={TEST_DATE}
+            />
           )}
         </div>
       );
@@ -151,7 +166,13 @@ describe("AnchorZoneCallout onSelectAnchor contract", () => {
     const user = userEvent.setup();
     const onSelectAnchor = vi.fn();
     render(
-      <AnchorZoneCallout zones={[LONDON, TOKYO]} anchorZone={LONDON} isAutoAnchor onSelectAnchor={onSelectAnchor} />,
+      <AnchorZoneCallout
+        zones={[LONDON, TOKYO]}
+        anchorZone={LONDON}
+        isAutoAnchor
+        onSelectAnchor={onSelectAnchor}
+        dateStr={TEST_DATE}
+      />,
     );
 
     await user.click(changeTrigger());

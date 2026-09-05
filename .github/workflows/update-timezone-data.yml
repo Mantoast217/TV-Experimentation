@@ -1,0 +1,69 @@
+name: Update timezone data
+
+# Keeps meeting-scheduler's city/country/timezone catalog current with upstream
+# GeoNames data. Runs scripts/update-timezone-data.mjs, which downloads and
+# validates the latest GeoNames export and only writes the dataset file if
+# validation passes — this workflow never pushes that result straight to
+# main; it opens a pull request so a human still reviews the diff before
+# it reaches production. If the script fails (download error or a failed
+# validation check, e.g. a known city resolving to the wrong country), this
+# job fails and shows as a red X on the Actions tab / repo Insights, and
+# (per each watcher's own GitHub notification settings) a failure email —
+# that's the alert: a bad or unavailable upstream file can never silently
+# leave the app on stale data without a visible, actionable signal.
+on:
+  schedule:
+    # 06:00 UTC on the 1st of every month. GeoNames' city/country data
+    # changes rarely enough that monthly is plenty; adjust if that changes.
+    - cron: "0 6 1 * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-timezone-data:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: meeting-scheduler
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: meeting-scheduler/package-lock.json
+
+      - run: npm ci
+
+      # Fails (and stops here, before any PR step) if the download fails or
+      # validateEntries() rejects the result — see scripts/update-timezone-data.mjs.
+      - run: node scripts/update-timezone-data.mjs
+
+      - id: diff
+        run: |
+          if git diff --quiet -- src/lib/timezoneData.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "Update timezone data from GeoNames"
+          title: "Update timezone data from GeoNames"
+          body: |
+            Automated refresh of `src/lib/timezoneData.json` from GeoNames'
+            `cities15000` + `countryInfo` export, produced by
+            `scripts/update-timezone-data.mjs`.
+
+            This diff has already passed that script's validation (row-count
+            sanity check + known city/country spot-checks) — review the diff
+            itself before merging, same as any other data change.
+          branch: update-timezone-data
+          delete-branch: true
+          add-paths: meeting-scheduler/src/lib/timezoneData.json

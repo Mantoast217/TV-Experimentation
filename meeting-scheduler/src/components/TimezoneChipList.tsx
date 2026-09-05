@@ -7,6 +7,8 @@ interface TimezoneChipListProps {
   onRemove: (id: string) => void;
   /** Focus target when the last chip is removed. */
   addInputRef: RefObject<HTMLInputElement | null>;
+  /** Reference date ("YYYY-MM-DD") each chip's GMT offset is computed against. */
+  dateStr: string;
 }
 
 /**
@@ -16,7 +18,7 @@ interface TimezoneChipListProps {
  */
 const removeButtonHitArea = { minWidth: 24, minHeight: 24 };
 
-export function TimezoneChipList({ zones, onRemove, addInputRef }: TimezoneChipListProps) {
+export function TimezoneChipList({ zones, onRemove, addInputRef, dateStr }: TimezoneChipListProps) {
   const buttonRefs = useRef(new Map<string, HTMLButtonElement>());
   const prevZonesRef = useRef(zones);
   const [announcement, setAnnouncement] = useState("");
@@ -55,7 +57,7 @@ export function TimezoneChipList({ zones, onRemove, addInputRef }: TimezoneChipL
     <>
       <ul role="list" className="m-0 flex list-none flex-wrap gap-2.5 p-0">
         {zones.map((zone) => {
-          const label = zoneDisplayLabel(zone);
+          const label = zoneDisplayLabel(zone, dateStr);
           return (
             <li key={zone.id} role="listitem">
               <Chip variant="soft" color="default" size="lg" className="items-center gap-1.5 border border-[#767676]">
