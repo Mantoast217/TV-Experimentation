@@ -297,7 +297,11 @@ export function MeetingScheduler() {
 
           <h2 className="m-0 text-base font-medium text-foreground">Selected time</h2>
           <Card.Root variant="default" className="relative flex-col gap-3 bg-zinc-800 p-0 text-zinc-50">
-            <Card.Content className="flex flex-col gap-1 p-4 px-5 pr-32 text-sm sm:pr-36">
+            {/* pr-40: reserves enough space for the invite button, whose ~131px width is fixed
+                regardless of viewport. The old pr-32/sm:pr-36 split under-reserved at every
+                breakpoint (worst case: 131px button + 20px right-inset at sm+ needs ~151px), which
+                is what let the button overlap the date heading on a real phone. */}
+            <Card.Content className="flex flex-col gap-1 p-4 px-5 pr-40 text-sm">
               <span className="font-bold">{selectedDateLabel}</span>
               <ZoneTimeList slots={selectedSlots} />
             </Card.Content>
@@ -317,7 +321,11 @@ export function MeetingScheduler() {
 
           <h2 className="m-0 text-base font-medium text-foreground">Best time for everyone</h2>
           <Card.Root variant="default" className="relative flex-col gap-3 border border-[#0D3F9C] bg-accent/10 p-0">
-            <Card.Content className="flex flex-col gap-1 p-4 px-5 pr-32 text-sm sm:pr-36">
+            {/* pr-40: reserves enough space for the invite button, whose ~131px width is fixed
+                regardless of viewport. The old pr-32/sm:pr-36 split under-reserved at every
+                breakpoint (worst case: 131px button + 20px right-inset at sm+ needs ~151px), which
+                is what let the button overlap the date heading on a real phone. */}
+            <Card.Content className="flex flex-col gap-1 p-4 px-5 pr-40 text-sm">
               <span className="font-bold">{selectedDateLabel}</span>
               <ZoneTimeList slots={optimalSlots} />
             </Card.Content>
