@@ -1,6 +1,36 @@
 @import "@fontsource-variable/inter";
 @import "@heroui/styles";
 
+/*
+ * App-specific brand colors, kept separate from HeroUI's own theme tokens (this app uses
+ * a fixed brand blue rather than HeroUI's default --accent) but still theme-reactive via
+ * the same [data-theme="dark"] selector HeroUI's own tokens use — so this participates
+ * correctly in the dark/light switch instead of needing its own separate mechanism.
+ *
+ * Both colors are picked to clear WCAG 2.2 AAA in their real usage:
+ * --brand-blue: used where it sits directly against the page/field background (focus
+ * outlines, borders) — needs >=3:1 there; the dark-mode shade is lighter than the light-
+ * mode one because the same fixed dark blue measures only ~2.1:1 against the near-black
+ * dark background (verified live), which fails. Not used for the *filled* button variants
+ * (dark blue bg + white text) — those pass in both themes already since that pairing's
+ * contrast never depends on the surrounding page theme.
+ * --secondary-text: replaces the old fixed #515158 secondary-text color, which measured
+ * 7.22:1 in light mode (a hair over the 7:1 AAA minimum) but only 2.57:1 in dark mode
+ * (verified live) since it never adapted. HeroUI's own --muted token doesn't work as a
+ * drop-in either — it measures 4.43:1 in light mode, under AAA's 7:1 (and just under AA's
+ * 4.5:1 too) — so this defines a custom pair verified to clear 7:1 in both themes.
+ */
+:root,
+[data-theme="light"] {
+  --brand-blue: #0d3f9c;
+  --secondary-text: #4a4a51;
+}
+
+[data-theme="dark"] {
+  --brand-blue: #5c9cff;
+  --secondary-text: #a0a0aa;
+}
+
 html,
 body {
   margin: 0;

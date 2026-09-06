@@ -71,7 +71,7 @@ export function TimezoneChipList({ zones, onRemove, addInputRef, dateStr }: Time
                   onClick={() => handleRemove(zone.id)}
                   aria-label={`Remove ${label}`}
                   style={removeButtonHitArea}
-                  className="ml-1 inline-flex shrink-0 items-center justify-center rounded-full text-current/70 hover:text-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0D3F9C]"
+                  className="ml-1 inline-flex shrink-0 items-center justify-center rounded-full text-current/70 hover:text-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
                 >
                   <span aria-hidden="true">×</span>
                 </button>

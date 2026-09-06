@@ -27,11 +27,15 @@ describe("MeetingScheduler — copy", () => {
 });
 
 describe("MeetingScheduler — accessibility punch list", () => {
-  it("gives the Start time, End time, and Duration labels the 4.5:1-contrast grey", () => {
+  it("gives the Start time, End time, and Duration labels the AAA-contrast secondary-text color", () => {
+    // --secondary-text (index.css) replaces the old fixed #515158: that value measured
+    // 7.22:1 in light mode (WCAG AAA's 7:1 minimum for normal text) but only 2.57:1 once
+    // dark mode was added, since it never adapted (verified live). --secondary-text is a
+    // theme-reactive pair verified to clear 7:1 in both themes.
     render(<MeetingScheduler />);
-    expect(screen.getByText("Start time")).toHaveClass("text-[#515158]");
-    expect(screen.getByText("End time")).toHaveClass("text-[#515158]");
-    expect(screen.getByText("Duration", { selector: "span" })).toHaveClass("text-[#515158]");
+    expect(screen.getByText("Start time")).toHaveClass("text-[var(--secondary-text)]");
+    expect(screen.getByText("End time")).toHaveClass("text-[var(--secondary-text)]");
+    expect(screen.getByText("Duration", { selector: "span" })).toHaveClass("text-[var(--secondary-text)]");
   });
 
   it("gives the Date field a real accessible name reflecting the current selection", () => {

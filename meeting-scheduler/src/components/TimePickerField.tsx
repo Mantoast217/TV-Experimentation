@@ -74,7 +74,7 @@ export function TimePickerField({
 
   return (
     <div
-      className={`flex h-[38px] items-center gap-0.5 rounded-field border border-[#767676] bg-field shadow-field pl-3 pr-0.5 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#0D3F9C] ${className ?? ""}`}
+      className={`flex h-[38px] items-center gap-0.5 rounded-field border border-[#767676] bg-field shadow-field pl-3 pr-0.5 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--brand-blue)] ${className ?? ""}`}
     >
       <ComboBox.Root<TimeOption>
         items={asItems(timeOptions)}
@@ -135,7 +135,7 @@ export function TimePickerField({
           type="button"
           onClick={() => step(-1)}
           aria-label={`Decrease ${ariaLabel.toLowerCase()} by ${stepMinutes} minutes, currently ${value}`}
-          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0D3F9C]"
+          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
         >
           <ChevronLeftIcon className="h-4 w-4" />
         </button>
@@ -143,7 +143,7 @@ export function TimePickerField({
           type="button"
           onClick={() => step(1)}
           aria-label={`Increase ${ariaLabel.toLowerCase()} by ${stepMinutes} minutes, currently ${value}`}
-          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0D3F9C]"
+          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
         >
           <ChevronRightIcon className="h-4 w-4" />
         </button>

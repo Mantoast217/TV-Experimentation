@@ -136,7 +136,7 @@ export function MeetingScheduler() {
           <h1 className="m-0 mb-1 text-xl font-medium text-foreground">
             Schedule a meeting across time zones for everyone, everywhere
           </h1>
-          <p className="m-0 text-sm text-[#515158]">
+          <p className="m-0 text-sm text-[var(--secondary-text)]">
             Add everyone's time zone, pick a date and find the time that fits. Whether you are coordinating a
             team meeting or just checking what time it is for someone.
           </p>
@@ -260,11 +260,11 @@ export function MeetingScheduler() {
             <div className="@container">
               <div className="grid grid-cols-2 gap-2.5 @min-[480px]:grid-cols-3">
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-xs text-[#515158]">Start time</span>
+                  <span className="text-xs text-[var(--secondary-text)]">Start time</span>
                   <TimePickerField value={startTime} onChange={handleStartTimeChange} aria-label="Start time" />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-xs text-[#515158]">End time</span>
+                  <span className="text-xs text-[var(--secondary-text)]">End time</span>
                   <TimePickerField
                     value={endTime}
                     onChange={setEndTime}
@@ -273,14 +273,14 @@ export function MeetingScheduler() {
                   />
                 </div>
                 <div className="col-span-2 flex flex-col gap-1.5 @min-[480px]:col-span-1">
-                  <span className="text-xs text-[#515158]">Duration</span>
+                  <span className="text-xs text-[var(--secondary-text)]">Duration</span>
                   <TimeField hourCycle={24} isReadOnly value={durationTime} aria-label="Duration" fullWidth>
                     <TimeField.Group fullWidth className="h-auto border border-[#767676]">
                       <TimeField.Input>
                       {(segment) => (
                         <TimeField.Segment
                           segment={segment}
-                          className="rounded-sm focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#0D3F9C]"
+                          className="rounded-sm focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--brand-blue)]"
                         />
                       )}
                     </TimeField.Input>
@@ -321,7 +321,14 @@ export function MeetingScheduler() {
                 start={selectedStartUtc}
                 end={selectedEndUtc}
                 variant="secondary"
-                buttonStyle={{ "--button-fg": "#0D3F9C" } as CSSProperties}
+                // Fixed (not theme-reactive): this button always sits on the "Selected time"
+                // card's own fixed dark background (bg-zinc-800, unaffected by dark mode below),
+                // so it needs to stay a fixed light pill regardless of theme. The default
+                // "secondary" variant's --button-bg comes from HeroUI's --default token, which
+                // goes dark in dark mode (verified live: that drops this to a 1.57:1 button-text
+                // contrast, failing badly) — overriding it here keeps the pairing at 7.98:1 in
+                // both themes, since neither color it's built from ever changes.
+                buttonStyle={{ "--button-fg": "#0D3F9C", "--button-bg": "#ebebec" } as CSSProperties}
                 ariaLabel={`Set up invite for your selected time, ${selectedDateLabel}, ${startTime}–${endTime}`}
                 describedById="invite-note"
               />
@@ -329,7 +336,7 @@ export function MeetingScheduler() {
           </Card.Root>
 
           <h2 className="m-0 text-base font-medium text-foreground">Best time for everyone</h2>
-          <Card.Root variant="default" className="relative flex-col gap-3 border border-[#0D3F9C] bg-accent/10 p-0">
+          <Card.Root variant="default" className="relative flex-col gap-3 border border-[var(--brand-blue)] bg-accent/10 p-0">
             {/* pr-40: reserves enough space for the invite button, whose ~131px width is fixed
                 regardless of viewport. The old pr-32/sm:pr-36 split under-reserved at every
                 breakpoint (worst case: 131px button + 20px right-inset at sm+ needs ~151px), which
@@ -361,16 +368,16 @@ export function MeetingScheduler() {
         </div>
       </main>
       <footer className="flex justify-center px-6 pb-8">
-        <div className="flex w-full max-w-[640px] flex-wrap gap-x-4 gap-y-1 text-xs text-[#515158]">
+        <div className="flex w-full max-w-[640px] flex-wrap gap-x-4 gap-y-1 text-xs text-[var(--secondary-text)]">
           <a
             href="/privacy.html"
-            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0D3F9C]"
+            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
           >
             Privacy Policy
           </a>
           <a
             href="/terms.html"
-            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0D3F9C]"
+            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
           >
             Terms of Use
           </a>
@@ -378,7 +385,7 @@ export function MeetingScheduler() {
             href="https://forms.gle/ouHxxGzu4Sjz2Jdi7"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0D3F9C]"
+            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
           >
             Feedback
           </a>
