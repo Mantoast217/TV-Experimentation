@@ -95,8 +95,16 @@ export function classifyTimeQuality(startHourRaw: number, endHourRaw: number): T
   const first = touched[0];
   const last = touched[touched.length - 1];
 
-  // A slot spanning 24h+ can pass through every period and land back in the one it
-  // started in (e.g. 09:00-09:00 next day) — nothing distinct to show, so it's solid.
+  // bandsTouched walks boundaries in fixed chronological order, so the only way to land
+  // back in the starting band (touched.length > 1, not just "never left it") is to have
+  // passed through every other band first — Night included, regardless of what band the
+  // slot starts/ends in. A single band-name label (e.g. "Morning") would misleadingly
+  // imply a comfortable, business-hours-only meeting, so this gets its own distinct
+  // label and color rather than collapsing to soloBand like the "never left" case below.
+  if (touched.length > 1 && first === last) {
+    return { bands: touched, label: "Spans full day", dotColors: ["var(--color-danger)"] };
+  }
+
   if (first === last) return soloBand(first);
 
   return {

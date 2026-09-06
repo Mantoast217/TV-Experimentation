@@ -68,6 +68,23 @@ describe("classifyTimeQuality — property-based", () => {
           );
 
           const quality = classifyTimeQuality(slot.startHourRaw, slot.endHourRaw);
+          const expectedFirst = expectedBandForHour(wrapHour(slot.startHourRaw));
+          const expectedLast = expectedBandForHour(wrapHour(slot.endHourRaw));
+
+          // A long-enough slot lands back in the same band it started in without being an
+          // exact multiple of 24h — bands are hour *ranges*, so e.g. 47h58m can still land
+          // in the same band as its start without an exact wrap. That gets its own
+          // dedicated "Spans full day" treatment (see below and classifyTimeQuality's own
+          // touched.length > 1 check), not the generic band-name/split-dot formula this
+          // branch checks — branching on the real result rather than trying to independently
+          // reconstruct exactly which durations trigger it keeps this test accurate even if
+          // that internal threshold ever changes.
+          if (quality.label === "Spans full day") {
+            expect(quality.dotColors).toEqual(["var(--color-danger)"]);
+            expect(quality.bands[0]).toBe(expectedFirst);
+            expect(quality.bands[quality.bands.length - 1]).toBe(expectedLast);
+            return;
+          }
 
           // Never undefined/null, never 0 or 3+ bands.
           expect(quality).toBeDefined();
@@ -78,10 +95,8 @@ describe("classifyTimeQuality — property-based", () => {
           // The first band must match an independent classification of the start hour,
           // and the last band an independent classification of the end hour — this holds
           // for both a solid (1-band) and split (2-band) result, since collapsing 3+
-          // touched bands to first/last (or to a single solid band on a full wraparound)
-          // never changes what band the start/end instants themselves fall into.
-          const expectedFirst = expectedBandForHour(wrapHour(slot.startHourRaw));
-          const expectedLast = expectedBandForHour(wrapHour(slot.endHourRaw));
+          // touched bands to first/last never changes what band the start/end instants
+          // themselves fall into.
           expect(quality.bands[0]).toBe(expectedFirst);
           expect(quality.bands[quality.bands.length - 1]).toBe(expectedLast);
 
@@ -90,6 +105,27 @@ describe("classifyTimeQuality — property-based", () => {
           expect(quality.dotColors).toEqual(quality.bands.map((b) => EXPECTED_DOT_COLOR[b]));
         },
       ),
+      { numRuns: NUM_RUNS },
+    );
+  }, scaledTimeout(5));
+
+  it("labels any exact multiple of 24 raw hours as 'Spans full day' with a red dot, regardless of start hour", () => {
+    // Deliberately bypasses computeZoneTimes/timezones here: classifyTimeQuality is a pure
+    // function of two raw hour numbers, and going through a real zone/date adds DST as a
+    // variable — a nominal 24 wall-clock hours can land a zone's *actual* start/end more
+    // or less than 24 raw hours apart across a DST transition, which is a real and
+    // separately-tested property of computeZoneTimes (scheduling.property.test.ts), not
+    // something this function's own contract makes any claim about.
+    fc.assert(
+      fc.property(fc.double({ min: 0, max: 23.98, noNaN: true }), fc.integer({ min: 1, max: 3 }), (startHourRaw, wraps) => {
+        const endHourRaw = startHourRaw + wraps * 24;
+        const quality = classifyTimeQuality(startHourRaw, endHourRaw);
+
+        expect(quality.label).toBe("Spans full day");
+        expect(quality.dotColors).toEqual(["var(--color-danger)"]);
+        expect(quality.bands[0]).toBe(quality.bands[quality.bands.length - 1]);
+        expect(quality.bands.length).toBeGreaterThan(1);
+      }),
       { numRuns: NUM_RUNS },
     );
   }, scaledTimeout(5));

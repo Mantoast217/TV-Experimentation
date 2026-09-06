@@ -125,18 +125,30 @@ describe("classifyTimeQuality — slots spanning 3+ bands (first/last split dot)
     expect(quality.label).toBe("Early morning - Afternoon");
   });
 
-  it("collapses to a solid dot when a 24h+ slot wraps back into its starting band", () => {
-    // 09:00 to 09:00 the next day: touches every band and lands back in Morning.
+  it("labels a 24h+ slot that wraps back into its starting band as Spans full day, not the band name", () => {
+    // 09:00 to 09:00 the next day: touches every band, including Night, before landing
+    // back in Morning. A solid "Morning" label would misleadingly imply a comfortable,
+    // business-hours-only meeting, so this gets its own label and color instead.
     const quality = classifyTimeQuality(9, 33);
+    expect(quality.bands).toEqual(["morning", "afternoon", "evening", "late-evening", "night", "early-morning", "morning"]);
+    expect(quality.label).toBe("Spans full day");
+    expect(quality.dotColors).toEqual(["var(--color-danger)"]);
+  });
+
+  it("labels a 24h+ slot wrapping back into a non-Morning starting band as Spans full day too", () => {
+    // 23:00 to 22:00 the next day (23h): touches every band and lands back in Late evening.
+    const quality = classifyTimeQuality(23, 46);
+    expect(quality.label).toBe("Spans full day");
+    expect(quality.dotColors).toEqual(["var(--color-danger)"]);
+  });
+
+  it("still collapses to a solid single-band dot for a slot that starts and ends at the same instant (no elapsed time)", () => {
+    // Distinguishes "never left the band" (bands.length === 1, handled by soloBand) from
+    // "left and cycled all the way back" (bands.length > 1, handled above) — both have
+    // first === last, so the length check is what tells them apart.
+    const quality = classifyTimeQuality(9, 9);
     expect(quality.bands).toEqual(["morning"]);
     expect(quality.label).toBe("Morning");
     expect(quality.dotColors).toEqual(["var(--color-success)"]);
-  });
-
-  it("collapses to a solid dot for a 24h+ slot wrapping back into a non-Morning starting band", () => {
-    // 23:00 to 22:00 the next day (23h): touches every band and lands back in Late evening.
-    const quality = classifyTimeQuality(23, 46);
-    expect(quality.bands).toEqual(["late-evening"]);
-    expect(quality.label).toBe("Late evening");
   });
 });
