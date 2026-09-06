@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { SendInviteMenu } from "./SendInviteMenu";
 
@@ -49,5 +50,18 @@ describe("SendInviteMenu", () => {
 
     expect(screen.getByRole("button", { name: "Set up invite for Saturday 5 September, 09:00–10:00" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Set up invite for Saturday 5 September, 11:00–12:00" })).toBeInTheDocument();
+  });
+
+  it("disables Microsoft Teams and labels it 'coming soon', while every other option stays enabled", async () => {
+    const user = userEvent.setup();
+    render(<SendInviteMenu title="Meeting" description="" start={START} end={END} />);
+    await user.click(screen.getByRole("button", { name: "Set up invite" }));
+
+    const teams = await screen.findByRole("menuitem", { name: "Microsoft Teams (coming soon)" });
+    expect(teams).toHaveAttribute("aria-disabled", "true");
+
+    for (const name of ["Outlook", "Google Meet", "Download .ics"]) {
+      expect(screen.getByRole("menuitem", { name })).not.toHaveAttribute("aria-disabled");
+    }
   });
 });

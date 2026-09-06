@@ -10,11 +10,15 @@ import {
 } from "../lib/calendarLinks";
 import { CalendarIcon, ExternalLinkIcon, GoogleMeetIcon, OutlookIcon, TeamsIcon } from "./icons";
 
+// Teams is temporarily disabled: the "new Teams" client currently drops the deep link's
+// meeting details, dead-ending on a generic calendar view instead of the compose dialog
+// — a client-side bug outside anything this URL can control. teamsMeetingUrl() stays
+// defined (and tested) so this can be re-enabled with no changes once that's resolved.
 const PLATFORMS = [
-  { id: "outlook", label: "Outlook", Icon: OutlookIcon },
-  { id: "teams", label: "Microsoft Teams", Icon: TeamsIcon },
-  { id: "google-meet", label: "Google Meet", Icon: GoogleMeetIcon },
-  { id: "ical", label: "Download .ics", Icon: CalendarIcon },
+  { id: "outlook", label: "Outlook", Icon: OutlookIcon, disabled: false },
+  { id: "teams", label: "Microsoft Teams (coming soon)", Icon: TeamsIcon, disabled: true },
+  { id: "google-meet", label: "Google Meet", Icon: GoogleMeetIcon, disabled: false },
+  { id: "ical", label: "Download .ics", Icon: CalendarIcon, disabled: false },
 ] as const;
 
 function openInNewTab(url: string) {
@@ -78,8 +82,14 @@ export function SendInviteMenu({
       </Button>
       <Dropdown.Popover placement="bottom end">
         <Dropdown.Menu onAction={handleAction}>
-          {PLATFORMS.map(({ id, label, Icon }) => (
-            <Dropdown.Item key={id} id={id} textValue={label}>
+          {PLATFORMS.map(({ id, label, Icon, disabled }) => (
+            <Dropdown.Item
+              key={id}
+              id={id}
+              textValue={label}
+              isDisabled={disabled}
+              className="data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50"
+            >
               <Icon className="h-4 w-4 shrink-0" />
               {label}
             </Dropdown.Item>
