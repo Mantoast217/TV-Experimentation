@@ -141,14 +141,11 @@ describe("MeetingScheduler — footer", () => {
     expect(screen.getByRole("link", { name: "Terms of Use" })).toHaveAttribute("href", "/terms.html");
   });
 
-  it("has a Feedback link (placeholder — no destination set yet)", () => {
-    // Queried by tag/text rather than role="link": jsdom's accessibility-tree
-    // computation doesn't expose an empty-string href as a link (real browsers do —
-    // confirmed live in Chromium), the same category of jsdom/real-browser divergence
-    // as the list-none role-stripping issue found earlier in this project.
+  it("links Feedback to the feedback form, opened in a new tab", () => {
     render(<MeetingScheduler />);
-    const feedback = screen.getByText("Feedback");
-    expect(feedback.tagName).toBe("A");
-    expect(feedback).toHaveAttribute("href");
+    const feedback = screen.getByRole("link", { name: "Feedback" });
+    expect(feedback).toHaveAttribute("href", "https://forms.gle/ouHxxGzu4Sjz2Jdi7");
+    expect(feedback).toHaveAttribute("target", "_blank");
+    expect(feedback).toHaveAttribute("rel", "noopener noreferrer");
   });
 });

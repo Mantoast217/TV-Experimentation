@@ -354,9 +354,10 @@ export function MeetingScheduler() {
           >
             Terms of Use
           </a>
-          {/* Placeholder — a real feedback destination will replace this href later. */}
           <a
-            href=""
+            href="https://forms.gle/ouHxxGzu4Sjz2Jdi7"
+            target="_blank"
+            rel="noopener noreferrer"
             className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0D3F9C]"
           >
             Feedback
