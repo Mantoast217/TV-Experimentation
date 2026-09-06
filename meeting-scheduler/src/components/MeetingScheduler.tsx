@@ -135,7 +135,8 @@ export function MeetingScheduler() {
     <div className="flex min-h-dvh flex-col">
       <main className="flex flex-1 justify-center px-6 pt-12 pb-6">
         <div className="flex w-full max-w-[640px] flex-col gap-7">
-        <div>
+        <div className="flex items-start justify-between gap-3">
+          <div>
           <h1 className="m-0 mb-1 text-xl font-medium text-foreground">
             Schedule a meeting across time zones for everyone, everywhere
           </h1>
@@ -143,6 +144,22 @@ export function MeetingScheduler() {
             Add everyone's time zone, pick a date and find the time that fits. Whether you are coordinating a
             team meeting or just checking what time it is for someone.
           </p>
+          </div>
+          {/* Placed in normal (not visually-reordered) DOM order, right after the heading
+              text: reading/tab order matches what's on screen (heading+subheading, then the
+              button), and — since headings/paragraphs aren't focusable — this still lands as
+              the very first Tab stop on the page, ahead of the timezone search input. Moved
+              here from the footer specifically for that: a user who needs dark mode
+              immediately (e.g. light sensitivity) previously had to tab through the entire
+              form, or scroll past it, to reach the toggle. */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[var(--secondary-text)] hover:text-foreground focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+          >
+            {theme === "dark" ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
+          </button>
         </div>
 
         <div className="flex flex-col gap-3">
@@ -371,42 +388,27 @@ export function MeetingScheduler() {
         </div>
       </main>
       <footer className="flex justify-center px-6 pb-8">
-        <div className="flex w-full max-w-[640px] items-center justify-between gap-3 text-xs text-[var(--secondary-text)]">
-          <div className="flex flex-wrap gap-x-4 gap-y-1">
-            <a
-              href="/privacy.html"
-              className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
-            >
-              Privacy Policy
-            </a>
-            <a
-              href="/terms.html"
-              className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
-            >
-              Terms of Use
-            </a>
-            <a
-              href="https://forms.gle/ouHxxGzu4Sjz2Jdi7"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
-            >
-              Feedback
-            </a>
-          </div>
-          {/* Right-aligned, apart from the legal/feedback links: this is a distinct kind of
-              control (a persistent preference, not a navigation link), and putting it at the
-              opposite edge of the row — the conventional spot for a settings-type control —
-              keeps it from being mistaken for one more link in that group or mis-tapped while
-              reaching for "Feedback". */}
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full hover:text-foreground focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+        <div className="flex w-full max-w-[640px] flex-wrap gap-x-4 gap-y-1 text-xs text-[var(--secondary-text)]">
+          <a
+            href="/privacy.html"
+            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
           >
-            {theme === "dark" ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
-          </button>
+            Privacy Policy
+          </a>
+          <a
+            href="/terms.html"
+            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+          >
+            Terms of Use
+          </a>
+          <a
+            href="https://forms.gle/ouHxxGzu4Sjz2Jdi7"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+          >
+            Feedback
+          </a>
         </div>
       </footer>
     </div>
