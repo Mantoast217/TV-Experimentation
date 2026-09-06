@@ -24,7 +24,13 @@ export function AnchorZoneCallout({ zones, anchorZone, isAutoAnchor, onSelectAnc
   const qualifier = isAutoAnchor ? `first added, ${gmtOffsetLabel(anchorZone.timezone, dateStr)}` : "selected";
 
   return (
-    <div className="flex min-h-[34px] w-full items-center justify-between gap-3 rounded-lg border border-[#767676] bg-default-soft px-3 py-2 text-default-soft-foreground">
+    // min-h (not a fixed height) matches the invite-note box further down the page (same
+    // 35px floor) so both same-style callout boxes read as one consistent component at
+    // their common size — but this text is longer and can wrap on a narrow phone, so a
+    // fixed height would clip it; min-height lets it grow instead. py-1 (rather than that
+    // box's py-2) keeps the *unwrapped* height at exactly 35px while still leaving room
+    // for the Change trigger's own 24px hit area, set via changeTriggerHitArea below.
+    <div className="flex min-h-[35px] w-full items-center justify-between gap-3 rounded-lg border border-[#767676] bg-default-soft px-3 py-1 text-default-soft-foreground">
       <p aria-live="polite" className="m-0 text-xs leading-snug">
         Times below are shown in <strong>{anchorZone.city}</strong>'s time (<strong>{qualifier}</strong>).
       </p>

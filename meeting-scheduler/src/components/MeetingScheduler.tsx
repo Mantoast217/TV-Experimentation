@@ -286,9 +286,12 @@ export function MeetingScheduler() {
         <Separator />
 
         <div className="flex flex-col gap-3">
-          <div className="flex min-h-[34px] w-full items-center rounded-lg border border-[#767676] bg-default-soft px-3 py-2 text-default-soft-foreground">
+          {/* min-h (not a fixed height): matches AnchorZoneCallout's box at their common
+              35px size, but still lets this grow instead of clipping if the text ever
+              wraps (e.g. a narrower viewport than tested, or a future wording change). */}
+          <div className="flex min-h-[35px] w-full items-center rounded-lg border border-[#767676] bg-default-soft px-3 py-2 text-default-soft-foreground">
             <p id="invite-note" className="m-0 text-xs leading-snug">
-              Invites are set up through your own calendar app.
+              Invites are set up through your own calendar/meeting app.
             </p>
           </div>
 

@@ -64,7 +64,7 @@ describe("MeetingScheduler — accessibility punch list", () => {
 describe("MeetingScheduler — invite action redesign", () => {
   it("renders the shared invite note exactly once, not per card", () => {
     render(<MeetingScheduler />);
-    expect(screen.getAllByText("Invites are set up through your own calendar app.")).toHaveLength(1);
+    expect(screen.getAllByText("Invites are set up through your own calendar/meeting app.")).toHaveLength(1);
   });
 
   it("no longer renders the old per-card caption", () => {
@@ -74,7 +74,7 @@ describe("MeetingScheduler — invite action redesign", () => {
 
   it("associates both invite buttons with the shared note via aria-describedby", () => {
     render(<MeetingScheduler />);
-    const note = screen.getByText("Invites are set up through your own calendar app.");
+    const note = screen.getByText("Invites are set up through your own calendar/meeting app.");
     const noteId = note.getAttribute("id");
     expect(noteId).toBeTruthy();
 
