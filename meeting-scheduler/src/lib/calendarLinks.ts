@@ -28,7 +28,18 @@ export function outlookComposeUrl({ title, description, start, end }: MeetingDet
   return `https://outlook.office.com/calendar/0/deeplink/compose?${params.toString()}`;
 }
 
-/** Opens Teams' "schedule a meeting" dialog pre-filled — creates a real Teams meeting link once saved. */
+/**
+ * Opens Teams' "schedule a meeting" dialog pre-filled — creates a real Teams meeting link
+ * once saved.
+ *
+ * Teams' deep-link parser doesn't accept `+` for spaces the way most query strings do —
+ * Microsoft's own docs are explicit that `+` breaks parsing and `%20` is required
+ * (https://github.com/MicrosoftDocs/msteams-docs/blob/master/msteams-platform/concepts/build-and-test/deep-links.md).
+ * `URLSearchParams` always serializes spaces as `+` (a real literal `+` in the input is
+ * itself escaped to `%2B`, so this replace can't misfire on genuine `+` characters), so
+ * that has to be patched afterward — this is the one calendar link of the four that needs
+ * it, since Outlook/Google/`.ics` don't share this restriction.
+ */
 export function teamsMeetingUrl({ title, description, start, end }: MeetingDetails): string {
   const params = new URLSearchParams({
     subject: title,
@@ -36,7 +47,7 @@ export function teamsMeetingUrl({ title, description, start, end }: MeetingDetai
     startTime: isoSeconds(start),
     endTime: isoSeconds(end),
   });
-  return `https://teams.microsoft.com/l/meeting/new?${params.toString()}`;
+  return `https://teams.microsoft.com/l/meeting/new?${params.toString().replace(/\+/g, "%20")}`;
 }
 
 /**
