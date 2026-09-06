@@ -154,6 +154,50 @@ describe("MeetingScheduler — footer", () => {
   });
 });
 
+describe("MeetingScheduler — 24-hour duration clarification", () => {
+  const NOTE_TEXT = /full 24-hour meeting ending the next day/;
+
+  it("does not show the note for the default (non-24h) start/end times", () => {
+    render(<MeetingScheduler />);
+    expect(screen.queryByText(NOTE_TEXT)).not.toBeInTheDocument();
+  });
+
+  it("shows the note, and enriches the Duration field's label, once end time is nudged back down to equal start time", async () => {
+    // Start time defaults to 09:00, End time to 10:00. Decreasing End time by 15 minutes
+    // four times brings it back to 09:00 — equal to Start — which is the only input that
+    // produces a 24h duration (computeDurationHours wraps a zero diff to +24). Without this
+    // note, the Duration field's "00:00" reads as a broken/zero-length meeting rather than
+    // the valid full-day one it actually is.
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const decreaseEnd = screen.getByRole("button", { name: /Decrease end time by 15 minutes/ });
+    for (let i = 0; i < 4; i++) {
+      await user.click(decreaseEnd);
+    }
+
+    expect(screen.getByText(NOTE_TEXT)).toBeInTheDocument();
+    // react-aria's TimeField nests an outer and inner group sharing the same aria-label,
+    // so more than one element legitimately carries it — assert presence, not uniqueness.
+    expect(screen.getAllByLabelText("Duration, 24 hours, ending the next day").length).toBeGreaterThan(0);
+  });
+
+  it("hides the note again once end time no longer equals start time", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const decreaseEnd = screen.getByRole("button", { name: /Decrease end time by 15 minutes/ });
+    for (let i = 0; i < 4; i++) {
+      await user.click(decreaseEnd);
+    }
+    expect(screen.getByText(NOTE_TEXT)).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /Increase end time by 15 minutes/ }));
+    expect(screen.queryByText(NOTE_TEXT)).not.toBeInTheDocument();
+    expect(screen.getAllByLabelText("Duration").length).toBeGreaterThan(0);
+  });
+});
+
 describe("MeetingScheduler — light/dark mode toggle", () => {
   beforeEach(() => {
     // These are real global browser state (not component-scoped), so tests must reset

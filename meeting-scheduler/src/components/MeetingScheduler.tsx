@@ -300,7 +300,13 @@ export function MeetingScheduler() {
                 </div>
                 <div className="col-span-2 flex flex-col gap-1.5 @min-[480px]:col-span-1">
                   <span className="text-xs text-[var(--secondary-text)]">Duration</span>
-                  <TimeField hourCycle={24} isReadOnly value={durationTime} aria-label="Duration" fullWidth>
+                  <TimeField
+                    hourCycle={24}
+                    isReadOnly
+                    value={durationTime}
+                    aria-label={durationHours === 24 ? "Duration, 24 hours, ending the next day" : "Duration"}
+                    fullWidth
+                  >
                     <TimeField.Group fullWidth className="h-auto border border-[#767676]">
                       <TimeField.Input>
                       {(segment) => (
@@ -315,6 +321,21 @@ export function MeetingScheduler() {
                 </div>
               </div>
             </div>
+            {/* durationTime necessarily reads 00:00 here: Time (a wall-clock type, hour 0-23)
+                can't represent a 24h *duration* directly, and start===end is the only input
+                that produces exactly 24h (computeDurationHours wraps a zero diff to +24).
+                Left unexplained, 00:00 reads as a broken/zero-length meeting rather than the
+                valid full-day one it actually is (the "Selected time"/"Best time" cards already
+                show this correctly via their own +1 day-offset chips). */}
+            {durationHours === 24 && (
+              <p
+                role="status"
+                className="m-0 rounded-lg border border-[#767676] bg-default-soft px-3 py-1.5 text-xs leading-snug text-default-soft-foreground"
+              >
+                Start and end time are the same, so this is a full 24-hour meeting ending the next day — not a
+                0-minute one.
+              </p>
+            )}
           </div>
         </div>
 
