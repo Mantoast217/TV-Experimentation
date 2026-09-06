@@ -3,7 +3,9 @@ import { Button, Calendar, Card, ComboBox, Input, ListBox, Popover, Separator, T
 import { useMemo, useRef, useState, type CSSProperties } from "react";
 import { asItems } from "../lib/collection";
 import { useAnchorZone } from "../lib/useAnchorZone";
+import { useTheme } from "../lib/useTheme";
 import { AnchorZoneCallout } from "./AnchorZoneCallout";
+import { MoonIcon, SunIcon } from "./icons";
 import { SendInviteMenu } from "./SendInviteMenu";
 import { TimePickerField } from "./TimePickerField";
 import { TimezoneChipList } from "./TimezoneChipList";
@@ -85,6 +87,7 @@ export function MeetingScheduler() {
   };
 
   const { anchorZone, isAutoAnchor, selectAnchor } = useAnchorZone(zones);
+  const { theme, toggleTheme } = useTheme();
 
   const orderedZones = useMemo(
     () => (anchorZone ? [anchorZone, ...zones.filter((zone) => zone.id !== anchorZone.id)] : zones),
@@ -368,27 +371,42 @@ export function MeetingScheduler() {
         </div>
       </main>
       <footer className="flex justify-center px-6 pb-8">
-        <div className="flex w-full max-w-[640px] flex-wrap gap-x-4 gap-y-1 text-xs text-[var(--secondary-text)]">
-          <a
-            href="/privacy.html"
-            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+        <div className="flex w-full max-w-[640px] items-center justify-between gap-3 text-xs text-[var(--secondary-text)]">
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
+            <a
+              href="/privacy.html"
+              className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href="/terms.html"
+              className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+            >
+              Terms of Use
+            </a>
+            <a
+              href="https://forms.gle/ouHxxGzu4Sjz2Jdi7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+            >
+              Feedback
+            </a>
+          </div>
+          {/* Right-aligned, apart from the legal/feedback links: this is a distinct kind of
+              control (a persistent preference, not a navigation link), and putting it at the
+              opposite edge of the row — the conventional spot for a settings-type control —
+              keeps it from being mistaken for one more link in that group or mis-tapped while
+              reaching for "Feedback". */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full hover:text-foreground focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
           >
-            Privacy Policy
-          </a>
-          <a
-            href="/terms.html"
-            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
-          >
-            Terms of Use
-          </a>
-          <a
-            href="https://forms.gle/ouHxxGzu4Sjz2Jdi7"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
-          >
-            Feedback
-          </a>
+            {theme === "dark" ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
+          </button>
         </div>
       </footer>
     </div>

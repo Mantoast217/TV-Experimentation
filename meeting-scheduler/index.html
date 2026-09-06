@@ -7,12 +7,19 @@
       in sync if the OS-level preference changes while the page is open. HeroUI's own theme
       tokens (and this app's --brand-blue/--secondary-text in index.css) key off this exact
       attribute, so setting it is enough to switch the whole app's palette.
+
+      Checks localStorage first: the footer's light/dark toggle (useTheme.ts) writes an
+      explicit choice there, which then wins over the OS preference on every subsequent
+      load — on this page and on privacy.html/terms.html, so a choice made once carries
+      across the whole site. Until a choice exists, this just follows the OS preference
+      live, same as before the toggle existed.
     -->
     <script>
       (function () {
         var mq = window.matchMedia("(prefers-color-scheme: dark)");
         function apply() {
-          document.documentElement.dataset.theme = mq.matches ? "dark" : "light";
+          var stored = localStorage.getItem("theme");
+          document.documentElement.dataset.theme = stored === "light" || stored === "dark" ? stored : mq.matches ? "dark" : "light";
         }
         apply();
         mq.addEventListener("change", apply);

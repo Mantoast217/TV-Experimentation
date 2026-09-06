@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { MeetingScheduler } from "./MeetingScheduler";
 
 describe("MeetingScheduler — copy", () => {
@@ -151,5 +151,50 @@ describe("MeetingScheduler — footer", () => {
     expect(feedback).toHaveAttribute("href", "https://forms.gle/ouHxxGzu4Sjz2Jdi7");
     expect(feedback).toHaveAttribute("target", "_blank");
     expect(feedback).toHaveAttribute("rel", "noopener noreferrer");
+  });
+});
+
+describe("MeetingScheduler — light/dark mode toggle", () => {
+  beforeEach(() => {
+    // These are real global browser state (not component-scoped), so tests must reset
+    // them explicitly rather than relying on render() to start clean each time.
+    delete document.documentElement.dataset.theme;
+    localStorage.clear();
+  });
+
+  it("defaults to light mode and offers to switch to dark", () => {
+    render(<MeetingScheduler />);
+    expect(screen.getByRole("button", { name: "Switch to dark mode" })).toBeInTheDocument();
+    expect(document.documentElement.dataset.theme).toBe("light");
+  });
+
+  it("switches the theme, the button's own label, and persists the choice on click", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    await user.click(screen.getByRole("button", { name: "Switch to dark mode" }));
+
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(screen.getByRole("button", { name: "Switch to light mode" })).toBeInTheDocument();
+    expect(localStorage.getItem("theme")).toBe("dark");
+  });
+
+  it("toggles back to light on a second click", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const button = screen.getByRole("button", { name: "Switch to dark mode" });
+    await user.click(button);
+    await user.click(screen.getByRole("button", { name: "Switch to light mode" }));
+
+    expect(document.documentElement.dataset.theme).toBe("light");
+    expect(screen.getByRole("button", { name: "Switch to dark mode" })).toBeInTheDocument();
+    expect(localStorage.getItem("theme")).toBe("light");
+  });
+
+  it("starts in dark mode if [data-theme=\"dark\"] is already set (e.g. by the bootstrap script) when the component mounts", () => {
+    document.documentElement.dataset.theme = "dark";
+    render(<MeetingScheduler />);
+    expect(screen.getByRole("button", { name: "Switch to light mode" })).toBeInTheDocument();
   });
 });

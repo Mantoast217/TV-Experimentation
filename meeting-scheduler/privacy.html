@@ -2,12 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- See index.html for why this runs inline, before first paint. -->
+    <!-- See index.html for why this runs inline, before first paint, and why it checks
+         localStorage — the footer toggle on the main page writes an explicit choice there
+         that this page respects too. -->
     <script>
       (function () {
         var mq = window.matchMedia("(prefers-color-scheme: dark)");
         function apply() {
-          document.documentElement.dataset.theme = mq.matches ? "dark" : "light";
+          var stored = localStorage.getItem("theme");
+          document.documentElement.dataset.theme = stored === "light" || stored === "dark" ? stored : mq.matches ? "dark" : "light";
         }
         apply();
         mq.addEventListener("change", apply);
