@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildEndTimeOptions, computeZoneTimes, nextIncrementAfter } from "./scheduling";
+import { buildEndTimeOptions, computeDurationHours, computeZoneTimes, formatZoneTimesText, nextIncrementAfter } from "./scheduling";
 import type { TimeZoneCatalogEntry } from "./timezones";
 
 const LONDON: TimeZoneCatalogEntry = {
@@ -67,6 +67,66 @@ describe("computeZoneTimes — DST transitions", () => {
     // 09:00 means in UTC, which is what every other zone's local time reflects.
     expect(before.startText).toBe("09:00");
     expect(after.startText).toBe("09:00");
+  });
+});
+
+describe("computeZoneTimes — end-day-offset regression (moving End before Start)", () => {
+  it("flags the host's own end time as next-day when duration wraps past midnight, even though its start doesn't move", () => {
+    // Reported bug: clicking End's left chevron past Start (e.g. 09:00 -> 08:45) wraps
+    // to a ~24h duration (computeDurationHours(9, 8.75) === 23.75h) instead of erroring,
+    // so the end lands on the next calendar day for every zone, including the host's own
+    // — but the host's *start* stays on the selected date. dayOffset (start-based) alone
+    // can't express this; endDayOffset must be nonzero here even though dayOffset is 0.
+    const durationHours = computeDurationHours(9, 8.75);
+    expect(durationHours).toBeCloseTo(23.75);
+
+    const [london] = computeZoneTimes([LONDON], "2026-06-15", 9, durationHours);
+    expect(london.startText).toBe("09:00");
+    expect(london.endText).toBe("08:45");
+    expect(london.dayOffset).toBe(0);
+    expect(london.endDayOffset).toBe(1);
+  });
+
+  it("gives a full 24h meeting (Start === End) the same next-day end for every zone", () => {
+    const [london, tokyo] = computeZoneTimes([LONDON, TOKYO], "2026-06-15", 9, 24);
+    expect(london.dayOffset).toBe(0);
+    expect(london.endDayOffset).toBe(1);
+    // Tokyo's start is already offset by the zone difference; a full 24h duration should
+    // still land its end exactly one day past wherever its start landed.
+    expect(tokyo.endDayOffset).toBe(tokyo.dayOffset + 1);
+  });
+
+  it("can put the end back on the host's date while the start stays offset from it", () => {
+    // A zone whose local start is the day before the host's date, with a duration long
+    // enough to bring the end back onto the host's own date: dayOffset -1, endDayOffset 0
+    // — not "-1" for the end, since it didn't move relative to the displayed date.
+    const HONOLULU: TimeZoneCatalogEntry = {
+      id: "us-honolulu",
+      city: "Honolulu",
+      country: "United States",
+      countryCode: "US",
+      timezone: "Pacific/Honolulu",
+    };
+    // London 09:00 on 2026-06-15 is UTC 08:00 (BST); Honolulu (UTC-10) local start is
+    // 2026-06-14 22:00 — the day before the host's selected date.
+    const [, honolulu] = computeZoneTimes([LONDON, HONOLULU], "2026-06-15", 9, 22);
+    expect(honolulu.dayOffset).toBe(-1);
+    expect(honolulu.endDayOffset).toBe(0);
+  });
+});
+
+describe("formatZoneTimesText", () => {
+  it("tags the end time independently of the start when only the end lands on a different day", () => {
+    const durationHours = computeDurationHours(9, 8.75);
+    const slots = computeZoneTimes([LONDON], "2026-06-15", 9, durationHours);
+    expect(formatZoneTimesText(slots)).toBe("London 09:00–08:45 (+1)");
+  });
+
+  it("tags both start and end the same way when a zone's whole day is shifted, not just its end", () => {
+    const slots = computeZoneTimes([LONDON, TOKYO], "2026-06-15", 17, 1);
+    // London 17:00 BST is already 01:00 the next day in Tokyo — both Tokyo's start and
+    // its 1h-later end fall on that same +1 day, distinct from the "end-only" case above.
+    expect(formatZoneTimesText(slots)).toBe("London 17:00–18:00 / Tokyo 01:00 (+1)–02:00 (+1)");
   });
 });
 

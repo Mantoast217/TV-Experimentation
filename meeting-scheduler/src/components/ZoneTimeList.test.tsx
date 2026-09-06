@@ -9,13 +9,14 @@ function zone(id: string, city: string): TimeZoneCatalogEntry {
 }
 
 /** A slot for `city`, given as start/end wall-clock hours (no midnight crossing). */
-function slot(city: string, startHour: number, endHour: number, dayOffset = 0): ZoneTimeSlot {
+function slot(city: string, startHour: number, endHour: number, dayOffset = 0, endDayOffset = 0): ZoneTimeSlot {
   const text = (h: number) => `${String(Math.floor(h)).padStart(2, "0")}:${String((h % 1) * 60).padStart(2, "0")}`;
   return {
     zone: zone(city.toLowerCase(), city),
     startText: text(startHour),
     endText: text(endHour),
     dayOffset,
+    endDayOffset,
     startHourRaw: startHour,
     endHourRaw: endHour,
   };
@@ -78,5 +79,52 @@ describe("ZoneTimeList", () => {
     render(<ZoneTimeList slots={[]} />);
     expect(screen.queryByRole("list")).not.toBeInTheDocument();
     expect(screen.getByText("Add a timezone to see local times")).toBeInTheDocument();
+  });
+});
+
+describe("ZoneTimeList — day-offset badges", () => {
+  it("shows no badge at all when neither the start nor the end lands on a different day", () => {
+    render(<ZoneTimeList slots={[slot("London", 9, 10)]} />);
+    expect(screen.getByRole("listitem").textContent).not.toMatch(/[+-]\d/);
+  });
+
+  it("badges the end time — not the start — when a long duration alone pushes the end into the next day", () => {
+    // The reported bug: nudging End before Start (e.g. via the step chevrons) wraps the
+    // meeting to a ~24h duration, so the end lands on the next calendar day even though
+    // the start (still the host's own zone, same date) doesn't move at all.
+    render(<ZoneTimeList slots={[slot("London", 9, 8.75, 0, 1)]} />);
+    const item = screen.getByRole("listitem");
+    expect(item).toHaveTextContent("London 09:00");
+    expect(item).toHaveTextContent("–08:45");
+    expect(item.textContent).toContain("+1");
+    // Exactly one badge (for the end), not two — the start didn't move.
+    const badges = item.querySelectorAll("span[aria-hidden='true'].rounded-full.bg-warning");
+    expect(badges).toHaveLength(1);
+  });
+
+  it("badges the start time when only the start (not the end) lands on a different day", () => {
+    render(<ZoneTimeList slots={[slot("Tokyo", 23, 24, 1, 1)]} />);
+    const item = screen.getByRole("listitem");
+    const badges = item.querySelectorAll("span[aria-hidden='true'].rounded-full.bg-warning");
+    // Both start and end are offset +1 here (23:00 (+1)–00:00 (+1)), so both get badged —
+    // this is the "attendee's whole day is shifted" case, distinct from the "duration
+    // alone pushes the end past midnight" case above.
+    expect(badges).toHaveLength(2);
+  });
+
+  it("badges start and end independently when they land on different days from each other", () => {
+    // e.g. a zone whose local start is already the day before the host's date, but a
+    // long-enough duration brings the end back onto the host's own date (offset 0) —
+    // only the start should be badged, not a nonexistent "0" for the end.
+    render(<ZoneTimeList slots={[slot("Honolulu", 22, 20, -1, 0)]} />);
+    const item = screen.getByRole("listitem");
+    const badges = item.querySelectorAll("span[aria-hidden='true'].rounded-full.bg-warning");
+    expect(badges).toHaveLength(1);
+    expect(badges[0]).toHaveTextContent("-1");
+  });
+
+  it("gives each badge a screen-reader-only explanation instead of a bare, ambiguous number", () => {
+    render(<ZoneTimeList slots={[slot("London", 9, 8.75, 0, 1)]} />);
+    expect(screen.getByText(/1 day later/)).toBeInTheDocument();
   });
 });

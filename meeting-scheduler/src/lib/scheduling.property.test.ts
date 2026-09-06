@@ -56,6 +56,43 @@ describe("computeZoneTimes — day-offset badging (property-based)", () => {
     },
     scaledTimeout(5),
   );
+
+  // Regression coverage for a real reported bug: nudging End before Start (e.g. via the
+  // step chevrons) wraps the meeting to a near-24h duration, pushing the end into the
+  // next calendar day even for zones whose *start* doesn't move — dayOffset alone (which
+  // only tracks the start instant) can't express that, hence this independent endDayOffset.
+  it(
+    "computes each attendee's END day offset exactly as an independent Luxon-based date diff of the end instant would",
+    () => {
+      fc.assert(
+        fc.property(
+          ianaTimezone(),
+          ianaTimezone(),
+          isoDateInRange(),
+          startAndDuration(),
+          (anchorZone, attendeeZone, dateStr, { startHour, startMinute, durationMinutes }) => {
+            const zones = [zoneEntry("anchor", anchorZone), zoneEntry("attendee", attendeeZone)];
+            const startHourDecimal = startHour + startMinute / 60;
+            const [, attendeeSlot] = computeZoneTimes(zones, dateStr, startHourDecimal, durationMinutes / 60);
+
+            // Independently (not via scheduling.ts) resolve the anchor's chosen wall-clock
+            // start instant, add the same duration, re-express the END in the attendee's
+            // zone, and diff calendar dates.
+            const [y, m, d] = dateStr.split("-").map(Number);
+            const anchorStart = DateTime.fromObject({ year: y, month: m, day: d, hour: startHour, minute: startMinute }, { zone: anchorZone });
+            const anchorEnd = anchorStart.plus({ minutes: durationMinutes });
+            const attendeeLocalEnd = anchorEnd.setZone(attendeeZone);
+            const expectedEndDayOffset =
+              calendarDayIndex(attendeeLocalEnd.year, attendeeLocalEnd.month, attendeeLocalEnd.day) - calendarDayIndex(y, m, d);
+
+            expect(attendeeSlot.endDayOffset).toBe(expectedEndDayOffset);
+          },
+        ),
+        { numRuns: NUM_RUNS },
+      );
+    },
+    scaledTimeout(5),
+  );
 });
 
 describe("wallClockToUtcDate — round-trip consistency (property-based)", () => {

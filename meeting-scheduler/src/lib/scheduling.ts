@@ -5,8 +5,21 @@ export interface ZoneTimeSlot {
   zone: TimeZoneCatalogEntry;
   startText: string;
   endText: string;
-  /** Day offset relative to the host's selected date: -1, 0, or +1 (rarely more). */
+  /**
+   * The start time's day offset relative to the host's selected date: -1, 0, or +1
+   * (rarely more) — e.g. a zone far enough ahead that the host's evening start is
+   * already tomorrow morning there.
+   */
   dayOffset: number;
+  /**
+   * The end time's day offset relative to the host's selected date, in the same frame
+   * as `dayOffset`. Independent of it: a long enough duration pushes the end into the
+   * next calendar day even for the host's own zone (dayOffset 0), and a start that's
+   * already offset by a zone difference can end on yet another day, or back on the
+   * host's own date, depending on the duration — so this needs its own badge rather
+   * than reusing `dayOffset`.
+   */
+  endDayOffset: number;
   /**
    * Unwrapped local start/end hour (not clamped to [0, 24)) — kept alongside the
    * formatted text so callers (e.g. time-of-day quality classification) can find the
@@ -102,6 +115,7 @@ export function computeZoneTimes(
       startText: hourMinuteText(startHourRaw),
       endText: hourMinuteText(endHourRaw),
       dayOffset: calendarDayIndex(localStart) - calendarDayIndexOf(dateStr),
+      endDayOffset: calendarDayIndex(localEnd) - calendarDayIndexOf(dateStr),
       startHourRaw,
       endHourRaw,
     };
@@ -137,14 +151,22 @@ export function findOptimalStartHour(zones: TimeZoneCatalogEntry[], dateStr: str
   return bestHour;
 }
 
-/** Plain-text rendering of a set of zone slots, e.g. "London 16:00–17:00 / Tokyo 00:00–01:00 (+1)". */
+/** e.g. " (+1)" or " (-1)" for a nonzero offset, "" for 0. */
+function dayTag(offset: number): string {
+  return offset !== 0 ? ` (${offset > 0 ? "+" : ""}${offset})` : "";
+}
+
+/**
+ * Plain-text rendering of a set of zone slots, e.g.
+ * "London 16:00–17:00 / Tokyo 00:00 (+1)–01:00 (+1)". Start and end are tagged
+ * independently, since a long duration can push the end a day beyond the start (or, for
+ * a zone already offset from the host's date, back onto it) regardless of where the
+ * start lands.
+ */
 export function formatZoneTimesText(slots: ZoneTimeSlot[]): string {
   if (slots.length === 0) return "";
   return slots
-    .map((slot) => {
-      const dayTag = slot.dayOffset !== 0 ? ` (${slot.dayOffset > 0 ? "+" : ""}${slot.dayOffset})` : "";
-      return `${slot.zone.city} ${slot.startText}–${slot.endText}${dayTag}`;
-    })
+    .map((slot) => `${slot.zone.city} ${slot.startText}${dayTag(slot.dayOffset)}–${slot.endText}${dayTag(slot.endDayOffset)}`)
     .join(" / ");
 }
 
