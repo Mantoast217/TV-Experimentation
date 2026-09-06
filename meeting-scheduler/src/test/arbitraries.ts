@@ -14,6 +14,18 @@ import fc from "fast-check";
 
 export const NUM_RUNS = Number(process.env.FC_NUM_RUNS) || 1000;
 
+/**
+ * Scales a vitest test timeout to NUM_RUNS so the nightly high-iteration run
+ * (FC_NUM_RUNS=50000) doesn't trip vitest's default 5s limit just because a test was
+ * only sized for the every-PR default of 1000. Pass as the third argument to `it(...)`.
+ * `msPerIteration` should reflect the real per-iteration cost (pure-logic property tests
+ * are cheap; tests that mount React components need a much larger budget — see
+ * ZoneTimeList.property.test.tsx).
+ */
+export function scaledTimeout(msPerIteration: number): number {
+  return Math.max(60_000, NUM_RUNS * msPerIteration);
+}
+
 /** The runtime's real, full list of IANA zone identifiers — not a hardcoded subset. */
 export const ALL_IANA_TIMEZONES: readonly string[] = Intl.supportedValuesOf("timeZone");
 

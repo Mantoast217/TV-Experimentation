@@ -1,6 +1,6 @@
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
-import { ianaTimezone, isoDateInRange, NUM_RUNS, startAndDuration } from "../test/arbitraries";
+import { ianaTimezone, isoDateInRange, NUM_RUNS, scaledTimeout, startAndDuration } from "../test/arbitraries";
 import { computeZoneTimes, wrapHour } from "./scheduling";
 import { classifyTimeQuality, type TimeQualityBand } from "./timeQuality";
 
@@ -92,22 +92,26 @@ describe("classifyTimeQuality — property-based", () => {
       ),
       { numRuns: NUM_RUNS },
     );
-  });
+  }, scaledTimeout(5));
 
-  it("never returns a compound label when the slot stays within a single band", () => {
-    fc.assert(
-      fc.property(fc.double({ min: 0, max: 23.98, noNaN: true }), fc.double({ min: 0, max: 3, noNaN: true }), (start, span) => {
-        const end = start + span;
-        // Only keep cases that provably don't cross a band boundary between start and end.
-        const boundaries = [6, 9, 12, 17, 21, 24];
-        const crossesBoundary = boundaries.some((b) => b > start && b <= end);
-        fc.pre(!crossesBoundary);
+  it(
+    "never returns a compound label when the slot stays within a single band",
+    () => {
+      fc.assert(
+        fc.property(fc.double({ min: 0, max: 23.98, noNaN: true }), fc.double({ min: 0, max: 3, noNaN: true }), (start, span) => {
+          const end = start + span;
+          // Only keep cases that provably don't cross a band boundary between start and end.
+          const boundaries = [6, 9, 12, 17, 21, 24];
+          const crossesBoundary = boundaries.some((b) => b > start && b <= end);
+          fc.pre(!crossesBoundary);
 
-        const quality = classifyTimeQuality(start, end);
-        expect(quality.bands).toHaveLength(1);
-        expect(quality.label).not.toContain(" - ");
-      }),
-      { numRuns: NUM_RUNS },
-    );
-  });
+          const quality = classifyTimeQuality(start, end);
+          expect(quality.bands).toHaveLength(1);
+          expect(quality.label).not.toContain(" - ");
+        }),
+        { numRuns: NUM_RUNS },
+      );
+    },
+    scaledTimeout(5),
+  );
 });

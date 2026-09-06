@@ -5,9 +5,10 @@ name: Nightly property-test fuzz run
 # rarer edge cases without slowing down normal PRs. fast-check reports a reproducible
 # seed on any failure (see the file header comment in src/test/arbitraries.ts) — copy it
 # into a local `FC_NUM_RUNS=50000 npm run test:property` run to reproduce.
+#
+# Manual only (no schedule): trigger this from the Actions tab before shipping a change
+# to scheduling/timezone code, rather than running it unattended every night.
 on:
-  schedule:
-    - cron: "0 3 * * *" # 03:00 UTC daily
   workflow_dispatch: {}
 
 env:

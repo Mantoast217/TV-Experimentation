@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
-import { ianaTimezone, isoDateInRange, NUM_RUNS, startAndDuration } from "../test/arbitraries";
+import { ianaTimezone, isoDateInRange, NUM_RUNS, scaledTimeout, startAndDuration } from "../test/arbitraries";
 import { computeZoneTimes } from "./scheduling";
 import { wallClockToUtcDate } from "./timezones";
 import type { TimeZoneCatalogEntry } from "./timezones";
@@ -41,17 +41,21 @@ describe("computeZoneTimes — day-offset badging (property-based)", () => {
       ),
       { numRuns: NUM_RUNS },
     );
-  });
+  }, scaledTimeout(5));
 
-  it("gives the anchor zone itself a day offset of exactly 0", () => {
-    fc.assert(
-      fc.property(ianaTimezone(), isoDateInRange(), startAndDuration(), (zone, dateStr, { startHour, startMinute, durationMinutes }) => {
-        const [anchorSlot] = computeZoneTimes([zoneEntry("anchor", zone)], dateStr, startHour + startMinute / 60, durationMinutes / 60);
-        expect(anchorSlot.dayOffset).toBe(0);
-      }),
-      { numRuns: NUM_RUNS },
-    );
-  });
+  it(
+    "gives the anchor zone itself a day offset of exactly 0",
+    () => {
+      fc.assert(
+        fc.property(ianaTimezone(), isoDateInRange(), startAndDuration(), (zone, dateStr, { startHour, startMinute, durationMinutes }) => {
+          const [anchorSlot] = computeZoneTimes([zoneEntry("anchor", zone)], dateStr, startHour + startMinute / 60, durationMinutes / 60);
+          expect(anchorSlot.dayOffset).toBe(0);
+        }),
+        { numRuns: NUM_RUNS },
+      );
+    },
+    scaledTimeout(5),
+  );
 });
 
 describe("wallClockToUtcDate — round-trip consistency (property-based)", () => {
@@ -72,11 +76,25 @@ describe("wallClockToUtcDate — round-trip consistency (property-based)", () =>
           // instants legitimately share that exact wall-clock reading, so recovering
           // *this specific* one from wall-clock text alone is impossible by definition —
           // not a bug. The "fall-back consistency" property covers that case instead.
+          //
+          // Compared on all five wall-clock fields, not just .offset: for at least one
+          // real historical transition (America/Godthab/Nuuk, 2023-03-26), Luxon's
+          // fromJSDate (instant -> local) and fromObject (local -> instant) disagree on
+          // which wall-clock readings exist, while reporting the *same* offset — an
+          // offset-only comparison let that case slip through as "unambiguous" when it
+          // wasn't reconstructible at all.
           const reconstructedFromWallClock = DateTime.fromObject(
             { year: local.year, month: local.month, day: local.day, hour: local.hour, minute: local.minute },
             { zone },
           );
-          fc.pre(reconstructedFromWallClock.offset === local.offset);
+          fc.pre(
+            reconstructedFromWallClock.offset === local.offset &&
+              reconstructedFromWallClock.year === local.year &&
+              reconstructedFromWallClock.month === local.month &&
+              reconstructedFromWallClock.day === local.day &&
+              reconstructedFromWallClock.hour === local.hour &&
+              reconstructedFromWallClock.minute === local.minute,
+          );
 
           const dateStr = local.toISODate()!;
           const hourDecimal = local.hour + local.minute / 60;
@@ -87,5 +105,5 @@ describe("wallClockToUtcDate — round-trip consistency (property-based)", () =>
       ),
       { numRuns: NUM_RUNS },
     );
-  });
+  }, scaledTimeout(5));
 });

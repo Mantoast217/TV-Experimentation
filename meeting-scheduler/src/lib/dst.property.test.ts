@@ -6,6 +6,7 @@ import {
   dstSpringForwardTransition,
   dstTransitionWithMinuteInWindow,
   NUM_RUNS,
+  scaledTimeout,
 } from "../test/arbitraries";
 import { computeZoneTimes } from "./scheduling";
 import { wallClockToUtcDate } from "./timezones";
@@ -50,7 +51,7 @@ describe("DST spring-forward — property-based", () => {
       }),
       { numRuns: NUM_RUNS },
     );
-  });
+  }, scaledTimeout(5));
 });
 
 describe("DST fall-back — property-based", () => {
@@ -81,5 +82,5 @@ describe("DST fall-back — property-based", () => {
       }),
       { numRuns: NUM_RUNS },
     );
-  });
+  }, scaledTimeout(5));
 });
