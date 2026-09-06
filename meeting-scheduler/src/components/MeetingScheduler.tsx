@@ -152,11 +152,17 @@ export function MeetingScheduler() {
               here from the footer specifically for that: a user who needs dark mode
               immediately (e.g. light sensitivity) previously had to tab through the entire
               form, or scroll past it, to reach the toggle. */}
+          {/* No outline-offset (unlike this app's other focus-visible controls): the floating
+              detached-ring look is what read as too heavy on a small round button. The
+              outline itself stays — removing it outright would fail WCAG 2.4.7 Focus Visible
+              for keyboard users, which isn't optional at any conformance level (this app
+              already holds itself to AAA elsewhere). Tightening it to hug the button directly
+              keeps a clearly visible indicator without the halo. */}
           <button
             type="button"
             onClick={toggleTheme}
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[var(--secondary-text)] hover:text-foreground focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[var(--secondary-text)] hover:text-foreground focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-[var(--brand-blue)]"
           >
             {theme === "dark" ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
           </button>
