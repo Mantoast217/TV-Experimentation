@@ -5,7 +5,7 @@ import { asItems } from "../lib/collection";
 import { useAnchorZone } from "../lib/useAnchorZone";
 import { useTheme } from "../lib/useTheme";
 import { AnchorZoneCallout } from "./AnchorZoneCallout";
-import { MoonIcon, SunIcon } from "./icons";
+import { MoonIcon, SunIcon, TriangleAlertIcon } from "./icons";
 import { SendInviteMenu } from "./SendInviteMenu";
 import { TimePickerField } from "./TimePickerField";
 import { TimezoneChipList } from "./TimezoneChipList";
@@ -328,13 +328,16 @@ export function MeetingScheduler() {
                 valid full-day one it actually is (the "Selected time"/"Best time" cards already
                 show this correctly via their own +1 day-offset chips). */}
             {durationHours === 24 && (
-              <p
+              <div
                 role="status"
-                className="m-0 rounded-lg border border-[#767676] bg-default-soft px-3 py-1.5 text-xs leading-snug text-default-soft-foreground"
+                className="flex items-start gap-2 rounded-lg border border-[#767676] bg-default-soft px-3 py-1.5 text-default-soft-foreground"
               >
-                Start and end time are the same, so this is a full 24-hour meeting ending the next day — not a
-                0-minute one.
-              </p>
+                <TriangleAlertIcon className="mt-0.5 h-4 w-4 shrink-0" />
+                <p className="m-0 text-xs leading-snug">
+                  Start and end time are the same, so this is a full 24-hour meeting ending the next day — not a
+                  0-minute one.
+                </p>
+              </div>
             )}
           </div>
         </div>
