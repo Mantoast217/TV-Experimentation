@@ -123,8 +123,13 @@ export function MeetingScheduler() {
     [dateStr, optimalHour, durationHours, hostZone],
   );
 
+  // min-h-dvh (not min-h-screen/100vh): mobile browsers size 100vh against the browser chrome
+  // being fully collapsed, so on first load (address bar visible) 100vh overshoots the
+  // actually-visible area and can jump as the chrome shows/hides on scroll. 100dvh tracks the
+  // real visible viewport; desktop browsers don't have collapsing chrome, so this renders
+  // identically to 100vh there.
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-dvh flex-col">
       <main className="flex flex-1 justify-center px-6 pt-12 pb-6">
         <div className="flex w-full max-w-[640px] flex-col gap-7">
         <div>
@@ -160,7 +165,11 @@ export function MeetingScheduler() {
               />
               <ComboBox.Trigger />
             </ComboBox.InputGroup>
-            <ComboBox.Popover>
+            {/* max-h-72: the unfiltered catalog is ~400 entries — without a cap the popover
+                renders full-height (measured ~12,460px), which can open upward and cover the
+                page header on a short viewport. The popover already has overflow-y-auto built
+                in (combo-box.css), so this just gives it something to actually scroll within. */}
+            <ComboBox.Popover className="max-h-72">
               <ListBox<TimeZoneCatalogEntry> items={asItems(availableZones)}>
                 {(zone) => (
                   <ListBox.Item id={zone.id} textValue={zoneDisplayLabel(zone, dateStr)}>

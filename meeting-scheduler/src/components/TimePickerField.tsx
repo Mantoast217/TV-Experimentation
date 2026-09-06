@@ -111,7 +111,11 @@ export function TimePickerField({
           */}
           <ComboBox.Trigger aria-hidden="true" excludeFromTabOrder className="hidden" />
         </ComboBox.InputGroup>
-        <ComboBox.Popover ref={popoverRef} placement="bottom">
+        {/* max-h-72: the 96-option (24h at 15min steps) list renders full-height without a cap
+            (measured ~3,850px), which can extend far off-screen when the popover opens upward
+            on a short viewport. The popover already has overflow-y-auto built in (combo-box.css),
+            so this just gives it something to actually scroll within. */}
+        <ComboBox.Popover ref={popoverRef} placement="bottom" className="max-h-72">
           <ListBox<TimeOption> items={asItems(timeOptions)}>
             {(item) => (
               <ListBox.Item
