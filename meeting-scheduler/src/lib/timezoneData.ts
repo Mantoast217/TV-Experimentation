@@ -20,4 +20,10 @@ export interface TimeZoneCatalogEntry {
 
 export const TIMEZONE_CATALOG: TimeZoneCatalogEntry[] = rawCatalog as TimeZoneCatalogEntry[];
 
-export const DEFAULT_TIMEZONE_ID = "gb-london";
+// Resolved by city/country rather than hardcoded, since a regenerated catalog's `id`
+// values aren't stable across the two source scripts: the interim seed slugs on just
+// city+country (e.g. "gb-london"), while the GeoNames-sourced production script appends
+// each city's GeoNames id (e.g. "gb-london-2643743") to keep same-name cities distinct.
+// A literal id string would silently break the very first time the real dataset replaced
+// the seed — this survives that swap, and any future regeneration, unchanged.
+export const DEFAULT_TIMEZONE_ID = TIMEZONE_CATALOG.find((z) => z.city === "London" && z.countryCode === "GB")!.id;

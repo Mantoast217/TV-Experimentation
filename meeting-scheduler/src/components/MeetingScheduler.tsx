@@ -62,13 +62,19 @@ export function MeetingScheduler() {
     setZones((prev) => prev.filter((z) => z.id !== id));
   };
 
-  const availableZones = useMemo(
-    () =>
-      TIMEZONE_CATALOG.filter((z) => !zones.some((added) => added.id === z.id) && matchesQuery(z, tzQuery)).sort(
-        (a, b) => a.city.localeCompare(b.city),
-      ),
-    [zones, tzQuery],
-  );
+  // The catalog is now ~26,000 GeoNames-sourced cities (population >= 15,000), not the
+  // ~300-entry one-city-per-zone seed this used to run against — rendering every match
+  // (e.g. all of them, unfiltered, the moment the field is focused) froze the popover in
+  // both a real browser and this component's own tests. Ranking by population and capping
+  // the render list keeps results useful (major cities surface first for a broad query,
+  // e.g. a bare country name) and keeps the popover's DOM size bounded regardless of how
+  // many rows technically match.
+  const MAX_VISIBLE_ZONE_RESULTS = 50;
+  const availableZones = useMemo(() => {
+    const matches = TIMEZONE_CATALOG.filter((z) => !zones.some((added) => added.id === z.id) && matchesQuery(z, tzQuery));
+    matches.sort((a, b) => (b.population ?? 0) - (a.population ?? 0) || a.city.localeCompare(b.city));
+    return matches.slice(0, MAX_VISIBLE_ZONE_RESULTS);
+  }, [zones, tzQuery]);
 
   const startHour = parseHourValue(startTime);
   const endHour = parseHourValue(endTime);
@@ -191,10 +197,11 @@ export function MeetingScheduler() {
               />
               <ComboBox.Trigger />
             </ComboBox.InputGroup>
-            {/* max-h-72: the unfiltered catalog is ~400 entries — without a cap the popover
-                renders full-height (measured ~12,460px), which can open upward and cover the
-                page header on a short viewport. The popover already has overflow-y-auto built
-                in (combo-box.css), so this just gives it something to actually scroll within. */}
+            {/* max-h-72: even with availableZones capped to MAX_VISIBLE_ZONE_RESULTS, without
+                a max-height the popover renders full-height (measured ~12,460px against the
+                old, smaller catalog), which can open upward and cover the page header on a
+                short viewport. The popover already has overflow-y-auto built in
+                (combo-box.css), so this just gives it something to actually scroll within. */}
             <ComboBox.Popover className="max-h-72">
               <ListBox<TimeZoneCatalogEntry> items={asItems(availableZones)}>
                 {(zone) => (

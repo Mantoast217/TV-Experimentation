@@ -122,12 +122,20 @@ describe("MeetingScheduler — invite action redesign", () => {
     expect(withOneAttendee.anchorClass).toMatch(/\babsolute\b/);
     expect(withOneAttendee.cardClass).toMatch(/\brelative\b/);
 
+    // Anchored to the option label's full "City — Country" so a same-named city in a
+    // different country (Sydney, Nova Scotia; Nishi-Tokyo-shi alongside Tokyo) — real
+    // entries now that the catalog is ~26,000 GeoNames cities, not the old ~300-entry
+    // one-city-per-zone seed — can't also match a loose substring search.
     const combo = screen.getByRole("combobox", { name: "Add timezone" });
-    for (const city of ["Tokyo", "Sydney", "New York"]) {
+    for (const { city, country } of [
+      { city: "Tokyo", country: "Japan" },
+      { city: "Sydney", country: "Australia" },
+      { city: "New York City", country: "United States" },
+    ]) {
       await user.click(combo);
       await user.clear(combo);
       await user.type(combo, city);
-      const option = await screen.findByRole("option", { name: new RegExp(city) });
+      const option = await screen.findByRole("option", { name: new RegExp(`^${city} — ${country}`) });
       await user.click(option);
       await user.keyboard("{Escape}");
     }
