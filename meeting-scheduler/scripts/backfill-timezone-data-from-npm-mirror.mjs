@@ -114,7 +114,7 @@ async function main() {
     validateEntries(entries); // Throws (and aborts before any write) on failure.
 
     const curated = curateMajorCitiesAndCapitals(entries);
-    curated.sort((a, b) => b.population - a.population || a.city.localeCompare(b.city));
+    curated.sort((a, b) => a.city.localeCompare(b.city)); // Matches the app's own display order.
     writeFileSync(OUTPUT_PATH, JSON.stringify(curated, null, 2) + "\n");
     console.log(`Wrote ${curated.length} entries to ${OUTPUT_PATH} (curated from ${entries.length} parsed rows)`);
   } finally {

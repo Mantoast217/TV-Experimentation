@@ -62,18 +62,15 @@ export function MeetingScheduler() {
     setZones((prev) => prev.filter((z) => z.id !== id));
   };
 
-  // The catalog is now ~26,000 GeoNames-sourced cities (population >= 15,000), not the
-  // ~300-entry one-city-per-zone seed this used to run against — rendering every match
-  // (e.g. all of them, unfiltered, the moment the field is focused) froze the popover in
-  // both a real browser and this component's own tests. Ranking by population and capping
-  // the render list keeps results useful (major cities surface first for a broad query,
-  // e.g. a bare country name) and keeps the popover's DOM size bounded regardless of how
-  // many rows technically match.
-  const MAX_VISIBLE_ZONE_RESULTS = 50;
+  // The catalog is curated to ~650 major cities/capitals (see
+  // scripts/update-timezone-data.mjs's curateMajorCitiesAndCapitals) specifically so it's
+  // small enough to render in full without a population-based cap or ranking — so results
+  // sort alphabetically by city, the more predictable order for scanning/browsing a list
+  // this size.
   const availableZones = useMemo(() => {
     const matches = TIMEZONE_CATALOG.filter((z) => !zones.some((added) => added.id === z.id) && matchesQuery(z, tzQuery));
-    matches.sort((a, b) => (b.population ?? 0) - (a.population ?? 0) || a.city.localeCompare(b.city));
-    return matches.slice(0, MAX_VISIBLE_ZONE_RESULTS);
+    matches.sort((a, b) => a.city.localeCompare(b.city));
+    return matches;
   }, [zones, tzQuery]);
 
   const startHour = parseHourValue(startTime);

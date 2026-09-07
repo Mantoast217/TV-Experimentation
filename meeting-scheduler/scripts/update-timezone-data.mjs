@@ -177,7 +177,10 @@ async function main() {
   validateEntries(entries);
 
   const curated = curateMajorCitiesAndCapitals(entries);
-  curated.sort((a, b) => b.population - a.population || a.city.localeCompare(b.city));
+  // Alphabetical by city — matches how the app itself sorts and presents this list
+  // (MeetingScheduler.tsx's availableZones), so the shipped file's order isn't misleading
+  // if anyone reads it directly.
+  curated.sort((a, b) => a.city.localeCompare(b.city));
   writeFileSync(OUTPUT_PATH, JSON.stringify(curated, null, 2) + "\n");
   console.log(`Wrote ${curated.length} entries to ${OUTPUT_PATH} (curated from ${entries.length} parsed rows)`);
 }
