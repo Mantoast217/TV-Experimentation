@@ -46,7 +46,7 @@ export function ZoneTimeList({ slots, className, chipClassName }: ZoneTimeListPr
             </span>
             {slot.dayOffset !== 0 && <DayOffsetBadge offset={slot.dayOffset} className={chipClassName} />}
             <span>
-              –{slot.endText}
+              - {slot.endText}
               {slot.endDayOffset !== 0 && <span className="sr-only">{dayOffsetAnnouncement(slot.endDayOffset)}</span>}
               {" "}({quality.label})
             </span>
