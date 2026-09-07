@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseCities, parseCountryInfo, validateEntries } from "./update-timezone-data.mjs";
+import { curateMajorCitiesAndCapitals, parseCities, parseCountryInfo, validateEntries } from "./update-timezone-data.mjs";
 
 const COUNTRY_INFO_FIXTURE = [
   "#ISO\tISO3\tISO-Numeric\tfips\tCountry\tCapital\tArea\tPopulation\tContinent",
@@ -13,10 +13,11 @@ const COUNTRY_INFO_FIXTURE = [
 ].join("\n");
 
 /** Builds one tab-separated GeoNames citiesXXXXX.txt row for the given fields. */
-function cityRow({ geonameId, name, countryCode, population, timezone }) {
+function cityRow({ geonameId, name, countryCode, population, timezone, featureCode = "PPL" }) {
   const columns = new Array(19).fill("");
   columns[0] = geonameId;
   columns[1] = name;
+  columns[7] = featureCode;
   columns[8] = countryCode;
   columns[14] = String(population);
   columns[17] = timezone;
@@ -92,5 +93,48 @@ describe("validateEntries — rejects bad data rather than deploying it", () => 
     const countryByCode = parseCountryInfo(COUNTRY_INFO_FIXTURE);
     const entries = parseCities("not\ta\tvalid\tgeonames\tfile\nat\tall", countryByCode);
     expect(() => validateEntries(entries)).toThrow();
+  });
+});
+
+describe("curateMajorCitiesAndCapitals", () => {
+  const countryByCode = parseCountryInfo(COUNTRY_INFO_FIXTURE);
+
+  it("keeps a city with population >= 1,000,000", () => {
+    const raw = cityRow({ geonameId: "1", name: "Big City", countryCode: "GB", population: 1_500_000, timezone: "Europe/London" });
+    const curated = curateMajorCitiesAndCapitals(parseCities(raw, countryByCode));
+    expect(curated.map((e) => e.city)).toEqual(["Big City"]);
+  });
+
+  it("keeps a national capital regardless of population — real capitals like Bern or Reykjavik are well under a million people", () => {
+    const raw = cityRow({
+      geonameId: "2",
+      name: "Tiny Capital",
+      countryCode: "GB",
+      population: 50_000,
+      timezone: "Europe/London",
+      featureCode: "PPLC",
+    });
+    const curated = curateMajorCitiesAndCapitals(parseCities(raw, countryByCode));
+    expect(curated.map((e) => e.city)).toEqual(["Tiny Capital"]);
+  });
+
+  it("drops a small city that is neither populous nor a capital — the exact Manchester case (population ~395,000, not a capital)", () => {
+    const raw = cityRow({
+      geonameId: "3",
+      name: "Manchester",
+      countryCode: "GB",
+      population: 395_515,
+      timezone: "Europe/London",
+      featureCode: "PPLA2",
+    });
+    const curated = curateMajorCitiesAndCapitals(parseCities(raw, countryByCode));
+    expect(curated).toHaveLength(0);
+  });
+
+  it("strips the transient featureCode field from what it keeps — not part of the app's TimeZoneCatalogEntry shape", () => {
+    const raw = cityRow({ geonameId: "4", name: "Big City", countryCode: "GB", population: 1_500_000, timezone: "Europe/London" });
+    const [curated] = curateMajorCitiesAndCapitals(parseCities(raw, countryByCode));
+    expect(curated).not.toHaveProperty("featureCode");
+    expect(curated).toEqual({ id: expect.any(String), city: "Big City", country: "United Kingdom", countryCode: "GB", timezone: "Europe/London", population: 1_500_000 });
   });
 });

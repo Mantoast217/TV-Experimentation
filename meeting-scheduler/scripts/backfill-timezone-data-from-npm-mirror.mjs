@@ -18,19 +18,21 @@
  * generate-seed-timezone-data.mjs already uses for the same reason.
  *
  * Caveat: that npm package was last published 2023-03-10, so this dataset is
- * that old, not current as of today. It's still a large, real improvement over
- * the 313-entry one-city-per-zone seed this replaces (secondary cities like
- * Manchester and Munich are back), and it will be superseded automatically the
- * next time scripts/update-timezone-data.mjs actually runs against the live,
- * current GeoNames export (scheduled monthly, or triggered manually) — that
- * job's own validation and PR-review gate are untouched by this bridge.
+ * that old, not current as of today. It still gives curateMajorCitiesAndCapitals
+ * (see update-timezone-data.mjs) a real, current-shape GeoNames export to curate
+ * down from — real population figures and capital flags the 313-entry
+ * one-city-per-zone seed this replaces had neither. It will be superseded
+ * automatically the next time scripts/update-timezone-data.mjs actually runs
+ * against the live, current GeoNames export (scheduled monthly, or triggered
+ * manually) — that job's own validation and PR-review gate are untouched by
+ * this bridge.
  */
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseCities, validateEntries } from "./update-timezone-data.mjs";
+import { curateMajorCitiesAndCapitals, parseCities, validateEntries } from "./update-timezone-data.mjs";
 
 const PACKAGE_TARBALL_URL = "https://registry.npmjs.org/cities-15000-structured/-/cities-15000-structured-1.0.1.tgz";
 const BUNDLED_ENTRY_PATH = "package/dist/cities15000.txt";
@@ -111,9 +113,10 @@ async function main() {
     applyKnownTimezoneCorrections(entries);
     validateEntries(entries); // Throws (and aborts before any write) on failure.
 
-    entries.sort((a, b) => b.population - a.population || a.city.localeCompare(b.city));
-    writeFileSync(OUTPUT_PATH, JSON.stringify(entries, null, 2) + "\n");
-    console.log(`Wrote ${entries.length} entries to ${OUTPUT_PATH}`);
+    const curated = curateMajorCitiesAndCapitals(entries);
+    curated.sort((a, b) => b.population - a.population || a.city.localeCompare(b.city));
+    writeFileSync(OUTPUT_PATH, JSON.stringify(curated, null, 2) + "\n");
+    console.log(`Wrote ${curated.length} entries to ${OUTPUT_PATH} (curated from ${entries.length} parsed rows)`);
   } finally {
     rmSync(tmpDir, { recursive: true, force: true });
   }

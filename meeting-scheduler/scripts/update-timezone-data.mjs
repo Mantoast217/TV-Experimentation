@@ -2,15 +2,15 @@
 /**
  * The real, ongoing data source for this app: GeoNames.
  *
- * Downloads cities15000.zip (every city with population >= 15,000 — the
- * smallest GeoNames tier that still comfortably covers what a meeting
- * scheduler's "search for a city" field needs, without bundling the much
- * larger cities5000/cities1000 tiers) and countryInfo.txt from the same
- * GeoNames export dump, joins each city's own `country code` column to
- * countryInfo's ISO-3166 alpha-2 -> country name mapping — both columns
- * come from the same upstream provider, so a city's country is never
- * assembled from an unrelated second source — validates the result, and
- * only then overwrites the committed dataset.
+ * Downloads cities15000.zip (every city with population >= 15,000, the smallest
+ * GeoNames tier — used as the *input*, not what ships) and countryInfo.txt from
+ * the same GeoNames export dump, joins each city's own `country code` column to
+ * countryInfo's ISO-3166 alpha-2 -> country name mapping — both columns come
+ * from the same upstream provider, so a city's country is never assembled from
+ * an unrelated second source — validates the result against the full download,
+ * then curates it down (see curateMajorCitiesAndCapitals) to a size a "search
+ * for a city or country" field can render without freezing, before overwriting
+ * the committed dataset.
  *
  * Run on a schedule by .github/workflows/update-timezone-data.yml, which
  * opens a PR rather than pushing straight to main: this script's own
@@ -66,6 +66,9 @@ export function parseCountryInfo(raw) {
   return byCode;
 }
 
+/** GeoNames feature code for "capital of a political entity" (column 8 of the cities dump). */
+const CAPITAL_FEATURE_CODE = "PPLC";
+
 /** Parses a GeoNames citiesXXXXX.txt dump, joined against `countryByCode`. */
 export function parseCities(raw, countryByCode) {
   const entries = [];
@@ -74,6 +77,7 @@ export function parseCities(raw, countryByCode) {
     const columns = line.split("\t");
     const geonameId = columns[0];
     const name = columns[1];
+    const featureCode = columns[7];
     const countryCode = columns[8];
     const population = Number(columns[14]) || 0;
     const timezone = columns[17];
@@ -89,9 +93,30 @@ export function parseCities(raw, countryByCode) {
       countryCode,
       timezone,
       population,
+      // Transient — used only by curateMajorCitiesAndCapitals below, stripped before the
+      // dataset is written. Not part of TimeZoneCatalogEntry; the app has no use for it.
+      featureCode,
     });
   }
   return entries;
+}
+
+/**
+ * Every city with population >= 15,000 worldwide (cities15000's own tier) is far more
+ * than a "search for a city or country" field needs, and large enough to freeze the
+ * combobox popover it renders into (see MeetingScheduler.tsx's MAX_VISIBLE_ZONE_RESULTS
+ * comment for the concrete symptom). Curates down to a size closer to what a world clock
+ * app like Apple's own Clock ships (its exact source isn't public, but it's built on the
+ * OS's own IANA timezone database, whose canonical zone list — zone1970.tab — has ~430
+ * entries) while still guaranteeing every country's capital is present regardless of its
+ * population (Bern, Wellington, and Reykjavik are all well under a million people).
+ */
+const MIN_POPULATION_FOR_INCLUSION = 1_000_000;
+
+export function curateMajorCitiesAndCapitals(entries) {
+  return entries
+    .filter((entry) => entry.population >= MIN_POPULATION_FOR_INCLUSION || entry.featureCode === CAPITAL_FEATURE_CODE)
+    .map(({ featureCode: _featureCode, ...entry }) => entry);
 }
 
 /**
@@ -146,11 +171,15 @@ async function main() {
   const countryByCode = parseCountryInfo(countryInfoRaw);
   const entries = parseCities(citiesRaw, countryByCode);
 
-  validateEntries(entries); // Throws (and aborts before any write) on failure.
+  // Validated against the full, unfiltered download — a truncated or malformed GeoNames
+  // export must fail this check regardless of how small curateMajorCitiesAndCapitals
+  // will shrink things afterward. Throws (and aborts before any write) on failure.
+  validateEntries(entries);
 
-  entries.sort((a, b) => b.population - a.population || a.city.localeCompare(b.city));
-  writeFileSync(OUTPUT_PATH, JSON.stringify(entries, null, 2) + "\n");
-  console.log(`Wrote ${entries.length} entries to ${OUTPUT_PATH}`);
+  const curated = curateMajorCitiesAndCapitals(entries);
+  curated.sort((a, b) => b.population - a.population || a.city.localeCompare(b.city));
+  writeFileSync(OUTPUT_PATH, JSON.stringify(curated, null, 2) + "\n");
+  console.log(`Wrote ${curated.length} entries to ${OUTPUT_PATH} (curated from ${entries.length} parsed rows)`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
