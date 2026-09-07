@@ -125,18 +125,6 @@ export function MeetingScheduler() {
     () => findOptimalStartHour(orderedZones, dateStr, durationHours),
     [orderedZones, dateStr, durationHours],
   );
-  const optimalSlots = useMemo(
-    () => computeZoneTimes(orderedZones, dateStr, optimalHour, durationHours),
-    [orderedZones, dateStr, optimalHour, durationHours],
-  );
-  const optimalStartUtc = useMemo(
-    () => wallClockToUtcDate(dateStr, optimalHour, hostZone),
-    [dateStr, optimalHour, hostZone],
-  );
-  const optimalEndUtc = useMemo(
-    () => wallClockToUtcDate(dateStr, optimalHour + durationHours, hostZone),
-    [dateStr, optimalHour, durationHours, hostZone],
-  );
 
   // Manual 15-min nudge on top of the computed "best time". Resets on any edit to the
   // original settings — zones, the date, the start time, or the duration — tracked via
