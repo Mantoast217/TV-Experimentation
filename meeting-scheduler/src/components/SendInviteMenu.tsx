@@ -10,13 +10,14 @@ import {
 } from "../lib/calendarLinks";
 import { CalendarIcon, ExternalLinkIcon, GoogleMeetIcon, OutlookIcon, TeamsIcon } from "./icons";
 
-// Teams is temporarily disabled: the "new Teams" client currently drops the deep link's
-// meeting details, dead-ending on a generic calendar view instead of the compose dialog
-// — a client-side bug outside anything this URL can control. teamsMeetingUrl() stays
-// defined (and tested) so this can be re-enabled with no changes once that's resolved.
+// Teams re-enabled despite a known, unfixed issue: the "new Teams" client currently
+// drops the deep link's meeting details, dead-ending on a generic calendar view instead
+// of the compose dialog — a client-side bug outside anything this URL can control.
+// Deliberately shipped anyway (rather than left disabled) so the option is available;
+// a user hitting the blank calendar view can still fill in details manually there.
 const PLATFORMS = [
   { id: "outlook", label: "Outlook", Icon: OutlookIcon, disabled: false },
-  { id: "teams", label: "Microsoft Teams (coming soon)", Icon: TeamsIcon, disabled: true },
+  { id: "teams", label: "Microsoft Teams", Icon: TeamsIcon, disabled: false },
   { id: "google-meet", label: "Google Meet", Icon: GoogleMeetIcon, disabled: false },
   { id: "ical", label: "Download .ics", Icon: CalendarIcon, disabled: false },
 ] as const;
