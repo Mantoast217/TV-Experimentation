@@ -250,3 +250,91 @@ describe("MeetingScheduler — light/dark mode toggle", () => {
     expect(screen.getByRole("button", { name: "Switch to light mode" })).toBeInTheDocument();
   });
 });
+
+describe("MeetingScheduler — Best time for everyone, manual adjustment", () => {
+  const backButton = () => screen.getByRole("button", { name: /Move best time back 15 minutes/ });
+  const forwardButton = () => screen.getByRole("button", { name: /Move best time forward 15 minutes/ });
+
+  it("shows 'Adjust time' before any nudge", () => {
+    render(<MeetingScheduler />);
+    expect(screen.getByText("Adjust time")).toBeInTheDocument();
+  });
+
+  it("switches to a signed, zero-padded HH:MM offset after a single nudge", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    await user.click(backButton());
+
+    expect(screen.getByText("Adjusted -00:15")).toBeInTheDocument();
+    expect(screen.queryByText("Adjust time")).not.toBeInTheDocument();
+  });
+
+  it("accumulates across repeated clicks and rolls the offset into the hour digit", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    for (let i = 0; i < 5; i++) await user.click(backButton());
+
+    expect(screen.getByText("Adjusted -01:15")).toBeInTheDocument();
+  });
+
+  it("supports the forward direction with a '+' sign", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    await user.click(forwardButton());
+
+    expect(screen.getByText("Adjusted +00:15")).toBeInTheDocument();
+  });
+
+  it("announces the adjustment via a polite live region", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    await user.click(backButton());
+
+    expect(screen.getByText(/^Best time adjusted to/)).toBeInTheDocument();
+  });
+
+  it("resets to 'Adjust time' when a timezone is added", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    await user.click(backButton());
+    expect(screen.getByText("Adjusted -00:15")).toBeInTheDocument();
+
+    const combo = screen.getByRole("combobox", { name: "Add a time zone" });
+    await user.click(combo);
+    await user.type(combo, "Tokyo");
+    const option = await screen.findByRole("option", { name: /^Tokyo — Japan/ });
+    await user.click(option);
+
+    expect(screen.getByText("Adjust time")).toBeInTheDocument();
+    expect(screen.queryByText(/^Adjusted/)).not.toBeInTheDocument();
+  });
+
+  it("resets when only the start time moves — duration (and so the computed best time) doesn't change, since the end time shifts to match it, but this is still an edit to the original settings", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    await user.click(backButton());
+    expect(screen.getByText("Adjusted -00:15")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /Increase start time by 15 minutes/ }));
+
+    expect(screen.getByText("Adjust time")).toBeInTheDocument();
+  });
+
+  it("resets when the end time (duration) changes", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    await user.click(backButton());
+    expect(screen.getByText("Adjusted -00:15")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /Increase end time by 15 minutes/ }));
+
+    expect(screen.getByText("Adjust time")).toBeInTheDocument();
+  });
+});

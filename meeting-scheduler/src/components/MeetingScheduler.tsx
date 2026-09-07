@@ -1,11 +1,20 @@
 import { CalendarDate, Time, today, getLocalTimeZone } from "@internationalized/date";
 import { Button, Calendar, Card, ComboBox, Input, ListBox, Popover, Separator, TimeField } from "@heroui/react";
-import { useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { asItems } from "../lib/collection";
 import { useAnchorZone } from "../lib/useAnchorZone";
 import { useTheme } from "../lib/useTheme";
 import { AnchorZoneCallout } from "./AnchorZoneCallout";
-import { MoonIcon, SunIcon, TriangleAlertIcon } from "./icons";
+import { ChevronLeftIcon, ChevronRightIcon, MoonIcon, SunIcon, TriangleAlertIcon } from "./icons";
+
+/** Signed "+HH:MM"/"-HH:MM", zero-padded — matches the Duration field's own HH:MM styling. */
+function formatSignedOffset(totalMinutes: number): string {
+  const sign = totalMinutes < 0 ? "-" : "+";
+  const absMinutes = Math.abs(totalMinutes);
+  const hours = Math.floor(absMinutes / 60);
+  const minutes = absMinutes % 60;
+  return `${sign}${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
 import { SendInviteMenu } from "./SendInviteMenu";
 import { TimePickerField } from "./TimePickerField";
 import { TimezoneChipList } from "./TimezoneChipList";
@@ -128,6 +137,36 @@ export function MeetingScheduler() {
     () => wallClockToUtcDate(dateStr, optimalHour + durationHours, hostZone),
     [dateStr, optimalHour, durationHours, hostZone],
   );
+
+  // Manual 15-min nudge on top of the computed "best time". Resets on any edit to the
+  // original settings — zones, the date, the start time, or the duration — tracked via
+  // those raw inputs directly rather than the derived optimalHour: a zone or duration
+  // edit doesn't always move the algorithm's answer (e.g. the default single-host,
+  // 09:00-10:00 case has a wide zero-penalty plateau that absorbs small changes without
+  // shifting bestHour), so resetting only when optimalHour's *value* actually differs
+  // would silently fail to reset on a real edit whenever the recomputed value happens to
+  // coincide with the old one.
+  const NUDGE_STEP_MINUTES = 15;
+  const [manualOffsetMinutes, setManualOffsetMinutes] = useState(0);
+  useEffect(() => {
+    setManualOffsetMinutes(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [zones, dateStr, startHour, durationHours]);
+  const isManuallyAdjusted = manualOffsetMinutes !== 0;
+  const adjustedOptimalHour = optimalHour + manualOffsetMinutes / 60;
+  const adjustedOptimalSlots = useMemo(
+    () => computeZoneTimes(orderedZones, dateStr, adjustedOptimalHour, durationHours),
+    [orderedZones, dateStr, adjustedOptimalHour, durationHours],
+  );
+  const adjustedOptimalStartUtc = useMemo(
+    () => wallClockToUtcDate(dateStr, adjustedOptimalHour, hostZone),
+    [dateStr, adjustedOptimalHour, hostZone],
+  );
+  const adjustedOptimalEndUtc = useMemo(
+    () => wallClockToUtcDate(dateStr, adjustedOptimalHour + durationHours, hostZone),
+    [dateStr, adjustedOptimalHour, durationHours, hostZone],
+  );
+  const nudgeOptimalTime = (direction: 1 | -1) => setManualOffsetMinutes((prev) => prev + direction * NUDGE_STEP_MINUTES);
 
   // min-h-dvh (not min-h-screen/100vh): mobile browsers size 100vh against the browser chrome
   // being fully collapsed, so on first load (address bar visible) 100vh overshoots the
@@ -392,6 +431,9 @@ export function MeetingScheduler() {
           </Card.Root>
 
           <h2 className="m-0 text-base font-medium text-foreground">Best time for everyone</h2>
+          <div role="status" aria-live="polite" className="sr-only">
+            {isManuallyAdjusted ? `Best time adjusted to ${adjustedOptimalSlots[0]?.startText ?? ""}` : ""}
+          </div>
           <Card.Root variant="default" className="relative flex-col gap-3 border border-[var(--brand-blue)] bg-accent/10 p-0">
             {/* pr-40: reserves enough space for the invite button, whose ~131px width is fixed
                 regardless of viewport. The old pr-32/sm:pr-36 split under-reserved at every
@@ -399,14 +441,37 @@ export function MeetingScheduler() {
                 is what let the button overlap the date heading on a real phone. */}
             <Card.Content className="flex flex-col gap-1 p-4 px-5 pr-40 text-sm">
               <span className="font-bold">{selectedDateLabel}</span>
-              <ZoneTimeList slots={optimalSlots} />
+              <ZoneTimeList slots={adjustedOptimalSlots} />
+              <div className="mt-2 flex items-center gap-2 border-t border-[var(--brand-blue)]/25 pt-2">
+                <div className="flex items-center gap-0.5">
+                  <button
+                    type="button"
+                    onClick={() => nudgeOptimalTime(-1)}
+                    aria-label={`Move best time back 15 minutes, currently ${adjustedOptimalSlots[0]?.startText ?? ""}`}
+                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+                  >
+                    <ChevronLeftIcon className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => nudgeOptimalTime(1)}
+                    aria-label={`Move best time forward 15 minutes, currently ${adjustedOptimalSlots[0]?.startText ?? ""}`}
+                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded text-muted hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+                  >
+                    <ChevronRightIcon className="h-4 w-4" />
+                  </button>
+                </div>
+                <span className="text-xs text-[var(--secondary-text)]">
+                  {isManuallyAdjusted ? `Adjusted ${formatSignedOffset(manualOffsetMinutes)}` : "Adjust time"}
+                </span>
+              </div>
             </Card.Content>
             <div className="absolute top-4 right-4 sm:right-5">
               <SendInviteMenu
                 title="Meeting"
-                description={formatZoneTimesText(optimalSlots)}
-                start={optimalStartUtc}
-                end={optimalEndUtc}
+                description={formatZoneTimesText(adjustedOptimalSlots)}
+                start={adjustedOptimalStartUtc}
+                end={adjustedOptimalEndUtc}
                 variant="primary"
                 buttonStyle={
                   {
@@ -415,7 +480,7 @@ export function MeetingScheduler() {
                     "--button-bg-pressed": "#0D3F9C",
                   } as CSSProperties
                 }
-                ariaLabel={`Set up invite for the best time for everyone, ${selectedDateLabel}, ${optimalSlots[0]?.startText ?? ""}–${optimalSlots[0]?.endText ?? ""}`}
+                ariaLabel={`Set up invite for the best time for everyone, ${selectedDateLabel}, ${adjustedOptimalSlots[0]?.startText ?? ""}–${adjustedOptimalSlots[0]?.endText ?? ""}`}
                 describedById="invite-note"
               />
             </div>
