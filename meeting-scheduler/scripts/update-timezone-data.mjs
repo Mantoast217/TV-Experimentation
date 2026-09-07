@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * The real, ongoing data source for this app: GeoNames.
+ * The real, ongoing data source for this app: GeoNames, plus IANA's tzdb.
  *
  * Downloads cities15000.zip (every city with population >= 15,000, the smallest
  * GeoNames tier — used as the *input*, not what ships) and countryInfo.txt from
@@ -9,8 +9,16 @@
  * from the same upstream provider, so a city's country is never assembled from
  * an unrelated second source — validates the result against the full download,
  * then curates it down (see curateMajorCitiesAndCapitals) to a size a "search
- * for a city or country" field can render without freezing, before overwriting
- * the committed dataset.
+ * for a city or country" field can render without freezing.
+ *
+ * That major-cities layer alone isn't guaranteed to cover every timezone or
+ * every country (a country's biggest city only covers one of its timezones if
+ * it has several, and some countries — Denmark, Iceland, Vatican City — share
+ * a neighbor's zone entirely and might not independently clear the population/
+ * capital bar). So it's merged with a second, small, independently-sourced
+ * backbone built straight from tzdb's own zone1970.tab and backward files (see
+ * timezoneBackbone.mjs) — one entry per canonical zone, guaranteed complete by
+ * construction — before the result is written.
  *
  * Run on a schedule by .github/workflows/update-timezone-data.yml, which
  * opens a PR rather than pushing straight to main: this script's own
@@ -21,10 +29,13 @@ import { unzipSync } from "fflate";
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { buildTimezoneBackbone, mergeWithBackbone } from "./timezoneBackbone.mjs";
 
 const CITIES_URL = "https://download.geonames.org/export/dump/cities15000.zip";
 const CITIES_ENTRY_NAME = "cities15000.txt";
 const COUNTRY_INFO_URL = "https://download.geonames.org/export/dump/countryInfo.txt";
+const ZONE1970_URL = "https://raw.githubusercontent.com/eggert/tz/main/zone1970.tab";
+const BACKWARD_URL = "https://raw.githubusercontent.com/eggert/tz/main/backward";
 const OUTPUT_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)), "../src/lib/timezoneData.json");
 
 const MIN_EXPECTED_CITY_ROWS = 20_000;
@@ -163,9 +174,11 @@ async function fetchAndUnzipEntry(url, entryName) {
 }
 
 async function main() {
-  const [countryInfoRaw, citiesRaw] = await Promise.all([
+  const [countryInfoRaw, citiesRaw, zone1970Raw, backwardRaw] = await Promise.all([
     fetchText(COUNTRY_INFO_URL),
     fetchAndUnzipEntry(CITIES_URL, CITIES_ENTRY_NAME),
+    fetchText(ZONE1970_URL),
+    fetchText(BACKWARD_URL),
   ]);
 
   const countryByCode = parseCountryInfo(countryInfoRaw);
@@ -177,12 +190,17 @@ async function main() {
   validateEntries(entries);
 
   const curated = curateMajorCitiesAndCapitals(entries);
+  const backbone = buildTimezoneBackbone({ zone1970Raw, backwardRaw, countryInfoRaw });
+  const merged = mergeWithBackbone(curated, backbone, backwardRaw);
+
   // Alphabetical by city — matches how the app itself sorts and presents this list
   // (MeetingScheduler.tsx's availableZones), so the shipped file's order isn't misleading
   // if anyone reads it directly.
-  curated.sort((a, b) => a.city.localeCompare(b.city));
-  writeFileSync(OUTPUT_PATH, JSON.stringify(curated, null, 2) + "\n");
-  console.log(`Wrote ${curated.length} entries to ${OUTPUT_PATH} (curated from ${entries.length} parsed rows)`);
+  merged.sort((a, b) => a.city.localeCompare(b.city));
+  writeFileSync(OUTPUT_PATH, JSON.stringify(merged, null, 2) + "\n");
+  console.log(
+    `Wrote ${merged.length} entries to ${OUTPUT_PATH} (${curated.length} major cities/capitals + ${merged.length - curated.length} backbone entries filling zone/country gaps, from ${entries.length} parsed city rows)`,
+  );
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

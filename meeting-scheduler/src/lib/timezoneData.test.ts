@@ -15,17 +15,23 @@ const KNOWN_CITIES: { city: string; country: string; timezone: string }[] = [
 ];
 
 /**
- * The only two zones tzdb's own zone1970.tab documents as legitimately covering more
- * than one country — not data errors, so exempted from the single-country-per-zone
- * check below. Asia/Bangkok's row lists "TH,CX,KH,LA,VN" (comment: "north Vietnam" —
- * a pre-reunification split tzdb still preserves; southern Vietnam has its own
+ * Zones tzdb's own zone1970.tab documents as legitimately covering more than one
+ * country — not data errors, so exempted from the single-country-per-zone check below.
+ * Asia/Bangkok's row lists "TH,CX,KH,LA,VN" (comment: "north Vietnam" — a
+ * pre-reunification split tzdb still preserves; southern Vietnam has its own
  * Asia/Ho_Chi_Minh). Europe/Belgrade's row lists "RS,XK": Kosovo has no distinct tzdb
- * zone of its own at all. Every other zone in this catalog maps to exactly one country;
- * anything else here would be the Berlin-bug pattern this suite guards against.
+ * zone of its own at all. Asia/Dubai's row lists "AE,OM,RE,SC,TF" (Oman, Réunion,
+ * Seychelles, and French Southern Territories' Crozet Islands all share the UAE's
+ * clock). This catalog now has full zone1970.tab coverage (see
+ * scripts/timezoneBackbone.mjs), so every zone1970.tab row that genuinely lists more
+ * than one country is expected to eventually surface here — anything NOT listed below
+ * mapping to more than one country would be the Berlin-bug pattern this suite guards
+ * against.
  */
 const LEGITIMATE_MULTI_COUNTRY_ZONES: Record<string, string[]> = {
   "Asia/Bangkok": ["TH", "VN"],
   "Europe/Belgrade": ["RS", "XK"],
+  "Asia/Dubai": ["AE", "TF"],
 };
 
 describe("TIMEZONE_CATALOG — known-city regression guard", () => {

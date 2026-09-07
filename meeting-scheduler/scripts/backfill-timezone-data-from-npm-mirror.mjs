@@ -26,6 +26,14 @@
  * against the live, current GeoNames export (scheduled monthly, or triggered
  * manually) — that job's own validation and PR-review gate are untouched by
  * this bridge.
+ *
+ * The major-cities layer alone doesn't guarantee full timezone/country coverage
+ * (see timezoneBackbone.mjs's own header comment), so this also builds that
+ * backbone and merges it in, exactly as update-timezone-data.mjs does. tzdb's
+ * own zone1970.tab and backward files are fetched directly (raw.githubusercontent.com
+ * isn't blocked here); GeoNames' small countryInfo.txt — needed for capital
+ * names, not reachable directly here either — comes from a second, independent
+ * GitHub mirror (nicolas-grekas/geonames-data) purely for this backbone step.
  */
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -33,10 +41,20 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { curateMajorCitiesAndCapitals, parseCities, validateEntries } from "./update-timezone-data.mjs";
+import { buildTimezoneBackbone, mergeWithBackbone } from "./timezoneBackbone.mjs";
 
 const PACKAGE_TARBALL_URL = "https://registry.npmjs.org/cities-15000-structured/-/cities-15000-structured-1.0.1.tgz";
 const BUNDLED_ENTRY_PATH = "package/dist/cities15000.txt";
+const ZONE1970_URL = "https://raw.githubusercontent.com/eggert/tz/main/zone1970.tab";
+const BACKWARD_URL = "https://raw.githubusercontent.com/eggert/tz/main/backward";
+const COUNTRY_INFO_MIRROR_URL = "https://raw.githubusercontent.com/nicolas-grekas/geonames-data/master/data/countryInfo.txt";
 const OUTPUT_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)), "../src/lib/timezoneData.json");
+
+async function fetchText(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch ${url}: HTTP ${res.status}`);
+  return res.text();
+}
 
 /** No network dependency, unlike GeoNames' own countryInfo.txt — ISO alpha-2 -> English country name. */
 function buildCountryByCode(codes) {
@@ -89,14 +107,20 @@ function applyKnownTimezoneCorrections(entries) {
 }
 
 async function main() {
-  const res = await fetch(PACKAGE_TARBALL_URL);
-  if (!res.ok) throw new Error(`Failed to fetch ${PACKAGE_TARBALL_URL}: HTTP ${res.status}`);
-  const buf = Buffer.from(await res.arrayBuffer());
+  const [tarballBuf, zone1970Raw, backwardRaw, countryInfoRaw] = await Promise.all([
+    fetch(PACKAGE_TARBALL_URL).then(async (res) => {
+      if (!res.ok) throw new Error(`Failed to fetch ${PACKAGE_TARBALL_URL}: HTTP ${res.status}`);
+      return Buffer.from(await res.arrayBuffer());
+    }),
+    fetchText(ZONE1970_URL),
+    fetchText(BACKWARD_URL),
+    fetchText(COUNTRY_INFO_MIRROR_URL),
+  ]);
 
   const tmpDir = mkdtempSync(path.join(tmpdir(), "cities15000-"));
   try {
     const tarballPath = path.join(tmpDir, "package.tgz");
-    writeFileSync(tarballPath, buf);
+    writeFileSync(tarballPath, tarballBuf);
     execFileSync("tar", ["-xzf", tarballPath, "-C", tmpDir, BUNDLED_ENTRY_PATH]);
     const citiesRaw = readFileSync(path.join(tmpDir, BUNDLED_ENTRY_PATH), "utf-8");
 
@@ -114,9 +138,14 @@ async function main() {
     validateEntries(entries); // Throws (and aborts before any write) on failure.
 
     const curated = curateMajorCitiesAndCapitals(entries);
-    curated.sort((a, b) => a.city.localeCompare(b.city)); // Matches the app's own display order.
-    writeFileSync(OUTPUT_PATH, JSON.stringify(curated, null, 2) + "\n");
-    console.log(`Wrote ${curated.length} entries to ${OUTPUT_PATH} (curated from ${entries.length} parsed rows)`);
+    const backbone = buildTimezoneBackbone({ zone1970Raw, backwardRaw, countryInfoRaw });
+    const merged = mergeWithBackbone(curated, backbone, backwardRaw);
+
+    merged.sort((a, b) => a.city.localeCompare(b.city)); // Matches the app's own display order.
+    writeFileSync(OUTPUT_PATH, JSON.stringify(merged, null, 2) + "\n");
+    console.log(
+      `Wrote ${merged.length} entries to ${OUTPUT_PATH} (${curated.length} major cities/capitals + ${merged.length - curated.length} backbone entries filling zone/country gaps, from ${entries.length} parsed rows)`,
+    );
   } finally {
     rmSync(tmpDir, { recursive: true, force: true });
   }

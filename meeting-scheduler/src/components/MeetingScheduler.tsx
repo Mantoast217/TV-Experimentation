@@ -194,11 +194,13 @@ export function MeetingScheduler() {
               />
               <ComboBox.Trigger />
             </ComboBox.InputGroup>
-            {/* max-h-72: even with availableZones capped to MAX_VISIBLE_ZONE_RESULTS, without
-                a max-height the popover renders full-height (measured ~12,460px against the
-                old, smaller catalog), which can open upward and cover the page header on a
-                short viewport. The popover already has overflow-y-auto built in
-                (combo-box.css), so this just gives it something to actually scroll within. */}
+            {/* max-h-72: without a max-height the popover renders full-height (measured
+                ~12,460px against an earlier, much larger catalog), which can open upward
+                and cover the page header on a short viewport. The popover already has
+                overflow-y-auto built in (combo-box.css), so this just gives it something
+                to actually scroll within — the ~800-entry catalog itself renders in full,
+                unpaginated (verified live: render time is flat regardless of result count
+                at this scale, see MeetingScheduler.test.tsx). */}
             <ComboBox.Popover className="max-h-72">
               <ListBox<TimeZoneCatalogEntry> items={asItems(availableZones)}>
                 {(zone) => (

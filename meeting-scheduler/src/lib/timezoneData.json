@@ -40,6 +40,13 @@
     "population": 1963264
   },
   {
+    "id": "us-adak-zone",
+    "city": "Adak",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Adak"
+  },
+  {
     "id": "pn-adamstown-4030723",
     "city": "Adamstown",
     "country": "Pitcairn Islands",
@@ -176,6 +183,20 @@
     "population": 741636
   },
   {
+    "id": "ru-anadyr-zone",
+    "city": "Anadyr",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Asia/Anadyr"
+  },
+  {
+    "id": "us-anchorage-zone",
+    "city": "Anchorage",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Anchorage"
+  },
+  {
     "id": "ad-andorra-la-vella-3041563",
     "city": "Andorra la Vella",
     "country": "Andorra",
@@ -232,6 +253,27 @@
     "population": 40407
   },
   {
+    "id": "kz-aqtau-zone",
+    "city": "Aqtau",
+    "country": "Kazakhstan",
+    "countryCode": "KZ",
+    "timezone": "Asia/Aqtau"
+  },
+  {
+    "id": "kz-aqtobe-zone",
+    "city": "Aqtobe",
+    "country": "Kazakhstan",
+    "countryCode": "KZ",
+    "timezone": "Asia/Aqtobe"
+  },
+  {
+    "id": "br-araguaina-zone",
+    "city": "Araguaina",
+    "country": "Brazil",
+    "countryCode": "BR",
+    "timezone": "America/Araguaina"
+  },
+  {
     "id": "pe-arequipa-3947322",
     "city": "Arequipa",
     "country": "Peru",
@@ -264,6 +306,13 @@
     "population": 345604
   },
   {
+    "id": "ru-astrakhan-zone",
+    "city": "Astrakhan",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Europe/Astrakhan"
+  },
+  {
     "id": "py-asuncion-3439389",
     "city": "Asunción",
     "country": "Paraguay",
@@ -278,6 +327,13 @@
     "countryCode": "GR",
     "timezone": "Europe/Athens",
     "population": 664046
+  },
+  {
+    "id": "kz-atyrau-zone",
+    "city": "Atyrau",
+    "country": "Kazakhstan",
+    "countryCode": "KZ",
+    "timezone": "Asia/Atyrau"
   },
   {
     "id": "in-aurangabad-1278149",
@@ -296,12 +352,26 @@
     "population": 13373
   },
   {
+    "id": "pt-azores-zone",
+    "city": "Azores",
+    "country": "Portugal",
+    "countryCode": "PT",
+    "timezone": "Atlantic/Azores"
+  },
+  {
     "id": "iq-baghdad-98182",
     "city": "Baghdad",
     "country": "Iraq",
     "countryCode": "IQ",
     "timezone": "Asia/Baghdad",
     "population": 7216000
+  },
+  {
+    "id": "mx-bahia-banderas-zone",
+    "city": "Bahia Banderas",
+    "country": "Mexico",
+    "countryCode": "MX",
+    "timezone": "America/Bahia_Banderas"
   },
   {
     "id": "az-baku-587084",
@@ -398,6 +468,13 @@
     "countryCode": "ES",
     "timezone": "Europe/Madrid",
     "population": 1620343
+  },
+  {
+    "id": "ru-barnaul-zone",
+    "city": "Barnaul",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Asia/Barnaul"
   },
   {
     "id": "ve-barquisimeto-3648522",
@@ -544,6 +621,13 @@
     "population": 121631
   },
   {
+    "id": "us-beulah-zone",
+    "city": "Beulah",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/North_Dakota/Beulah"
+  },
+  {
     "id": "in-bhopal-1275841",
     "city": "Bhopāl",
     "country": "India",
@@ -584,6 +668,13 @@
     "population": 388028
   },
   {
+    "id": "br-boa-vista-zone",
+    "city": "Boa Vista",
+    "country": "Brazil",
+    "countryCode": "BR",
+    "timezone": "America/Boa_Vista"
+  },
+  {
     "id": "id-bogor-1648473",
     "city": "Bogor",
     "country": "Indonesia",
@@ -598,6 +689,20 @@
     "countryCode": "CO",
     "timezone": "America/Bogota",
     "population": 7674366
+  },
+  {
+    "id": "us-boise-zone",
+    "city": "Boise",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Boise"
+  },
+  {
+    "id": "pg-bougainville-zone",
+    "city": "Bougainville",
+    "country": "Papua New Guinea",
+    "countryCode": "PG",
+    "timezone": "Pacific/Bougainville"
   },
   {
     "id": "cn-bozhou-1816234",
@@ -646,6 +751,13 @@
     "countryCode": "AU",
     "timezone": "Australia/Brisbane",
     "population": 2582007
+  },
+  {
+    "id": "au-broken-hill-zone",
+    "city": "Broken Hill",
+    "country": "Australia",
+    "countryCode": "AU",
+    "timezone": "Australia/Broken_Hill"
   },
   {
     "id": "us-brooklyn-5110302",
@@ -776,6 +888,13 @@
     "population": 1871242
   },
   {
+    "id": "ca-cambridge-bay-zone",
+    "city": "Cambridge Bay",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Cambridge_Bay"
+  },
+  {
     "id": "br-campinas-3467865",
     "city": "Campinas",
     "country": "Brazil",
@@ -784,12 +903,33 @@
     "population": 1031554
   },
   {
+    "id": "br-campo-grande-zone",
+    "city": "Campo Grande",
+    "country": "Brazil",
+    "countryCode": "BR",
+    "timezone": "America/Campo_Grande"
+  },
+  {
+    "id": "es-canary-zone",
+    "city": "Canary",
+    "country": "Spain",
+    "countryCode": "ES",
+    "timezone": "Atlantic/Canary"
+  },
+  {
     "id": "au-canberra-2172517",
     "city": "Canberra",
     "country": "Australia",
     "countryCode": "AU",
     "timezone": "Australia/Sydney",
     "population": 367752
+  },
+  {
+    "id": "mx-cancun-zone",
+    "city": "Cancun",
+    "country": "Mexico",
+    "countryCode": "MX",
+    "timezone": "America/Cancun"
   },
   {
     "id": "za-cape-town-3369157",
@@ -816,6 +956,13 @@
     "population": 3144909
   },
   {
+    "id": "aq-casey-zone",
+    "city": "Casey",
+    "country": "Antarctica",
+    "countryCode": "AQ",
+    "timezone": "Antarctica/Casey"
+  },
+  {
     "id": "lc-castries-3576812",
     "city": "Castries",
     "country": "St. Lucia",
@@ -824,12 +971,40 @@
     "population": 20000
   },
   {
+    "id": "ar-catamarca-zone",
+    "city": "Catamarca",
+    "country": "Argentina",
+    "countryCode": "AR",
+    "timezone": "America/Argentina/Catamarca"
+  },
+  {
     "id": "gf-cayenne-3382160",
     "city": "Cayenne",
     "country": "French Guiana",
     "countryCode": "GF",
     "timezone": "America/Cayenne",
     "population": 61550
+  },
+  {
+    "id": "us-center-zone",
+    "city": "Center",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/North_Dakota/Center"
+  },
+  {
+    "id": "es-ceuta-zone",
+    "city": "Ceuta",
+    "country": "Spain",
+    "countryCode": "ES",
+    "timezone": "Africa/Ceuta"
+  },
+  {
+    "id": "io-chagos-zone",
+    "city": "Chagos",
+    "country": "British Indian Ocean Territory",
+    "countryCode": "IO",
+    "timezone": "Indian/Chagos"
   },
   {
     "id": "cn-changchun-2038180",
@@ -896,6 +1071,13 @@
     "population": 20000
   },
   {
+    "id": "nz-chatham-zone",
+    "city": "Chatham",
+    "country": "New Zealand",
+    "countryCode": "NZ",
+    "timezone": "Pacific/Chatham"
+  },
+  {
     "id": "bd-chattogram-1205733",
     "city": "Chattogram",
     "country": "Bangladesh",
@@ -936,12 +1118,26 @@
     "population": 2696555
   },
   {
+    "id": "mx-chihuahua-zone",
+    "city": "Chihuahua",
+    "country": "Mexico",
+    "countryCode": "MX",
+    "timezone": "America/Chihuahua"
+  },
+  {
     "id": "md-chisinau-618426",
     "city": "Chisinau",
     "country": "Moldova",
     "countryCode": "MD",
     "timezone": "Europe/Chisinau",
     "population": 635994
+  },
+  {
+    "id": "ru-chita-zone",
+    "city": "Chita",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Asia/Chita"
   },
   {
     "id": "cn-chongqing-1814906",
@@ -1032,6 +1228,20 @@
     "population": 1317298
   },
   {
+    "id": "cl-coyhaique-zone",
+    "city": "Coyhaique",
+    "country": "Chile",
+    "countryCode": "CL",
+    "timezone": "America/Coyhaique"
+  },
+  {
+    "id": "br-cuiaba-zone",
+    "city": "Cuiaba",
+    "country": "Brazil",
+    "countryCode": "BR",
+    "timezone": "America/Cuiaba"
+  },
+  {
     "id": "br-curitiba-3464975",
     "city": "Curitiba",
     "country": "Brazil",
@@ -1096,6 +1306,13 @@
     "population": 1252523
   },
   {
+    "id": "gl-danmarkshavn-zone",
+    "city": "Danmarkshavn",
+    "country": "Greenland",
+    "countryCode": "GL",
+    "timezone": "America/Danmarkshavn"
+  },
+  {
     "id": "cn-daqing-2037860",
     "city": "Daqing",
     "country": "China",
@@ -1110,6 +1327,13 @@
     "countryCode": "TZ",
     "timezone": "Africa/Dar_es_Salaam",
     "population": 5383728
+  },
+  {
+    "id": "au-darwin-zone",
+    "city": "Darwin",
+    "country": "Australia",
+    "countryCode": "AU",
+    "timezone": "Australia/Darwin"
   },
   {
     "id": "cn-datong-2037799",
@@ -1128,6 +1352,27 @@
     "population": 1776949
   },
   {
+    "id": "aq-davis-zone",
+    "city": "Davis",
+    "country": "Antarctica",
+    "countryCode": "AQ",
+    "timezone": "Antarctica/Davis"
+  },
+  {
+    "id": "ca-dawson-zone",
+    "city": "Dawson",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Dawson"
+  },
+  {
+    "id": "ca-dawson-creek-zone",
+    "city": "Dawson Creek",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Dawson_Creek"
+  },
+  {
     "id": "cn-dazhou-1813325",
     "city": "Dazhou",
     "country": "China",
@@ -1144,12 +1389,26 @@
     "population": 10927986
   },
   {
+    "id": "us-denver-zone",
+    "city": "Denver",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Denver"
+  },
+  {
     "id": "id-depok-1645524",
     "city": "Depok",
     "country": "Indonesia",
     "countryCode": "ID",
     "timezone": "Asia/Jakarta",
     "population": 2056400
+  },
+  {
+    "id": "us-detroit-zone",
+    "city": "Detroit",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Detroit"
   },
   {
     "id": "bd-dhaka-1185241",
@@ -1264,6 +1523,13 @@
     "population": 679400
   },
   {
+    "id": "cl-easter-zone",
+    "city": "Easter",
+    "country": "Chile",
+    "countryCode": "CL",
+    "timezone": "Pacific/Easter"
+  },
+  {
     "id": "mx-ecatepec-de-morelos-3529612",
     "city": "Ecatepec de Morelos",
     "country": "Mexico",
@@ -1280,6 +1546,20 @@
     "population": 1010899
   },
   {
+    "id": "br-eirunepe-zone",
+    "city": "Eirunepe",
+    "country": "Brazil",
+    "countryCode": "BR",
+    "timezone": "America/Eirunepe"
+  },
+  {
+    "id": "eh-el-aaiun-zone",
+    "city": "El Aaiun",
+    "country": "Western Sahara",
+    "countryCode": "EH",
+    "timezone": "Africa/El_Aaiun"
+  },
+  {
     "id": "iq-erbil-95446",
     "city": "Erbil",
     "country": "Iraq",
@@ -1288,12 +1568,33 @@
     "population": 1612700
   },
   {
+    "id": "au-eucla-zone",
+    "city": "Eucla",
+    "country": "Australia",
+    "countryCode": "AU",
+    "timezone": "Australia/Eucla"
+  },
+  {
     "id": "pk-faisalabad-1179400",
     "city": "Faisalabad",
     "country": "Pakistan",
     "countryCode": "PK",
     "timezone": "Asia/Karachi",
     "population": 2506595
+  },
+  {
+    "id": "tk-fakaofo-zone",
+    "city": "Fakaofo",
+    "country": "Tokelau",
+    "countryCode": "TK",
+    "timezone": "Pacific/Fakaofo"
+  },
+  {
+    "id": "cy-famagusta-zone",
+    "city": "Famagusta",
+    "country": "Cyprus",
+    "countryCode": "CY",
+    "timezone": "Asia/Famagusta"
   },
   {
     "id": "in-faridabad-1271951",
@@ -1310,6 +1611,13 @@
     "countryCode": "CX",
     "timezone": "Indian/Christmas",
     "population": 500
+  },
+  {
+    "id": "ca-fort-nelson-zone",
+    "city": "Fort Nelson",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Fort_Nelson"
   },
   {
     "id": "mq-fort-de-france-3570675",
@@ -1400,12 +1708,33 @@
     "population": 208411
   },
   {
+    "id": "ec-galapagos-zone",
+    "city": "Galapagos",
+    "country": "Ecuador",
+    "countryCode": "EC",
+    "timezone": "Pacific/Galapagos"
+  },
+  {
+    "id": "pf-gambier-zone",
+    "city": "Gambier",
+    "country": "French Polynesia",
+    "countryCode": "PF",
+    "timezone": "Pacific/Gambier"
+  },
+  {
     "id": "cn-ganzhou-1810638",
     "city": "Ganzhou",
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 1977253
+  },
+  {
+    "id": "ps-gaza-zone",
+    "city": "Gaza",
+    "country": "Palestinian Territory",
+    "countryCode": "PS",
+    "timezone": "Asia/Gaza"
   },
   {
     "id": "tr-gaziantep-314830",
@@ -1464,12 +1793,33 @@
     "population": 4367343
   },
   {
+    "id": "ca-glace-bay-zone",
+    "city": "Glace Bay",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Glace_Bay"
+  },
+  {
     "id": "br-goiania-3462377",
     "city": "Goiânia",
     "country": "Brazil",
     "countryCode": "BR",
     "timezone": "America/Sao_Paulo",
     "population": 1536097
+  },
+  {
+    "id": "ca-golden-zone",
+    "city": "Golden",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Brit_Columbia/Golden"
+  },
+  {
+    "id": "ca-goose-bay-zone",
+    "city": "Goose Bay",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Goose_Bay"
   },
   {
     "id": "in-gorakhpur-1270926",
@@ -1616,6 +1966,13 @@
     "population": 2873358
   },
   {
+    "id": "ca-halifax-zone",
+    "city": "Halifax",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Halifax"
+  },
+  {
     "id": "de-hamburg-2911298",
     "city": "Hamburg",
     "country": "Germany",
@@ -1696,6 +2053,13 @@
     "population": 2163824
   },
   {
+    "id": "ps-hebron-zone",
+    "city": "Hebron",
+    "country": "Palestinian Territory",
+    "countryCode": "PS",
+    "timezone": "Asia/Hebron"
+  },
+  {
     "id": "cn-hefei-1808722",
     "city": "Hefei",
     "country": "China",
@@ -1718,6 +2082,13 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 1075516
+  },
+  {
+    "id": "mx-hermosillo-zone",
+    "city": "Hermosillo",
+    "country": "Mexico",
+    "countryCode": "MX",
+    "timezone": "America/Hermosillo"
   },
   {
     "id": "cn-heze-1808198",
@@ -1752,6 +2123,13 @@
     "population": 8993082
   },
   {
+    "id": "au-hobart-zone",
+    "city": "Hobart",
+    "country": "Australia",
+    "countryCode": "AU",
+    "timezone": "Australia/Hobart"
+  },
+  {
     "id": "cn-hohhot-2036892",
     "city": "Hohhot",
     "country": "China",
@@ -1776,12 +2154,26 @@
     "population": 56298
   },
   {
+    "id": "us-honolulu-zone",
+    "city": "Honolulu",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "Pacific/Honolulu"
+  },
+  {
     "id": "us-houston-4699066",
     "city": "Houston",
     "country": "United States",
     "countryCode": "US",
     "timezone": "America/Chicago",
     "population": 2304580
+  },
+  {
+    "id": "mn-hovd-zone",
+    "city": "Hovd",
+    "country": "Mongolia",
+    "countryCode": "MN",
+    "timezone": "Asia/Hovd"
   },
   {
     "id": "cn-huai-an-1797873",
@@ -1856,12 +2248,40 @@
     "population": 2954955
   },
   {
+    "id": "us-indianapolis-zone",
+    "city": "Indianapolis",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Indiana/Indianapolis"
+  },
+  {
     "id": "in-indore-1269743",
     "city": "Indore",
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
     "population": 1837041
+  },
+  {
+    "id": "ca-inuvik-zone",
+    "city": "Inuvik",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Inuvik"
+  },
+  {
+    "id": "ca-iqaluit-zone",
+    "city": "Iqaluit",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Iqaluit"
+  },
+  {
+    "id": "ru-irkutsk-zone",
+    "city": "Irkutsk",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Asia/Irkutsk"
   },
   {
     "id": "ir-isfahan-418863",
@@ -1944,6 +2364,13 @@
     "population": 1339438
   },
   {
+    "id": "id-jayapura-zone",
+    "city": "Jayapura",
+    "country": "Indonesia",
+    "countryCode": "ID",
+    "timezone": "Asia/Jayapura"
+  },
+  {
     "id": "sa-jeddah-105343",
     "city": "Jeddah",
     "country": "Saudi Arabia",
@@ -1958,6 +2385,13 @@
     "countryCode": "ID",
     "timezone": "Asia/Jakarta",
     "population": 1257912
+  },
+  {
+    "id": "il-jerusalem-zone",
+    "city": "Jerusalem",
+    "country": "Israel",
+    "countryCode": "IL",
+    "timezone": "Asia/Jerusalem"
   },
   {
     "id": "cn-jiangmen-1806299",
@@ -2072,6 +2506,20 @@
     "population": 450000
   },
   {
+    "id": "ar-jujuy-zone",
+    "city": "Jujuy",
+    "country": "Argentina",
+    "countryCode": "AR",
+    "timezone": "America/Argentina/Jujuy"
+  },
+  {
+    "id": "us-juneau-zone",
+    "city": "Juneau",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Juneau"
+  },
+  {
     "id": "af-kabul-1138958",
     "city": "Kabul",
     "country": "Afghanistan",
@@ -2104,6 +2552,13 @@
     "population": 1867579
   },
   {
+    "id": "ru-kaliningrad-zone",
+    "city": "Kaliningrad",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Europe/Kaliningrad"
+  },
+  {
     "id": "in-kallakurichi-12165956",
     "city": "Kallakurichi",
     "country": "India",
@@ -2118,6 +2573,13 @@
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
     "population": 1262255
+  },
+  {
+    "id": "ru-kamchatka-zone",
+    "city": "Kamchatka",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Asia/Kamchatka"
   },
   {
     "id": "ug-kampala-232422",
@@ -2142,6 +2604,13 @@
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
     "population": 2823249
+  },
+  {
+    "id": "ki-kanton-zone",
+    "city": "Kanton",
+    "country": "Kiribati",
+    "countryCode": "KI",
+    "timezone": "Pacific/Kanton"
   },
   {
     "id": "tw-kaohsiung-1673820",
@@ -2208,6 +2677,13 @@
     "population": 1243500
   },
   {
+    "id": "ru-khandyga-zone",
+    "city": "Khandyga",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Asia/Khandyga"
+  },
+  {
     "id": "ua-kharkiv-706483",
     "city": "Kharkiv",
     "country": "Ukraine",
@@ -2272,12 +2748,33 @@
     "population": 7785965
   },
   {
+    "id": "ki-kiritimati-zone",
+    "city": "Kiritimati",
+    "country": "Kiribati",
+    "countryCode": "KI",
+    "timezone": "Pacific/Kiritimati"
+  },
+  {
     "id": "iq-kirkuk-94787",
     "city": "Kirkuk",
     "country": "Iraq",
     "countryCode": "IQ",
     "timezone": "Asia/Baghdad",
     "population": 1031000
+  },
+  {
+    "id": "ru-kirov-zone",
+    "city": "Kirov",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Europe/Kirov"
+  },
+  {
+    "id": "us-knox-zone",
+    "city": "Knox",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Indiana/Knox"
   },
   {
     "id": "jp-kobe-1859171",
@@ -2302,6 +2799,13 @@
     "countryCode": "TR",
     "timezone": "Europe/Istanbul",
     "population": 1390051
+  },
+  {
+    "id": "fm-kosrae-zone",
+    "city": "Kosrae",
+    "country": "Micronesia",
+    "countryCode": "FM",
+    "timezone": "Pacific/Kosrae"
   },
   {
     "id": "hk-kowloon-1819609",
@@ -2336,6 +2840,13 @@
     "population": 1453975
   },
   {
+    "id": "my-kuching-zone",
+    "city": "Kuching",
+    "country": "Malaysia",
+    "countryCode": "MY",
+    "timezone": "Asia/Kuching"
+  },
+  {
     "id": "gh-kumasi-2298890",
     "city": "Kumasi",
     "country": "Ghana",
@@ -2368,6 +2879,13 @@
     "population": 60064
   },
   {
+    "id": "mh-kwajalein-zone",
+    "city": "Kwajalein",
+    "country": "Marshall Islands",
+    "countryCode": "MH",
+    "timezone": "Pacific/Kwajalein"
+  },
+  {
     "id": "ua-kyiv-703448",
     "city": "Kyiv",
     "country": "Ukraine",
@@ -2390,6 +2908,13 @@
     "countryCode": "BO",
     "timezone": "America/La_Paz",
     "population": 2004652
+  },
+  {
+    "id": "ar-la-rioja-zone",
+    "city": "La Rioja",
+    "country": "Argentina",
+    "countryCode": "AR",
+    "timezone": "America/Argentina/La_Rioja"
   },
   {
     "id": "ng-lagos-2332459",
@@ -2464,6 +2989,13 @@
     "population": 7737002
   },
   {
+    "id": "au-lindeman-zone",
+    "city": "Lindeman",
+    "country": "Australia",
+    "countryCode": "AU",
+    "timezone": "Australia/Lindeman"
+  },
+  {
     "id": "cn-linyi-1803318",
     "city": "Linyi",
     "country": "China",
@@ -2536,12 +3068,26 @@
     "population": 2368
   },
   {
+    "id": "au-lord-howe-zone",
+    "city": "Lord Howe",
+    "country": "Australia",
+    "countryCode": "AU",
+    "timezone": "Australia/Lord_Howe"
+  },
+  {
     "id": "us-los-angeles-5368361",
     "city": "Los Angeles",
     "country": "United States",
     "countryCode": "US",
     "timezone": "America/Los_Angeles",
     "population": 3898747
+  },
+  {
+    "id": "us-louisville-zone",
+    "city": "Louisville",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Kentucky/Louisville"
   },
   {
     "id": "cn-lu-an-1802206",
@@ -2632,6 +3178,20 @@
     "population": 1031597
   },
   {
+    "id": "au-macquarie-zone",
+    "city": "Macquarie",
+    "country": "Australia",
+    "countryCode": "AU",
+    "timezone": "Antarctica/Macquarie"
+  },
+  {
+    "id": "pt-madeira-zone",
+    "city": "Madeira",
+    "country": "Portugal",
+    "countryCode": "PT",
+    "timezone": "Atlantic/Madeira"
+  },
+  {
     "id": "es-madrid-3117735",
     "city": "Madrid",
     "country": "Spain",
@@ -2646,6 +3206,13 @@
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
     "population": 1465625
+  },
+  {
+    "id": "ru-magadan-zone",
+    "city": "Magadan",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Asia/Magadan"
   },
   {
     "id": "mh-majuro-2113779",
@@ -2776,6 +3343,13 @@
     "population": 1754256
   },
   {
+    "id": "us-marengo-zone",
+    "city": "Marengo",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Indiana/Marengo"
+  },
+  {
     "id": "ax-mariehamn-3041732",
     "city": "Mariehamn",
     "country": "Åland Islands",
@@ -2790,6 +3364,13 @@
     "countryCode": "MF",
     "timezone": "America/Marigot",
     "population": 5700
+  },
+  {
+    "id": "pf-marquesas-zone",
+    "city": "Marquesas",
+    "country": "French Polynesia",
+    "countryCode": "PF",
+    "timezone": "Pacific/Marquesas"
   },
   {
     "id": "ls-maseru-932505",
@@ -2816,12 +3397,33 @@
     "population": 1200
   },
   {
+    "id": "mx-matamoros-zone",
+    "city": "Matamoros",
+    "country": "Mexico",
+    "countryCode": "MX",
+    "timezone": "America/Matamoros"
+  },
+  {
     "id": "mz-matola-1039854",
     "city": "Matola",
     "country": "Mozambique",
     "countryCode": "MZ",
     "timezone": "Africa/Maputo",
     "population": 1032197
+  },
+  {
+    "id": "aq-mawson-zone",
+    "city": "Mawson",
+    "country": "Antarctica",
+    "countryCode": "AQ",
+    "timezone": "Antarctica/Mawson"
+  },
+  {
+    "id": "mx-mazatlan-zone",
+    "city": "Mazatlan",
+    "country": "Mexico",
+    "countryCode": "MX",
+    "timezone": "America/Mazatlan"
   },
   {
     "id": "sz-mbabane-934985",
@@ -2888,12 +3490,33 @@
     "population": 4917750
   },
   {
+    "id": "ar-mendoza-zone",
+    "city": "Mendoza",
+    "country": "Argentina",
+    "countryCode": "AR",
+    "timezone": "America/Argentina/Mendoza"
+  },
+  {
+    "id": "us-menominee-zone",
+    "city": "Menominee",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Menominee"
+  },
+  {
     "id": "mx-merida-3523349",
     "city": "Mérida",
     "country": "Mexico",
     "countryCode": "MX",
     "timezone": "America/Merida",
     "population": 1201000
+  },
+  {
+    "id": "us-metlakatla-zone",
+    "city": "Metlakatla",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Metlakatla"
   },
   {
     "id": "mx-mexicali-3996069",
@@ -2960,6 +3583,13 @@
     "population": 32965
   },
   {
+    "id": "ca-moncton-zone",
+    "city": "Moncton",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Moncton"
+  },
+  {
     "id": "lr-monrovia-2274895",
     "city": "Monrovia",
     "country": "Liberia",
@@ -2982,6 +3612,13 @@
     "countryCode": "UY",
     "timezone": "America/Montevideo",
     "population": 1270737
+  },
+  {
+    "id": "us-monticello-zone",
+    "city": "Monticello",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Kentucky/Monticello"
   },
   {
     "id": "ca-montreal-6077243",
@@ -3192,6 +3829,13 @@
     "population": 317797
   },
   {
+    "id": "us-new-salem-zone",
+    "city": "New Salem",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/North_Dakota/New_Salem"
+  },
+  {
     "id": "us-new-york-city-5128581",
     "city": "New York City",
     "country": "United States",
@@ -3240,6 +3884,20 @@
     "population": 1259013
   },
   {
+    "id": "us-nome-zone",
+    "city": "Nome",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Nome"
+  },
+  {
+    "id": "br-noronha-zone",
+    "city": "Noronha",
+    "country": "Brazil",
+    "countryCode": "BR",
+    "timezone": "America/Noronha"
+  },
+  {
     "id": "mr-nouakchott-2377450",
     "city": "Nouakchott",
     "country": "Mauritania",
@@ -3254,6 +3912,13 @@
     "countryCode": "NC",
     "timezone": "Pacific/Noumea",
     "population": 93060
+  },
+  {
+    "id": "ru-novokuznetsk-zone",
+    "city": "Novokuznetsk",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Asia/Novokuznetsk"
   },
   {
     "id": "ru-novosibirsk-1496747",
@@ -3296,6 +3961,13 @@
     "population": 1015826
   },
   {
+    "id": "mx-ojinaga-zone",
+    "city": "Ojinaga",
+    "country": "Mexico",
+    "countryCode": "MX",
+    "timezone": "America/Ojinaga"
+  },
+  {
     "id": "sd-omdurman-365137",
     "city": "Omdurman",
     "country": "Sudan",
@@ -3318,6 +3990,13 @@
     "countryCode": "NG",
     "timezone": "Africa/Lagos",
     "population": 1553000
+  },
+  {
+    "id": "kz-oral-zone",
+    "city": "Oral",
+    "country": "Kazakhstan",
+    "countryCode": "KZ",
+    "timezone": "Asia/Oral"
   },
   {
     "id": "aw-oranjestad-3577154",
@@ -3392,6 +4071,13 @@
     "population": 0
   },
   {
+    "id": "aq-palmer-zone",
+    "city": "Palmer",
+    "country": "Antarctica",
+    "countryCode": "AQ",
+    "timezone": "Antarctica/Palmer"
+  },
+  {
     "id": "pa-panama-3703443",
     "city": "Panamá",
     "country": "Panama",
@@ -3456,6 +4142,13 @@
     "population": 1218773
   },
   {
+    "id": "us-petersburg-zone",
+    "city": "Petersburg",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Indiana/Petersburg"
+  },
+  {
     "id": "us-philadelphia-4560349",
     "city": "Philadelphia",
     "country": "United States",
@@ -3512,6 +4205,13 @@
     "population": 236852
   },
   {
+    "id": "id-pontianak-zone",
+    "city": "Pontianak",
+    "country": "Indonesia",
+    "countryCode": "ID",
+    "timezone": "Asia/Pontianak"
+  },
+  {
     "id": "ng-port-harcourt-2324774",
     "city": "Port Harcourt",
     "country": "Nigeria",
@@ -3552,6 +4252,13 @@
     "population": 1234742
   },
   {
+    "id": "tf-port-aux-francais-zone",
+    "city": "Port-aux-Francais",
+    "country": "French Southern Territories",
+    "countryCode": "TF",
+    "timezone": "Asia/Dubai"
+  },
+  {
     "id": "tf-port-aux-francais-1546102",
     "city": "Port-aux-Français",
     "country": "French Southern Territories",
@@ -3574,6 +4281,13 @@
     "countryCode": "BR",
     "timezone": "America/Sao_Paulo",
     "population": 1488252
+  },
+  {
+    "id": "br-porto-velho-zone",
+    "city": "Porto Velho",
+    "country": "Brazil",
+    "countryCode": "BR",
+    "timezone": "America/Porto_Velho"
   },
   {
     "id": "bj-porto-novo-2392087",
@@ -3632,6 +4346,13 @@
     "population": 3124458
   },
   {
+    "id": "cl-punta-arenas-zone",
+    "city": "Punta Arenas",
+    "country": "Chile",
+    "countryCode": "CL",
+    "timezone": "America/Punta_Arenas"
+  },
+  {
     "id": "cn-putian-1798449",
     "city": "Putian",
     "country": "China",
@@ -3680,6 +4401,13 @@
     "population": 1296300
   },
   {
+    "id": "kz-qostanay-zone",
+    "city": "Qostanay",
+    "country": "Kazakhstan",
+    "countryCode": "KZ",
+    "timezone": "Asia/Qostanay"
+  },
+  {
     "id": "cn-quanzhou-1797353",
     "city": "Quanzhou",
     "country": "China",
@@ -3718,6 +4446,13 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 1408500
+  },
+  {
+    "id": "kz-qyzylorda-zone",
+    "city": "Qyzylorda",
+    "country": "Kazakhstan",
+    "countryCode": "KZ",
+    "timezone": "Asia/Qyzylorda"
   },
   {
     "id": "lb-ra-s-bayrut-268743",
@@ -3760,6 +4495,13 @@
     "population": 1031388
   },
   {
+    "id": "ca-rankin-inlet-zone",
+    "city": "Rankin Inlet",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Rankin_Inlet"
+  },
+  {
     "id": "pk-rawalpindi-1166993",
     "city": "Rawalpindi",
     "country": "Pakistan",
@@ -3774,6 +4516,20 @@
     "countryCode": "BR",
     "timezone": "America/Recife",
     "population": 1653461
+  },
+  {
+    "id": "ca-regina-zone",
+    "city": "Regina",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Regina"
+  },
+  {
+    "id": "ca-resolute-zone",
+    "city": "Resolute",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Resolute"
   },
   {
     "id": "is-reykjavik-3413829",
@@ -3792,12 +4548,26 @@
     "population": 742572
   },
   {
+    "id": "br-rio-branco-zone",
+    "city": "Rio Branco",
+    "country": "Brazil",
+    "countryCode": "BR",
+    "timezone": "America/Rio_Branco"
+  },
+  {
     "id": "br-rio-de-janeiro-3451190",
     "city": "Rio de Janeiro",
     "country": "Brazil",
     "countryCode": "BR",
     "timezone": "America/Sao_Paulo",
     "population": 6747815
+  },
+  {
+    "id": "ar-rio-gallegos-zone",
+    "city": "Rio Gallegos",
+    "country": "Argentina",
+    "countryCode": "AR",
+    "timezone": "America/Argentina/Rio_Gallegos"
   },
   {
     "id": "sa-riyadh-108410",
@@ -3838,6 +4608,13 @@
     "countryCode": "RU",
     "timezone": "Europe/Moscow",
     "population": 1130305
+  },
+  {
+    "id": "aq-rothera-zone",
+    "city": "Rothera",
+    "country": "Antarctica",
+    "countryCode": "AQ",
+    "timezone": "Antarctica/Rothera"
   },
   {
     "id": "gd-saint-george-s-3579925",
@@ -3912,6 +4689,20 @@
     "population": 1324854
   },
   {
+    "id": "ru-sakhalin-zone",
+    "city": "Sakhalin",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Asia/Sakhalin"
+  },
+  {
+    "id": "ar-salta-zone",
+    "city": "Salta",
+    "country": "Argentina",
+    "countryCode": "AR",
+    "timezone": "America/Argentina/Salta"
+  },
+  {
     "id": "br-salvador-3450554",
     "city": "Salvador",
     "country": "Brazil",
@@ -3926,6 +4717,13 @@
     "countryCode": "RU",
     "timezone": "Europe/Samara",
     "population": 1163399
+  },
+  {
+    "id": "uz-samarkand-zone",
+    "city": "Samarkand",
+    "country": "Uzbekistan",
+    "countryCode": "UZ",
+    "timezone": "Asia/Samarkand"
   },
   {
     "id": "us-san-antonio-4726206",
@@ -3968,6 +4766,20 @@
     "population": 418140
   },
   {
+    "id": "ar-san-juan-zone",
+    "city": "San Juan",
+    "country": "Argentina",
+    "countryCode": "AR",
+    "timezone": "America/Argentina/San_Juan"
+  },
+  {
+    "id": "ar-san-luis-zone",
+    "city": "San Luis",
+    "country": "Argentina",
+    "countryCode": "AR",
+    "timezone": "America/Argentina/San_Luis"
+  },
+  {
     "id": "sm-san-marino-3168070",
     "city": "San Marino",
     "country": "San Marino",
@@ -3998,6 +4810,13 @@
     "countryCode": "BO",
     "timezone": "America/La_Paz",
     "population": 1831434
+  },
+  {
+    "id": "br-santarem-zone",
+    "city": "Santarem",
+    "country": "Brazil",
+    "countryCode": "BR",
+    "timezone": "America/Santarem"
   },
   {
     "id": "cl-santiago-3871336",
@@ -4070,6 +4889,20 @@
     "countryCode": "BA",
     "timezone": "Europe/Sarajevo",
     "population": 696731
+  },
+  {
+    "id": "ru-saratov-zone",
+    "city": "Saratov",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Europe/Saratov"
+  },
+  {
+    "id": "gl-scoresbysund-zone",
+    "city": "Scoresbysund",
+    "country": "Greenland",
+    "countryCode": "GL",
+    "timezone": "America/Scoresbysund"
   },
   {
     "id": "id-semarang-1627896",
@@ -4224,12 +5057,26 @@
     "population": 1200000
   },
   {
+    "id": "ru-simferopol-zone",
+    "city": "Simferopol",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Europe/Simferopol"
+  },
+  {
     "id": "sg-singapore-1880252",
     "city": "Singapore",
     "country": "Singapore",
     "countryCode": "SG",
     "timezone": "Asia/Singapore",
     "population": 5638700
+  },
+  {
+    "id": "us-sitka-zone",
+    "city": "Sitka",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Sitka"
   },
   {
     "id": "mk-skopje-785842",
@@ -4262,6 +5109,20 @@
     "countryCode": "ZA",
     "timezone": "Africa/Johannesburg",
     "population": 1695047
+  },
+  {
+    "id": "ru-srednekolymsk-zone",
+    "city": "Srednekolymsk",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Asia/Srednekolymsk"
+  },
+  {
+    "id": "ca-st-johns-zone",
+    "city": "St Johns",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/St_Johns"
   },
   {
     "id": "fk-stanley-3426691",
@@ -4342,6 +5203,13 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 6715559
+  },
+  {
+    "id": "ca-swift-current-zone",
+    "city": "Swift Current",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Swift_Current"
   },
   {
     "id": "au-sydney-2147714",
@@ -4472,6 +5340,13 @@
     "population": 7153309
   },
   {
+    "id": "us-tell-city-zone",
+    "city": "Tell City",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Indiana/Tell_City"
+  },
+  {
     "id": "in-teni-1254745",
     "city": "Teni",
     "country": "India",
@@ -4510,6 +5385,13 @@
     "countryCode": "BT",
     "timezone": "Asia/Thimphu",
     "population": 98676
+  },
+  {
+    "id": "gl-thule-zone",
+    "city": "Thule",
+    "country": "Greenland",
+    "countryCode": "GL",
+    "timezone": "America/Thule"
   },
   {
     "id": "cn-tianjin-1792947",
@@ -4568,6 +5450,13 @@
     "population": 8336599
   },
   {
+    "id": "ru-tomsk-zone",
+    "city": "Tomsk",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Asia/Tomsk"
+  },
+  {
     "id": "ca-toronto-6167865",
     "city": "Toronto",
     "country": "Canada",
@@ -4590,6 +5479,20 @@
     "countryCode": "LY",
     "timezone": "Africa/Tripoli",
     "population": 1150989
+  },
+  {
+    "id": "aq-troll-zone",
+    "city": "Troll",
+    "country": "Antarctica",
+    "countryCode": "AQ",
+    "timezone": "Antarctica/Troll"
+  },
+  {
+    "id": "ar-tucuman-zone",
+    "city": "Tucuman",
+    "country": "Argentina",
+    "countryCode": "AR",
+    "timezone": "America/Argentina/Tucuman"
   },
   {
     "id": "tn-tunis-2464470",
@@ -4616,12 +5519,33 @@
     "population": 844818
   },
   {
+    "id": "ru-ulyanovsk-zone",
+    "city": "Ulyanovsk",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Europe/Ulyanovsk"
+  },
+  {
     "id": "cn-urumqi-1529102",
     "city": "Ürümqi",
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Urumqi",
     "population": 3029372
+  },
+  {
+    "id": "ar-ushuaia-zone",
+    "city": "Ushuaia",
+    "country": "Argentina",
+    "countryCode": "AR",
+    "timezone": "America/Argentina/Ushuaia"
+  },
+  {
+    "id": "ru-ust-nera-zone",
+    "city": "Ust-Nera",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Asia/Ust-Nera"
   },
   {
     "id": "in-vadodara-1253573",
@@ -4656,6 +5580,13 @@
     "population": 6794
   },
   {
+    "id": "ca-vancouver-zone",
+    "city": "Vancouver",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Vancouver"
+  },
+  {
     "id": "in-varanasi-1253405",
     "city": "Varanasi",
     "country": "India",
@@ -4670,6 +5601,13 @@
     "countryCode": "VA",
     "timezone": "Europe/Vatican",
     "population": 829
+  },
+  {
+    "id": "us-vevay-zone",
+    "city": "Vevay",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Indiana/Vevay"
   },
   {
     "id": "sc-victoria-241131",
@@ -4704,12 +5642,26 @@
     "population": 542366
   },
   {
+    "id": "us-vincennes-zone",
+    "city": "Vincennes",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Indiana/Vincennes"
+  },
+  {
     "id": "in-visakhapatnam-1253102",
     "city": "Visakhapatnam",
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
     "population": 1063178
+  },
+  {
+    "id": "ru-vladivostok-zone",
+    "city": "Vladivostok",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Asia/Vladivostok"
   },
   {
     "id": "ru-volgograd-472757",
@@ -4726,6 +5678,13 @@
     "countryCode": "RU",
     "timezone": "Europe/Moscow",
     "population": 1047549
+  },
+  {
+    "id": "aq-vostok-zone",
+    "city": "Vostok",
+    "country": "Antarctica",
+    "countryCode": "AQ",
+    "timezone": "Antarctica/Vostok"
   },
   {
     "id": "pl-warsaw-756135",
@@ -4784,6 +5743,13 @@
     "population": 120
   },
   {
+    "id": "ca-whitehorse-zone",
+    "city": "Whitehorse",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Whitehorse"
+  },
+  {
     "id": "cw-willemstad-3513090",
     "city": "Willemstad",
     "country": "Curaçao",
@@ -4792,12 +5758,26 @@
     "population": 125000
   },
   {
+    "id": "us-winamac-zone",
+    "city": "Winamac",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Indiana/Winamac"
+  },
+  {
     "id": "na-windhoek-3352136",
     "city": "Windhoek",
     "country": "Namibia",
     "countryCode": "NA",
     "timezone": "Africa/Windhoek",
     "population": 268132
+  },
+  {
+    "id": "ca-winnipeg-zone",
+    "city": "Winnipeg",
+    "country": "Canada",
+    "countryCode": "CA",
+    "timezone": "America/Winnipeg"
   },
   {
     "id": "cn-wuhan-1791247",
@@ -4902,6 +5882,20 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 1253991
+  },
+  {
+    "id": "us-yakutat-zone",
+    "city": "Yakutat",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Yakutat"
+  },
+  {
+    "id": "ru-yakutsk-zone",
+    "city": "Yakutsk",
+    "country": "Russia",
+    "countryCode": "RU",
+    "timezone": "Asia/Yakutsk"
   },
   {
     "id": "ci-yamoussoukro-2279755",
