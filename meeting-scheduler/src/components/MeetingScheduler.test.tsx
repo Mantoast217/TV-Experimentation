@@ -126,7 +126,7 @@ describe("MeetingScheduler — invite action redesign", () => {
     // different country (Sydney, Nova Scotia; Nishi-Tokyo-shi alongside Tokyo) — real
     // entries now that the catalog is ~26,000 GeoNames cities, not the old ~300-entry
     // one-city-per-zone seed — can't also match a loose substring search.
-    const combo = screen.getByRole("combobox", { name: "Add timezone" });
+    const combo = screen.getByRole("combobox", { name: "Add a time zone" });
     for (const { city, country } of [
       { city: "Tokyo", country: "Japan" },
       { city: "Sydney", country: "Australia" },

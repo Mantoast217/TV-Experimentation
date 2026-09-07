@@ -39,7 +39,7 @@ function Harness({ initialZones }: { initialZones: TimeZoneCatalogEntry[] }) {
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <div>
-      <input ref={inputRef} aria-label="Add timezone" />
+      <input ref={inputRef} aria-label="Add a time zone" />
       <TimezoneChipList
         zones={zones}
         onRemove={(id) => setZones((prev) => prev.filter((z) => z.id !== id))}
@@ -88,7 +88,7 @@ describe("TimezoneChipList", () => {
     const user = userEvent.setup();
     render(<Harness initialZones={[LONDON, TOKYO, NEW_YORK]} />);
 
-    await user.tab(); // Add timezone input
+    await user.tab(); // Add a time zone input
     await user.tab(); // London remove button
     expect(removeButton("London — United Kingdom (GMT+1)")).toHaveFocus();
 
@@ -121,14 +121,14 @@ describe("TimezoneChipList", () => {
     expect(await screen.findByRole("button", { name: "Remove London — United Kingdom (GMT+1)" })).toHaveFocus();
   });
 
-  it("returns focus to the Add timezone input when the only chip is removed", async () => {
+  it("returns focus to the Add a time zone input when the only chip is removed", async () => {
     const user = userEvent.setup();
     render(<Harness initialZones={[LONDON]} />);
 
     removeButton("London — United Kingdom (GMT+1)").focus();
     await user.keyboard("{Enter}");
 
-    expect(await screen.findByRole("textbox", { name: "Add timezone" })).toHaveFocus();
+    expect(await screen.findByRole("textbox", { name: "Add a time zone" })).toHaveFocus();
   });
 
   it("announces additions and removals via a polite live region", async () => {

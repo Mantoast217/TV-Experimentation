@@ -172,7 +172,7 @@ export function MeetingScheduler() {
         </div>
 
         <div className="flex flex-col gap-3">
-          <h2 className="m-0 text-base font-medium text-foreground">Add timezone</h2>
+          <h2 className="m-0 text-base font-medium text-foreground">Add a time zone</h2>
           <ComboBox.Root<TimeZoneCatalogEntry>
             items={asItems(availableZones)}
             inputValue={tzQuery}
@@ -184,7 +184,7 @@ export function MeetingScheduler() {
               setTzQuery("");
             }}
             fullWidth
-            aria-label="Add timezone"
+            aria-label="Add a time zone"
           >
             <ComboBox.InputGroup>
               <Input
