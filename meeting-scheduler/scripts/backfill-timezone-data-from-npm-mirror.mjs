@@ -34,6 +34,10 @@
  * isn't blocked here); GeoNames' small countryInfo.txt — needed for capital
  * names, not reachable directly here either — comes from a second, independent
  * GitHub mirror (nicolas-grekas/geonames-data) purely for this backbone step.
+ *
+ * Also layers in notableCities.mjs's small, hand-picked list of internationally
+ * recognizable cities the population/capital threshold leaves out, exactly as
+ * update-timezone-data.mjs does.
  */
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -42,6 +46,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { curateMajorCitiesAndCapitals, parseCities, validateEntries } from "./update-timezone-data.mjs";
 import { buildTimezoneBackbone, mergeWithBackbone } from "./timezoneBackbone.mjs";
+import { buildNotableCityEntries, mergeWithNotableCities } from "./notableCities.mjs";
 
 const PACKAGE_TARBALL_URL = "https://registry.npmjs.org/cities-15000-structured/-/cities-15000-structured-1.0.1.tgz";
 const BUNDLED_ENTRY_PATH = "package/dist/cities15000.txt";
@@ -139,12 +144,16 @@ async function main() {
 
     const curated = curateMajorCitiesAndCapitals(entries);
     const backbone = buildTimezoneBackbone({ zone1970Raw, backwardRaw, countryInfoRaw });
-    const merged = mergeWithBackbone(curated, backbone, backwardRaw);
+    const withBackbone = mergeWithBackbone(curated, backbone, backwardRaw);
+    const notableCityEntries = buildNotableCityEntries(countryByCode);
+    const merged = mergeWithNotableCities(withBackbone, notableCityEntries);
 
     merged.sort((a, b) => a.city.localeCompare(b.city)); // Matches the app's own display order.
     writeFileSync(OUTPUT_PATH, JSON.stringify(merged, null, 2) + "\n");
     console.log(
-      `Wrote ${merged.length} entries to ${OUTPUT_PATH} (${curated.length} major cities/capitals + ${merged.length - curated.length} backbone entries filling zone/country gaps, from ${entries.length} parsed rows)`,
+      `Wrote ${merged.length} entries to ${OUTPUT_PATH} (${curated.length} major cities/capitals + ` +
+        `${withBackbone.length - curated.length} backbone entries + ${merged.length - withBackbone.length} notable-city ` +
+        `entries, from ${entries.length} parsed rows)`,
     );
   } finally {
     rmSync(tmpDir, { recursive: true, force: true });

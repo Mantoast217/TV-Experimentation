@@ -18,7 +18,13 @@
  * capital bar). So it's merged with a second, small, independently-sourced
  * backbone built straight from tzdb's own zone1970.tab and backward files (see
  * timezoneBackbone.mjs) — one entry per canonical zone, guaranteed complete by
- * construction — before the result is written.
+ * construction.
+ *
+ * A third, small, hand-picked layer (see notableCities.mjs) then adds internationally
+ * recognizable cities the population/capital threshold alone leaves out (Venice, Boston,
+ * Zurich, ...) — variety, not coverage; every one of them already sits inside a
+ * zone/country the first two layers cover. Unlike those two, this layer has no official
+ * source and needs manual upkeep — kept deliberately short for exactly that reason.
  *
  * Run on a schedule by .github/workflows/update-timezone-data.yml, which
  * opens a PR rather than pushing straight to main: this script's own
@@ -30,6 +36,7 @@ import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { buildTimezoneBackbone, mergeWithBackbone } from "./timezoneBackbone.mjs";
+import { buildNotableCityEntries, mergeWithNotableCities } from "./notableCities.mjs";
 
 const CITIES_URL = "https://download.geonames.org/export/dump/cities15000.zip";
 const CITIES_ENTRY_NAME = "cities15000.txt";
@@ -191,7 +198,9 @@ async function main() {
 
   const curated = curateMajorCitiesAndCapitals(entries);
   const backbone = buildTimezoneBackbone({ zone1970Raw, backwardRaw, countryInfoRaw });
-  const merged = mergeWithBackbone(curated, backbone, backwardRaw);
+  const withBackbone = mergeWithBackbone(curated, backbone, backwardRaw);
+  const notableCityEntries = buildNotableCityEntries(countryByCode);
+  const merged = mergeWithNotableCities(withBackbone, notableCityEntries);
 
   // Alphabetical by city — matches how the app itself sorts and presents this list
   // (MeetingScheduler.tsx's availableZones), so the shipped file's order isn't misleading
@@ -199,7 +208,9 @@ async function main() {
   merged.sort((a, b) => a.city.localeCompare(b.city));
   writeFileSync(OUTPUT_PATH, JSON.stringify(merged, null, 2) + "\n");
   console.log(
-    `Wrote ${merged.length} entries to ${OUTPUT_PATH} (${curated.length} major cities/capitals + ${merged.length - curated.length} backbone entries filling zone/country gaps, from ${entries.length} parsed city rows)`,
+    `Wrote ${merged.length} entries to ${OUTPUT_PATH} (${curated.length} major cities/capitals + ` +
+      `${withBackbone.length - curated.length} backbone entries + ${merged.length - withBackbone.length} notable-city ` +
+      `entries, from ${entries.length} parsed city rows)`,
   );
 }
 

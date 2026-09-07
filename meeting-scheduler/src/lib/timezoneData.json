@@ -329,11 +329,27 @@
     "population": 664046
   },
   {
+    "id": "us-atlanta-notable",
+    "city": "Atlanta",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/New_York",
+    "population": 463878
+  },
+  {
     "id": "kz-atyrau-zone",
     "city": "Atyrau",
     "country": "Kazakhstan",
     "countryCode": "KZ",
     "timezone": "Asia/Atyrau"
+  },
+  {
+    "id": "nz-auckland-notable",
+    "city": "Auckland",
+    "country": "New Zealand",
+    "countryCode": "NZ",
+    "timezone": "Pacific/Auckland",
+    "population": 417910
   },
   {
     "id": "in-aurangabad-1278149",
@@ -698,6 +714,14 @@
     "timezone": "America/Boise"
   },
   {
+    "id": "us-boston-notable",
+    "city": "Boston",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/New_York",
+    "population": 675647
+  },
+  {
     "id": "pg-bougainville-zone",
     "city": "Bougainville",
     "country": "Papua New Guinea",
@@ -766,6 +790,14 @@
     "countryCode": "US",
     "timezone": "America/New_York",
     "population": 2736074
+  },
+  {
+    "id": "be-bruges-notable",
+    "city": "Bruges",
+    "country": "Belgium",
+    "countryCode": "BE",
+    "timezone": "Europe/Brussels",
+    "population": 118509
   },
   {
     "id": "be-brussels-2800866",
@@ -1110,6 +1142,14 @@
     "population": 4681087
   },
   {
+    "id": "th-chiang-mai-notable",
+    "city": "Chiang Mai",
+    "country": "Thailand",
+    "countryCode": "TH",
+    "timezone": "Asia/Bangkok",
+    "population": 127240
+  },
+  {
     "id": "us-chicago-4887398",
     "city": "Chicago",
     "country": "United States",
@@ -1188,6 +1228,14 @@
     "population": 2136916
   },
   {
+    "id": "de-cologne-notable",
+    "city": "Cologne",
+    "country": "Germany",
+    "countryCode": "DE",
+    "timezone": "Europe/Berlin",
+    "population": 963395
+  },
+  {
     "id": "lk-colombo-1248991",
     "city": "Colombo",
     "country": "Sri Lanka",
@@ -1248,6 +1296,14 @@
     "countryCode": "BR",
     "timezone": "America/Sao_Paulo",
     "population": 1948626
+  },
+  {
+    "id": "pe-cusco-notable",
+    "city": "Cusco",
+    "country": "Peru",
+    "countryCode": "PE",
+    "timezone": "America/Lima",
+    "population": 428450
   },
   {
     "id": "kr-daegu-1835329",
@@ -1387,6 +1443,14 @@
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
     "population": 10927986
+  },
+  {
+    "id": "id-denpasar-notable",
+    "city": "Denpasar",
+    "country": "Indonesia",
+    "countryCode": "ID",
+    "timezone": "Asia/Makassar",
+    "population": 725314
   },
   {
     "id": "us-denver-zone",
@@ -1538,6 +1602,14 @@
     "population": 1645352
   },
   {
+    "id": "gb-edinburgh-notable",
+    "city": "Edinburgh",
+    "country": "United Kingdom",
+    "countryCode": "GB",
+    "timezone": "Europe/London",
+    "population": 506520
+  },
+  {
     "id": "ca-edmonton-5946768",
     "city": "Edmonton",
     "country": "Canada",
@@ -1605,6 +1677,14 @@
     "population": 1220229
   },
   {
+    "id": "it-florence-notable",
+    "city": "Florence",
+    "country": "Italy",
+    "countryCode": "IT",
+    "timezone": "Europe/Rome",
+    "population": 367150
+  },
+  {
     "id": "cx-flying-fish-cove-2078127",
     "city": "Flying Fish Cove",
     "country": "Christmas Island",
@@ -1642,6 +1722,14 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 9042509
+  },
+  {
+    "id": "de-frankfurt-am-main-notable",
+    "city": "Frankfurt am Main",
+    "country": "Germany",
+    "countryCode": "DE",
+    "timezone": "Europe/Berlin",
+    "population": 650000
   },
   {
     "id": "sl-freetown-2409306",
@@ -1743,6 +1831,14 @@
     "countryCode": "TR",
     "timezone": "Europe/Istanbul",
     "population": 1808948
+  },
+  {
+    "id": "ch-geneva-notable",
+    "city": "Geneva",
+    "country": "Switzerland",
+    "countryCode": "CH",
+    "timezone": "Europe/Zurich",
+    "population": 183981
   },
   {
     "id": "ky-george-town-3580661",
@@ -2941,6 +3037,14 @@
     "population": 3000000
   },
   {
+    "id": "us-las-vegas-notable",
+    "city": "Las Vegas",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Los_Angeles",
+    "population": 623747
+  },
+  {
     "id": "mx-leon-de-los-aldama-3998655",
     "city": "León de los Aldama",
     "country": "Mexico",
@@ -3026,6 +3130,14 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 1436599
+  },
+  {
+    "id": "gb-liverpool-notable",
+    "city": "Liverpool",
+    "country": "United Kingdom",
+    "countryCode": "GB",
+    "timezone": "Europe/London",
+    "population": 864122
   },
   {
     "id": "si-ljubljana-3196359",
@@ -3287,6 +3399,14 @@
     "population": 2219580
   },
   {
+    "id": "gb-manchester-notable",
+    "city": "Manchester",
+    "country": "United Kingdom",
+    "countryCode": "GB",
+    "timezone": "Europe/London",
+    "population": 395515
+  },
+  {
     "id": "mm-mandalay-1311874",
     "city": "Mandalay",
     "country": "Myanmar (Burma)",
@@ -3371,6 +3491,22 @@
     "country": "French Polynesia",
     "countryCode": "PF",
     "timezone": "Pacific/Marquesas"
+  },
+  {
+    "id": "ma-marrakesh-notable",
+    "city": "Marrakesh",
+    "country": "Morocco",
+    "countryCode": "MA",
+    "timezone": "Africa/Casablanca",
+    "population": 839296
+  },
+  {
+    "id": "fr-marseille-notable",
+    "city": "Marseille",
+    "country": "France",
+    "countryCode": "FR",
+    "timezone": "Europe/Paris",
+    "population": 870731
   },
   {
     "id": "ls-maseru-932505",
@@ -3533,6 +3669,14 @@
     "countryCode": "MX",
     "timezone": "America/Mexico_City",
     "population": 12294193
+  },
+  {
+    "id": "us-miami-notable",
+    "city": "Miami",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/New_York",
+    "population": 441003
   },
   {
     "id": "cn-mianyang-1800627",
@@ -3781,6 +3925,14 @@
     "population": 1811812
   },
   {
+    "id": "it-naples-notable",
+    "city": "Naples",
+    "country": "Italy",
+    "countryCode": "IT",
+    "timezone": "Europe/Rome",
+    "population": 909048
+  },
+  {
     "id": "in-nashik-1261731",
     "city": "Nashik",
     "country": "India",
@@ -3829,6 +3981,14 @@
     "population": 317797
   },
   {
+    "id": "us-new-orleans-notable",
+    "city": "New Orleans",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Chicago",
+    "population": 389617
+  },
+  {
     "id": "us-new-salem-zone",
     "city": "New Salem",
     "country": "United States",
@@ -3858,6 +4018,14 @@
     "countryCode": "NE",
     "timezone": "Africa/Niamey",
     "population": 774235
+  },
+  {
+    "id": "fr-nice-notable",
+    "city": "Nice",
+    "country": "France",
+    "countryCode": "FR",
+    "timezone": "Europe/Paris",
+    "population": 342669
   },
   {
     "id": "cy-nicosia-146268",
@@ -4013,6 +4181,14 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 1940653
+  },
+  {
+    "id": "us-orlando-notable",
+    "city": "Orlando",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/New_York",
+    "population": 307573
   },
   {
     "id": "jp-osaka-1853909",
@@ -4179,6 +4355,14 @@
     "countryCode": "US",
     "timezone": "America/Phoenix",
     "population": 1608139
+  },
+  {
+    "id": "th-phuket-notable",
+    "city": "Phuket",
+    "country": "Thailand",
+    "countryCode": "TH",
+    "timezone": "Asia/Bangkok",
+    "population": 79308
   },
   {
     "id": "in-pimpri-1259652",
@@ -4617,6 +4801,14 @@
     "timezone": "Antarctica/Rothera"
   },
   {
+    "id": "nl-rotterdam-notable",
+    "city": "Rotterdam",
+    "country": "Netherlands",
+    "countryCode": "NL",
+    "timezone": "Europe/Amsterdam",
+    "population": 598199
+  },
+  {
     "id": "gd-saint-george-s-3579925",
     "city": "Saint George's",
     "country": "Grenada",
@@ -4711,6 +4903,14 @@
     "population": 2711840
   },
   {
+    "id": "at-salzburg-notable",
+    "city": "Salzburg",
+    "country": "Austria",
+    "countryCode": "AT",
+    "timezone": "Europe/Vienna",
+    "population": 157245
+  },
+  {
     "id": "ru-samara-499099",
     "city": "Samara",
     "country": "Russia",
@@ -4740,6 +4940,14 @@
     "countryCode": "US",
     "timezone": "America/Los_Angeles",
     "population": 1394928
+  },
+  {
+    "id": "us-san-francisco-notable",
+    "city": "San Francisco",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Los_Angeles",
+    "population": 864816
   },
   {
     "id": "us-san-jose-5392171",
@@ -4905,6 +5113,14 @@
     "timezone": "America/Scoresbysund"
   },
   {
+    "id": "us-seattle-notable",
+    "city": "Seattle",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Los_Angeles",
+    "population": 737015
+  },
+  {
     "id": "id-semarang-1627896",
     "city": "Semarang",
     "country": "Indonesia",
@@ -5055,6 +5271,14 @@
     "countryCode": "KZ",
     "timezone": "Asia/Almaty",
     "population": 1200000
+  },
+  {
+    "id": "kh-siem-reap-notable",
+    "city": "Siem Reap",
+    "country": "Cambodia",
+    "countryCode": "KH",
+    "timezone": "Asia/Phnom_Penh",
+    "population": 139458
   },
   {
     "id": "ru-simferopol-zone",
@@ -5503,6 +5727,14 @@
     "population": 693210
   },
   {
+    "id": "it-turin-notable",
+    "city": "Turin",
+    "country": "Italy",
+    "countryCode": "IT",
+    "timezone": "Europe/Rome",
+    "population": 847287
+  },
+  {
     "id": "ru-ufa-479561",
     "city": "Ufa",
     "country": "Russia",
@@ -5601,6 +5833,14 @@
     "countryCode": "VA",
     "timezone": "Europe/Vatican",
     "population": 829
+  },
+  {
+    "id": "it-venice-notable",
+    "city": "Venice",
+    "country": "Italy",
+    "countryCode": "IT",
+    "timezone": "Europe/Rome",
+    "population": 51298
   },
   {
     "id": "us-vevay-zone",
@@ -6066,6 +6306,14 @@
     "population": 698966
   },
   {
+    "id": "tz-zanzibar-city-notable",
+    "city": "Zanzibar City",
+    "country": "Tanzania",
+    "countryCode": "TZ",
+    "timezone": "Africa/Dar_es_Salaam",
+    "population": 403658
+  },
+  {
     "id": "mx-zapopan-3979770",
     "city": "Zapopan",
     "country": "Mexico",
@@ -6160,5 +6408,13 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 2037775
+  },
+  {
+    "id": "ch-zurich-notable",
+    "city": "Zurich",
+    "country": "Switzerland",
+    "countryCode": "CH",
+    "timezone": "Europe/Zurich",
+    "population": 341730
   }
 ]
