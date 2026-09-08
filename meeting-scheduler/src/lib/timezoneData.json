@@ -3941,6 +3941,14 @@
     "population": 1289497
   },
   {
+    "id": "us-nashville-notable",
+    "city": "Nashville",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Chicago",
+    "population": 689447
+  },
+  {
     "id": "bs-nassau-3571824",
     "city": "Nassau",
     "country": "Bahamas",

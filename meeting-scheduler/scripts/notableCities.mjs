@@ -27,6 +27,7 @@ export const NOTABLE_CITIES = [
   { city: "Atlanta", countryCode: "US", timezone: "America/New_York", population: 463_878 },
   { city: "Miami", countryCode: "US", timezone: "America/New_York", population: 441_003 },
   { city: "New Orleans", countryCode: "US", timezone: "America/Chicago", population: 389_617 },
+  { city: "Nashville", countryCode: "US", timezone: "America/Chicago", population: 689_447 },
   { city: "Orlando", countryCode: "US", timezone: "America/New_York", population: 307_573 },
 
   { city: "Cologne", countryCode: "DE", timezone: "Europe/Berlin", population: 963_395 },
