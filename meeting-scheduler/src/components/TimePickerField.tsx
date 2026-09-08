@@ -1,5 +1,5 @@
 import { ComboBox, Input, ListBox } from "@heroui/react";
-import { useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { asItems } from "../lib/collection";
 import { buildTimeOptions, parseTimeInput, shiftTimeValue, type TimeOption } from "../lib/scheduling";
 import { ChevronLeftIcon, ChevronRightIcon } from "./icons";
@@ -38,16 +38,28 @@ export function TimePickerField({
     setInputValue(value);
   }
 
+  // Surfaced when a typed value can't be parsed as a time at all, rather than silently
+  // reverting with no feedback — role="alert" below announces it immediately (unlike the
+  // step chevrons' role="status", this needs assertive: it's telling the user something
+  // they just did *didn't* take effect, not confirming one that did).
+  const [error, setError] = useState<string | null>(null);
+  const errorId = useId();
+
   const defaultOptions = useMemo(() => buildTimeOptions(stepMinutes), [stepMinutes]);
   const timeOptions = options ?? defaultOptions;
 
   const commitTyped = (raw: string) => {
     const parsed = parseTimeInput(raw);
     if (parsed) {
+      setError(null);
       setInputValue(parsed);
       if (parsed !== value) onChange(parsed);
+    } else if (raw.trim() === "") {
+      // An emptied field isn't a typo to flag — just revert quietly, same as before.
+      setError(null);
+      setInputValue(value);
     } else {
-      // Not a recognizable time — revert to the last committed value.
+      setError(`"${raw}" isn't a time we recognize — kept ${value}.`);
       setInputValue(value);
     }
   };
@@ -55,6 +67,7 @@ export function TimePickerField({
   const step = (direction: 1 | -1) => {
     const next = shiftTimeValue(value, (direction * stepMinutes) / 60);
     onChange(next);
+    setError(null);
     // The step buttons keep focus on themselves, so the field's own value-change
     // feedback (relied on for typing/dropdown picks) never reaches the user here —
     // this is the one path that needs its own announcement.
@@ -73,17 +86,22 @@ export function TimePickerField({
   };
 
   return (
+    <>
     <div
       className={`flex h-[38px] items-center gap-0.5 rounded-field border border-[#767676] bg-field shadow-field pl-3 pr-0.5 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--brand-blue)] ${className ?? ""}`}
     >
       <ComboBox.Root<TimeOption>
         items={asItems(timeOptions)}
         inputValue={inputValue}
-        onInputChange={setInputValue}
+        onInputChange={(next) => {
+          setInputValue(next);
+          if (error) setError(null);
+        }}
         selectedKey={selectedKey}
         onSelectionChange={(key) => {
           if (key == null) return;
           const id = String(key);
+          setError(null);
           setInputValue(id);
           if (id !== value) onChange(id);
         }}
@@ -102,6 +120,8 @@ export function TimePickerField({
             onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
               if (e.key === "Enter") commitTyped(e.currentTarget.value);
             }}
+            aria-invalid={error != null || undefined}
+            aria-describedby={error != null ? errorId : undefined}
           />
           {/*
             HeroUI's InputGroup only renders its wrapping element via the Trigger it
@@ -153,5 +173,15 @@ export function TimePickerField({
         {stepAnnouncement}
       </div>
     </div>
+    {error && (
+      // text-[var(--danger-text)], not HeroUI's own text-danger: measured only 3.27:1
+      // (light) / 4.54:1 (dark) against this app's actual page background — well under
+      // the 7:1 AAA floor this app holds elsewhere (see index.css for the verified
+      // replacement pair and the live-measured numbers).
+      <p id={errorId} role="alert" className="m-0 mt-1 text-xs text-[var(--danger-text)]">
+        {error}
+      </p>
+    )}
+    </>
   );
 }

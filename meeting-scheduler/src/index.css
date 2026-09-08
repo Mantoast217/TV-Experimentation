@@ -19,16 +19,23 @@
  * (verified live) since it never adapted. HeroUI's own --muted token doesn't work as a
  * drop-in either — it measures 4.43:1 in light mode, under AAA's 7:1 (and just under AA's
  * 4.5:1 too) — so this defines a custom pair verified to clear 7:1 in both themes.
+ * --danger-text: HeroUI's own --danger/text-danger measured only 3.27:1 in light mode and
+ * 4.54:1 in dark mode against this app's actual page background (verified live) — both
+ * fail AAA badly (light mode fails even AA's 4.5:1). Same problem and same fix as
+ * --secondary-text above: a custom pair verified to clear 7:1 in both themes (7.62:1
+ * light, 8.93:1 dark).
  */
 :root,
 [data-theme="light"] {
   --brand-blue: #0d3f9c;
   --secondary-text: #4a4a51;
+  --danger-text: #991b1b;
 }
 
 [data-theme="dark"] {
   --brand-blue: #5c9cff;
   --secondary-text: #a0a0aa;
+  --danger-text: #ff8a8a;
 }
 
 html,
