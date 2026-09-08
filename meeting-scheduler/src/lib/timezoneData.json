@@ -1904,13 +1904,6 @@
     "population": 1536097
   },
   {
-    "id": "ca-golden-zone",
-    "city": "Golden",
-    "country": "Canada",
-    "countryCode": "CA",
-    "timezone": "America/Brit_Columbia/Golden"
-  },
-  {
     "id": "ca-goose-bay-zone",
     "city": "Goose Bay",
     "country": "Canada",

@@ -35,6 +35,23 @@ function cityNameFromZoneId(zoneId) {
 }
 
 /**
+ * True if the JS runtime's own tzdata (via Intl, the same source Luxon and this app's own
+ * gmtOffsetLabel ultimately read from) actually recognizes `zoneId`. zone1970.tab is not
+ * itself a guarantee of this — verified live: it currently lists "America/Brit_Columbia/
+ * Golden" (CA, "MST - BC (Golden)") as a row, but no JS runtime resolves that identifier
+ * (Luxon reports it invalid, offset NaN), so trusting the raw file blindly shipped a
+ * "Golden — Canada" catalog entry that silently rendered "GMT+NaN". Skip rather than trust.
+ */
+function isResolvableTimeZone(zoneId) {
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: zoneId });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * One row per canonical zone from tzdb's zone1970.tab: the full comma-separated country
  * code list (not just the primary one), needed here to find which zone a *secondary*
  * country like Denmark actually observes.
@@ -117,7 +134,13 @@ function idiomaticZoneFor(canonicalZoneId, capitalName, aliasesByCanonical) {
  * supplementary entry for every country that never appears as a zone's primary country.
  */
 export function buildTimezoneBackbone({ zone1970Raw, backwardRaw, countryInfoRaw }) {
-  const zones = parseZone1970Rows(zone1970Raw);
+  // Filtered once, up front — zone1970.tab lists it, but no JS runtime can resolve it
+  // (verified live: "America/Brit_Columbia/Golden" is a real current row, but Luxon and
+  // every Intl implementation report it invalid). Filtering here, rather than only in the
+  // primary-country loop below, also keeps a bad row from resurfacing through the
+  // secondary-country loop's own zone1970Raw.tab lookup (it searches the same `zones`
+  // list for a country's "shared zone").
+  const zones = parseZone1970Rows(zone1970Raw).filter(({ zoneId }) => isResolvableTimeZone(zoneId));
   const aliasesByCanonical = parseBackwardLinks(backwardRaw);
   const countryByCode = parseCountryCapitals(countryInfoRaw);
 

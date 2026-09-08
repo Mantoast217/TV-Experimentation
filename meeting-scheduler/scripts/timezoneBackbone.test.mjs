@@ -105,6 +105,22 @@ describe("buildTimezoneBackbone", () => {
   it("matches a 'X City' capital against tzdb's bare 'X' alias (Vatican City -> Europe/Vatican)", () => {
     expect(backbone).toContainEqual({ id: "va-vatican-city-zone", city: "Vatican City", country: "Vatican", countryCode: "VA", timezone: "Europe/Vatican" });
   });
+
+  it("skips a zone1970.tab row whose zone id no JS runtime can resolve, rather than shipping a broken entry", () => {
+    // Real, verified case: zone1970.tab currently lists "America/Brit_Columbia/Golden"
+    // (CA) as a row, but no JS Intl implementation recognizes it — Luxon reports it
+    // invalid with offset NaN. Trusting the raw file without checking previously shipped
+    // a "Golden — Canada" catalog entry that rendered "GMT+NaN".
+    const zone1970WithBadRow = ZONE1970_FIXTURE + "\nCA\t+5118-11658\tAmerica/Brit_Columbia/Golden\tMST - BC (Golden)";
+    const countryInfoWithCanada = COUNTRY_INFO_FIXTURE + "\nCA\tCAN\t124\tCA\tCanada\tOttawa\t9984670\t37058856\tNA";
+    const withBadRow = buildTimezoneBackbone({
+      zone1970Raw: zone1970WithBadRow,
+      backwardRaw: BACKWARD_FIXTURE,
+      countryInfoRaw: countryInfoWithCanada,
+    });
+    expect(withBadRow.find((e) => e.timezone.includes("Brit_Columbia"))).toBeUndefined();
+    expect(withBadRow.find((e) => e.city === "Golden")).toBeUndefined();
+  });
 });
 
 describe("mergeWithBackbone", () => {
