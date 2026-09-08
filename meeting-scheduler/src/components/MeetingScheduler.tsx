@@ -1,12 +1,11 @@
-import { CalendarDate, Time, today, getLocalTimeZone, parseDate } from "@internationalized/date";
+import { CalendarDate, Time, today, getLocalTimeZone } from "@internationalized/date";
 import { Button, Calendar, Card, ComboBox, Input, ListBox, Popover, Separator, TimeField } from "@heroui/react";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { asItems } from "../lib/collection";
-import { decodeStateFromSearchParams, encodeStateToSearchParams } from "../lib/shareLink";
 import { useAnchorZone } from "../lib/useAnchorZone";
 import { useTheme } from "../lib/useTheme";
 import { AnchorZoneCallout } from "./AnchorZoneCallout";
-import { CheckIcon, ChevronLeftIcon, ChevronRightIcon, LinkIcon, MoonIcon, SunIcon, TriangleAlertIcon } from "./icons";
+import { ChevronLeftIcon, ChevronRightIcon, MoonIcon, SunIcon, TriangleAlertIcon } from "./icons";
 
 /** Signed "+HH:MM"/"-HH:MM", zero-padded — matches the Duration field's own HH:MM styling. */
 function formatSignedOffset(totalMinutes: number): string {
@@ -42,23 +41,6 @@ function toDateStr(date: CalendarDate): string {
   return `${date.year}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
 }
 
-/**
- * Parses a "YYYY-MM-DD" string from a shared link into a CalendarDate, floored at today —
- * a link opened after the date it was shared for has passed falls back to today rather
- * than silently proposing a meeting in the past (matches the Calendar's own `minValue`
- * floor below). Returns null for a string that isn't a real calendar date at all (e.g. a
- * hand-edited "2026-13-40"), leaving the caller's own default in place.
- */
-function parseSharedDateStr(dateStr: string): CalendarDate | null {
-  try {
-    const parsed = parseDate(dateStr);
-    const floor = today(getLocalTimeZone());
-    return parsed.compare(floor) < 0 ? floor : parsed;
-  } catch {
-    return null;
-  }
-}
-
 function matchesQuery(zone: TimeZoneCatalogEntry, query: string): boolean {
   if (!query.trim()) return true;
   const q = query.trim().toLowerCase();
@@ -75,61 +57,18 @@ function matchesQuery(zone: TimeZoneCatalogEntry, query: string): boolean {
 }
 
 export function MeetingScheduler() {
-  // Read once at mount — never re-read on later renders, since the URL is kept in sync
-  // *from* state after this (see the sync effect below), not the other way round.
-  const [sharedState] = useState(() =>
-    decodeStateFromSearchParams(
-      new URLSearchParams(window.location.search),
-      (id) => TIMEZONE_CATALOG.some((z) => z.id === id),
-    ),
-  );
-
   const [zones, setZones] = useState<TimeZoneCatalogEntry[]>(() => {
-    const sharedZones = sharedState.zoneIds
-      ?.map((id) => TIMEZONE_CATALOG.find((z) => z.id === id))
-      .filter((z): z is TimeZoneCatalogEntry => z != null);
-    if (sharedZones && sharedZones.length > 0) return sharedZones;
     const uk = TIMEZONE_CATALOG.find((z) => z.id === DEFAULT_TIMEZONE_ID)!;
     return [uk];
   });
-  const [selectedDate, setSelectedDate] = useState<CalendarDate>(
-    () => (sharedState.dateStr && parseSharedDateStr(sharedState.dateStr)) || today(getLocalTimeZone()),
-  );
-  const [startTime, setStartTime] = useState(sharedState.startTime ?? "09:00");
-  const [endTime, setEndTime] = useState(sharedState.endTime ?? "10:00");
+  const [selectedDate, setSelectedDate] = useState<CalendarDate>(() => today(getLocalTimeZone()));
+  const [startTime, setStartTime] = useState("09:00");
+  const [endTime, setEndTime] = useState("10:00");
   const [isDateOpen, setIsDateOpen] = useState(false);
   const [tzQuery, setTzQuery] = useState("");
   const addZoneInputRef = useRef<HTMLInputElement>(null);
 
   const dateStr = useMemo(() => toDateStr(selectedDate), [selectedDate]);
-
-  // Keeps the URL in sync with the plan as it's edited (replaceState, not pushState — a
-  // meeting builder shouldn't fill browser history with one entry per keystroke), so
-  // "copy the current URL" always shares exactly what's on screen without needing a
-  // separate "Copy link" click to first build it.
-  useEffect(() => {
-    const params = encodeStateToSearchParams({ zoneIds: zones.map((z) => z.id), dateStr, startTime, endTime });
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
-    window.history.replaceState(null, "", newUrl);
-  }, [zones, dateStr, startTime, endTime]);
-
-  const [linkCopied, setLinkCopied] = useState(false);
-  const copyLinkTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const copyShareLink = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setLinkCopied(true);
-      if (copyLinkTimeoutRef.current) clearTimeout(copyLinkTimeoutRef.current);
-      copyLinkTimeoutRef.current = setTimeout(() => setLinkCopied(false), 2000);
-    } catch {
-      // Clipboard access can be denied (permissions, insecure context) — nothing to
-      // recover into beyond leaving the button in its normal, unconfirmed state; the
-      // user can still select/copy the address bar manually.
-    }
-  };
-  useEffect(() => () => {
-    if (copyLinkTimeoutRef.current) clearTimeout(copyLinkTimeoutRef.current);
-  }, []);
 
   const addZone = (id: string) => {
     const found = TIMEZONE_CATALOG.find((z) => z.id === id);
@@ -252,38 +191,20 @@ export function MeetingScheduler() {
               here from the footer specifically for that: a user who needs dark mode
               immediately (e.g. light sensitivity) previously had to tab through the entire
               form, or scroll past it, to reach the toggle. */}
-          <div className="flex shrink-0 items-center gap-1">
-            {/* The URL is kept live-synced to the plan (see the effect above), so this
-                just copies window.location.href — no separate "build a link" step. The
-                confirmation is both visible (icon + label swap) and announced (aria-live)
-                since the swap alone wouldn't reach a screen reader user reliably. */}
-            <button
-              type="button"
-              onClick={copyShareLink}
-              aria-label={linkCopied ? "Link copied to clipboard" : "Copy a link to this plan"}
-              className="inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-sm text-[var(--secondary-text)] hover:text-foreground focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-[var(--brand-blue)]"
-            >
-              {linkCopied ? <CheckIcon className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" />}
-              {linkCopied ? "Copied" : "Copy link"}
-            </button>
-            <div role="status" aria-live="polite" className="sr-only">
-              {linkCopied ? "Link copied to clipboard" : ""}
-            </div>
-            {/* No outline-offset (unlike this app's other focus-visible controls): the floating
-                detached-ring look is what read as too heavy on a small round button. The
-                outline itself stays — removing it outright would fail WCAG 2.4.7 Focus Visible
-                for keyboard users, which isn't optional at any conformance level (this app
-                already holds itself to AAA elsewhere). Tightening it to hug the button directly
-                keeps a clearly visible indicator without the halo. */}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[var(--secondary-text)] hover:text-foreground focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-[var(--brand-blue)]"
-            >
-              {theme === "dark" ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
-            </button>
-          </div>
+          {/* No outline-offset (unlike this app's other focus-visible controls): the floating
+              detached-ring look is what read as too heavy on a small round button. The
+              outline itself stays — removing it outright would fail WCAG 2.4.7 Focus Visible
+              for keyboard users, which isn't optional at any conformance level (this app
+              already holds itself to AAA elsewhere). Tightening it to hug the button directly
+              keeps a clearly visible indicator without the halo. */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[var(--secondary-text)] hover:text-foreground focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-[var(--brand-blue)]"
+          >
+            {theme === "dark" ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
+          </button>
         </div>
 
         <div className="flex flex-col gap-3">
