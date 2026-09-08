@@ -62,7 +62,16 @@ function parseSharedDateStr(dateStr: string): CalendarDate | null {
 function matchesQuery(zone: TimeZoneCatalogEntry, query: string): boolean {
   if (!query.trim()) return true;
   const q = query.trim().toLowerCase();
-  return zone.country.toLowerCase().includes(q) || zone.city.toLowerCase().includes(q);
+  return (
+    zone.country.toLowerCase().includes(q) ||
+    zone.city.toLowerCase().includes(q) ||
+    // Deliberately matches even though the same abbreviation can belong to several zones
+    // (IST is India, Ireland, and Israel) — collisions are allowed, not deduplicated, same
+    // as the display label itself; searching "IST" is expected to surface all of them so
+    // the user can pick the one they mean by its city/country.
+    (zone.stdAbbreviation?.toLowerCase().includes(q) ?? false) ||
+    (zone.dstAbbreviation?.toLowerCase().includes(q) ?? false)
+  );
 }
 
 export function MeetingScheduler() {

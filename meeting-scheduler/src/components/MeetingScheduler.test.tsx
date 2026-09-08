@@ -26,6 +26,52 @@ describe("MeetingScheduler — copy", () => {
   });
 });
 
+describe("MeetingScheduler — add a time zone search", () => {
+  it("matches a timezone abbreviation, not just city/country — and surfaces every zone that shares it", async () => {
+    // IST is a real, current abbreviation for India, Ireland, AND Israel (see
+    // scripts/tzPosixFooter.mjs) — searching it is expected to return all three,
+    // disambiguated by the city/country already in each option's own label, not just
+    // whichever one the app happens to pick. Matching itself isn't date-sensitive (it
+    // checks the zone's stored std/dst abbreviations directly), so this doesn't assert
+    // which specific abbreviation is showing in the parenthetical today — that's covered
+    // by timezones.test.ts's dedicated zoneAbbreviation/zoneDisplayLabel tests.
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const combo = screen.getByRole("combobox", { name: "Add a time zone" });
+    await user.click(combo);
+    await user.type(combo, "IST");
+
+    expect(await screen.findByRole("option", { name: /^Mumbai — India/ })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: /^Dublin — Ireland/ })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: /^Jerusalem — Israel/ })).toBeInTheDocument();
+  });
+
+  it("matches a daylight-saving abbreviation too, not just the standard one", async () => {
+    // Birmingham, not London: London is already in the default zone list, so it wouldn't
+    // appear among the *addable* search results regardless of whether the query matched.
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const combo = screen.getByRole("combobox", { name: "Add a time zone" });
+    await user.click(combo);
+    await user.type(combo, "BST");
+
+    expect(await screen.findByRole("option", { name: /^Birmingham — United Kingdom/ })).toBeInTheDocument();
+  });
+
+  it("still matches by city and country as before", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const combo = screen.getByRole("combobox", { name: "Add a time zone" });
+    await user.click(combo);
+    await user.type(combo, "Japan");
+
+    expect(await screen.findByRole("option", { name: /^Tokyo — Japan/ })).toBeInTheDocument();
+  });
+});
+
 describe("MeetingScheduler — accessibility punch list", () => {
   it("gives the Start time, End time, and Duration labels the AAA-contrast secondary-text color", () => {
     // --secondary-text (index.css) replaces the old fixed #515158: that value measured
