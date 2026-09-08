@@ -42,7 +42,12 @@ describe("MeetingScheduler — add a time zone search", () => {
     await user.click(combo);
     await user.type(combo, "IST");
 
-    expect(await screen.findByRole("option", { name: /^Mumbai — India/ })).toBeInTheDocument();
+    // Longer than findByRole's 1s default: filtering the ~800-entry catalog and
+    // re-rendering the popover on every keystroke can occasionally take longer than that
+    // under CPU contention (e.g. a full parallel test-suite run) even though it's fast in
+    // isolation — this widens the wait rather than tightening what's actually asserted.
+    const findOptions = { timeout: 5000 };
+    expect(await screen.findByRole("option", { name: /^Mumbai — India/ }, findOptions)).toBeInTheDocument();
     expect(screen.getByRole("option", { name: /^Dublin — Ireland/ })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: /^Jerusalem — Israel/ })).toBeInTheDocument();
   });
@@ -57,7 +62,7 @@ describe("MeetingScheduler — add a time zone search", () => {
     await user.click(combo);
     await user.type(combo, "BST");
 
-    expect(await screen.findByRole("option", { name: /^Birmingham — United Kingdom/ })).toBeInTheDocument();
+    expect(await screen.findByRole("option", { name: /^Birmingham — United Kingdom/ }, { timeout: 5000 })).toBeInTheDocument();
   });
 
   it("still matches by city and country as before", async () => {
@@ -68,7 +73,7 @@ describe("MeetingScheduler — add a time zone search", () => {
     await user.click(combo);
     await user.type(combo, "Japan");
 
-    expect(await screen.findByRole("option", { name: /^Tokyo — Japan/ })).toBeInTheDocument();
+    expect(await screen.findByRole("option", { name: /^Tokyo — Japan/ }, { timeout: 5000 })).toBeInTheDocument();
   });
 });
 

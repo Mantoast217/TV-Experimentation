@@ -304,7 +304,7 @@ export function MeetingScheduler() {
             <ComboBox.InputGroup>
               <Input
                 ref={addZoneInputRef}
-                placeholder="Search for a city or country"
+                placeholder="Search for a city, country or time zone"
                 className="border border-[#767676]"
               />
               <ComboBox.Trigger />
