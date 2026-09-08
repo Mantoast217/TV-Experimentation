@@ -16,7 +16,7 @@ import { CalendarIcon, ExternalLinkIcon, GoogleMeetIcon, OutlookIcon, TeamsIcon 
 // Deliberately shipped anyway (rather than left disabled) so the option is available;
 // a user hitting the blank calendar view can still fill in details manually there.
 const PLATFORMS = [
-  { id: "outlook", label: "Outlook", Icon: OutlookIcon, disabled: false },
+  { id: "outlook", label: "Microsoft Outlook", Icon: OutlookIcon, disabled: false },
   { id: "teams", label: "Microsoft Teams", Icon: TeamsIcon, disabled: false },
   { id: "google-meet", label: "Google Meet", Icon: GoogleMeetIcon, disabled: false },
   { id: "ical", label: "Download .ics", Icon: CalendarIcon, disabled: false },
@@ -92,7 +92,12 @@ export function SendInviteMenu({
               className="data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50"
             >
               <Icon className="h-4 w-4 shrink-0" />
-              {label}
+              {/* translate="no": these are brand names (Microsoft Outlook, Microsoft
+                  Teams, Google Meet), not ordinary copy — a browser page-translator
+                  swapping in a translated word for "Outlook" (reproduced live) makes the
+                  option unrecognizable, so opt the label itself out the same way the
+                  high-churn regions were opted out earlier (see ZoneTimeList.tsx). */}
+              <span translate="no">{label}</span>
             </Dropdown.Item>
           ))}
         </Dropdown.Menu>

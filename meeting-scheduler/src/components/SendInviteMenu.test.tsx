@@ -57,7 +57,7 @@ describe("SendInviteMenu", () => {
     render(<SendInviteMenu title="Meeting" description="" start={START} end={END} />);
     await user.click(screen.getByRole("button", { name: "Set up invite" }));
 
-    for (const name of ["Outlook", "Microsoft Teams", "Google Meet", "Download .ics"]) {
+    for (const name of ["Microsoft Outlook", "Microsoft Teams", "Google Meet", "Download .ics"]) {
       expect(screen.getByRole("menuitem", { name })).not.toHaveAttribute("aria-disabled");
     }
   });
