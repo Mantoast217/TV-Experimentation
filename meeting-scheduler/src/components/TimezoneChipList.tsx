@@ -55,7 +55,11 @@ export function TimezoneChipList({ zones, onRemove, addInputRef, dateStr }: Time
 
   return (
     <>
-      <ul role="list" className="m-0 flex list-none flex-wrap gap-2.5 p-0">
+      {/* translate="no": chips mount/unmount on every add/remove and their GMT-offset label
+          recomputes on every date change — the same high-churn pattern that breaks under a
+          browser page-translator once it's replaced these text nodes with its own wrapper
+          elements (see ZoneTimeList.tsx for the reproduced failure and full rationale). */}
+      <ul role="list" translate="no" className="m-0 flex list-none flex-wrap gap-2.5 p-0">
         {zones.map((zone) => {
           const label = zoneDisplayLabel(zone, dateStr);
           return (

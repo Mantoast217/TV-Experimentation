@@ -228,7 +228,11 @@ export function MeetingScheduler() {
                 to actually scroll within — the ~800-entry catalog itself renders in full,
                 unpaginated (verified live: render time is flat regardless of result count
                 at this scale, see MeetingScheduler.test.tsx). */}
-            <ComboBox.Popover className="max-h-72">
+            {/* translate="no": this list re-renders on every keystroke as the query
+                filters it — a browser page-translator replacing these text nodes with its
+                own wrapper elements on that cadence is the same failure reproduced and
+                fixed in ZoneTimeList.tsx. */}
+            <ComboBox.Popover className="max-h-72" translate="no">
               <ListBox<TimeZoneCatalogEntry> items={asItems(availableZones)}>
                 {(zone) => (
                   <ListBox.Item id={zone.id} textValue={zoneDisplayLabel(zone, dateStr)}>

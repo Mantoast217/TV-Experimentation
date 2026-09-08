@@ -30,7 +30,15 @@ export function ZoneTimeList({ slots, className, chipClassName }: ZoneTimeListPr
   }
 
   return (
-    <ul role="list" className={`m-0 flex list-none flex-col gap-1 p-0 ${className ?? ""}`}>
+    // translate="no": these times re-render on every chevron nudge/settings edit. A
+    // browser page-translator (Chrome's built-in translate) replaces each translated text
+    // node with its own wrapper element, so React's reference to the original text node
+    // goes stale — the next update then silently no-ops instead of showing the new time
+    // (reproduced live: the chevron correctly updates React state, but the visible time
+    // range stays frozen once the page has been translated). Opting this high-churn region
+    // out of translation keeps it under React's control; the surrounding static copy
+    // (headings, labels, footer) still translates normally.
+    <ul role="list" translate="no" className={`m-0 flex list-none flex-col gap-1 p-0 ${className ?? ""}`}>
       {slots.map((slot) => {
         const quality = classifyTimeQuality(slot.startHourRaw, slot.endHourRaw);
         const dotStyle =
