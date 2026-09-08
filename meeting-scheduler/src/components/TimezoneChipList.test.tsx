@@ -69,7 +69,7 @@ describe("TimezoneChipList", () => {
   it("gives each remove control a real <button> with an accessible name naming its own chip", () => {
     render(<Harness initialZones={[LONDON, TOKYO]} />);
 
-    const londonRemove = removeButton("London — United Kingdom (BST / GMT+1)");
+    const londonRemove = removeButton("London — United Kingdom (GMT+1)");
     const tokyoRemove = removeButton("Tokyo — Japan (GMT+9)");
 
     expect(londonRemove.tagName).toBe("BUTTON");
@@ -79,7 +79,7 @@ describe("TimezoneChipList", () => {
 
   it("gives the remove button a hit area of at least 24x24 CSS px", () => {
     render(<Harness initialZones={[LONDON]} />);
-    const button = removeButton("London — United Kingdom (BST / GMT+1)");
+    const button = removeButton("London — United Kingdom (GMT+1)");
 
     expect(button).toHaveStyle({ minWidth: "24px", minHeight: "24px" });
   });
@@ -90,7 +90,7 @@ describe("TimezoneChipList", () => {
 
     await user.tab(); // Add a time zone input
     await user.tab(); // London remove button
-    expect(removeButton("London — United Kingdom (BST / GMT+1)")).toHaveFocus();
+    expect(removeButton("London — United Kingdom (GMT+1)")).toHaveFocus();
 
     await user.keyboard("{Enter}");
     expect(screen.queryByRole("button", { name: /Remove London/ })).not.toBeInTheDocument();
@@ -105,7 +105,7 @@ describe("TimezoneChipList", () => {
     const user = userEvent.setup();
     render(<Harness initialZones={[LONDON, TOKYO, NEW_YORK]} />);
 
-    removeButton("London — United Kingdom (BST / GMT+1)").focus();
+    removeButton("London — United Kingdom (GMT+1)").focus();
     await user.keyboard("{Enter}");
 
     expect(await screen.findByRole("button", { name: "Remove Tokyo — Japan (GMT+9)" })).toHaveFocus();
@@ -118,14 +118,14 @@ describe("TimezoneChipList", () => {
     removeButton("Tokyo — Japan (GMT+9)").focus();
     await user.keyboard("{Enter}");
 
-    expect(await screen.findByRole("button", { name: "Remove London — United Kingdom (BST / GMT+1)" })).toHaveFocus();
+    expect(await screen.findByRole("button", { name: "Remove London — United Kingdom (GMT+1)" })).toHaveFocus();
   });
 
   it("returns focus to the Add a time zone input when the only chip is removed", async () => {
     const user = userEvent.setup();
     render(<Harness initialZones={[LONDON]} />);
 
-    removeButton("London — United Kingdom (BST / GMT+1)").focus();
+    removeButton("London — United Kingdom (GMT+1)").focus();
     await user.keyboard("{Enter}");
 
     expect(await screen.findByRole("textbox", { name: "Add a time zone" })).toHaveFocus();

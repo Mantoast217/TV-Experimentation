@@ -25,49 +25,29 @@ export function gmtOffsetLabel(timezone: string, dateStr: string): string {
 }
 
 /**
- * Two locales tried in order rather than one: each locale's Intl/CLDR data only defines a
- * real letter abbreviation (BST, EDT, CEST, ...) for zones "familiar" to that locale/
- * region — en-GB covers Europe/Middle East well, en-US covers the Americas well, and each
- * falls back to a bare "GMT+X" string (identical to gmtOffsetLabel's own output) for zones
- * outside its own coverage. Measured live against this app's actual ~800-entry catalog:
- * en-GB alone gets a real abbreviation for 14% of zones, en-US alone 23%, the union of
- * both 37% (of unique zones) / 26% (of catalog entries, weighted toward the US/UK/Europe-
- * heavy zones several cities each share). The remaining ~74% of entries have no
- * internationally standardized short form in Intl's data at all — not a gap in this list,
- * a gap in the data those two locales expose.
+ * Picks `zone`'s real IANA/tzdb abbreviation (e.g. "BST", "IST", "CST") for `dateStr` —
+ * its daylight-saving abbreviation if that date falls in DST for the zone, otherwise its
+ * standard one — or null if tzdb has no traditional letter abbreviation for it at all
+ * (some zones only ever get a numeric-offset form; see scripts/tzPosixFooter.mjs).
+ *
+ * Deliberately NOT deduplicated against other zones showing the same abbreviation: IST is
+ * India, Ireland, *and* Israel; CST is China, Cuba, *and* US Central — all real, all kept,
+ * since the city/country the abbreviation sits next to is what disambiguates it, not the
+ * abbreviation itself. This also means it's not compared against gmtOffsetLabel's output
+ * the way the earlier Intl-based version was — a tzdb-assigned abbreviation is never
+ * shaped like "GMT+9", so there's nothing redundant to filter out.
  */
-const ABBREVIATION_LOCALES = ["en-GB", "en-US"];
-
-/**
- * A real timezone abbreviation (BST, EDT, CEST, ...) for `timezone` on `dateStr`, or null
- * if Intl has no distinct abbreviation for it (in which case gmtOffsetLabel's plain
- * "GMT+X" is all there is — showing "GMT+9 / GMT+9" would just be a redundant duplicate).
- */
-export function zoneAbbreviation(timezone: string, dateStr: string): string | null {
+export function zoneAbbreviation(zone: TimeZoneCatalogEntry, dateStr: string): string | null {
+  if (!zone.stdAbbreviation && !zone.dstAbbreviation) return null;
   const [y, m, d] = dateStr.split("-").map(Number);
-  const date = new Date(Date.UTC(y, m - 1, d, 12));
-  const offset = gmtOffsetLabel(timezone, dateStr);
-
-  for (const locale of ABBREVIATION_LOCALES) {
-    let abbrev: string | undefined;
-    try {
-      const parts = new Intl.DateTimeFormat(locale, { timeZone: timezone, timeZoneName: "short" }).formatToParts(date);
-      abbrev = parts.find((p) => p.type === "timeZoneName")?.value;
-    } catch {
-      return null; // Not a resolvable IANA zone — nothing to abbreviate.
-    }
-    // Redundant with the GMT offset already shown (either literally equal, or itself just
-    // another "GMT+X"/"GMT"/"UTC" string) — not a real abbreviation, try the next locale.
-    if (abbrev && abbrev !== offset && !/^GMT([+-]|$)/.test(abbrev) && abbrev !== "UTC") {
-      return abbrev;
-    }
-  }
-  return null;
+  const dt = DateTime.fromObject({ year: y, month: m, day: d }, { zone: zone.timezone });
+  if (dt.isInDST && zone.dstAbbreviation) return zone.dstAbbreviation;
+  return zone.stdAbbreviation ?? null;
 }
 
 export function zoneDisplayLabel(zone: TimeZoneCatalogEntry, dateStr: string): string {
   const offset = gmtOffsetLabel(zone.timezone, dateStr);
-  const abbrev = zoneAbbreviation(zone.timezone, dateStr);
+  const abbrev = zoneAbbreviation(zone, dateStr);
   const timeLabel = abbrev ? `${abbrev} / ${offset}` : offset;
   return `${zone.city} — ${zone.country} (${timeLabel})`;
 }

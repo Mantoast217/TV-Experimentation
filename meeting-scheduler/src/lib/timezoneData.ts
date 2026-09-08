@@ -16,6 +16,18 @@ export interface TimeZoneCatalogEntry {
   timezone: string;
   /** Present once the GeoNames-sourced dataset replaces the interim seed. */
   population?: number;
+  /**
+   * The zone's real IANA/tzdb standard-time abbreviation (e.g. "IST", "CST", "EST") — read
+   * from the compiled tzdb release itself (see scripts/tzPosixFooter.mjs), not from a
+   * browser's Intl/CLDR, which deliberately suppresses abbreviations that collide across
+   * zones (IST is India, Ireland, *and* Israel; CST is China, Cuba, *and* US Central).
+   * Shown alongside city/country here regardless of collision — the label disambiguates,
+   * the abbreviation doesn't need to. Absent for zones tzdb itself never assigned a
+   * traditional letter abbreviation to (falls back to a plain GMT offset display instead).
+   */
+  stdAbbreviation?: string;
+  /** Same as stdAbbreviation, for the zone's daylight-saving period — absent if the zone doesn't currently observe DST. */
+  dstAbbreviation?: string;
 }
 
 export const TIMEZONE_CATALOG: TimeZoneCatalogEntry[] = rawCatalog as TimeZoneCatalogEntry[];

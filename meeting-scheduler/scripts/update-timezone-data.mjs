@@ -26,6 +26,11 @@
  * zone/country the first two layers cover. Unlike those two, this layer has no official
  * source and needs manual upkeep — kept deliberately short for exactly that reason.
  *
+ * Finally, every entry gets its zone's real IANA/tzdb abbreviation attached (see
+ * tzPosixFooter.mjs) — read from the build machine's own compiled system tzdata, not a
+ * browser's Intl/CLDR (which suppresses abbreviations that collide across zones, like IST
+ * for India/Ireland/Israel or CST for China/Cuba/US Central).
+ *
  * Run on a schedule by .github/workflows/update-timezone-data.yml, which
  * opens a PR rather than pushing straight to main: this script's own
  * validation is the first gate (it refuses to write anything if a check
@@ -37,6 +42,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { buildTimezoneBackbone, mergeWithBackbone } from "./timezoneBackbone.mjs";
 import { buildNotableCityEntries, mergeWithNotableCities } from "./notableCities.mjs";
+import { attachTzdbAbbreviations } from "./tzPosixFooter.mjs";
 
 const CITIES_URL = "https://download.geonames.org/export/dump/cities15000.zip";
 const CITIES_ENTRY_NAME = "cities15000.txt";
@@ -200,7 +206,8 @@ async function main() {
   const backbone = buildTimezoneBackbone({ zone1970Raw, backwardRaw, countryInfoRaw });
   const withBackbone = mergeWithBackbone(curated, backbone, backwardRaw);
   const notableCityEntries = buildNotableCityEntries(countryByCode);
-  const merged = mergeWithNotableCities(withBackbone, notableCityEntries);
+  const withNotableCities = mergeWithNotableCities(withBackbone, notableCityEntries);
+  const merged = attachTzdbAbbreviations(withNotableCities);
 
   // Alphabetical by city — matches how the app itself sorts and presents this list
   // (MeetingScheduler.tsx's availableZones), so the shipped file's order isn't misleading

@@ -76,7 +76,7 @@ describe("AnchorZoneCallout", () => {
     const options = within(listbox).getAllByRole("option");
     expect(options).toHaveLength(2);
     expect(options.map((o) => o.textContent)).toEqual([
-      "London — United Kingdom (BST / GMT+1)",
+      "London — United Kingdom (GMT+1)",
       "Tokyo — Japan (GMT+9)",
     ]);
 

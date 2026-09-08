@@ -1,57 +1,68 @@
 import { describe, expect, it } from "vitest";
 import { gmtOffsetLabel, zoneAbbreviation, zoneDisplayLabel } from "./timezones";
-import type { TimeZoneCatalogEntry } from "./timezones";
+import type { TimeZoneCatalogEntry } from "./timezoneData";
 
-// July: London is on BST (a real, distinct abbreviation); Tokyo/India have no letter
-// abbreviation in either en-GB or en-US Intl data, so fall back to null.
+// July: London/New York/Dublin are in their daylight period. January: back to standard.
 const JULY = "2026-07-15";
-// January: London reverts to plain "GMT" (Intl gives "GMT", correctly treated as no
-// distinct abbreviation, not a real one to show).
 const JANUARY = "2026-01-15";
 
+function zone(overrides: Partial<TimeZoneCatalogEntry>): TimeZoneCatalogEntry {
+  return { id: "test", city: "Test City", country: "Testland", countryCode: "TL", timezone: "UTC", ...overrides };
+}
+
 describe("zoneAbbreviation", () => {
-  it("returns a real abbreviation when one exists and differs from the GMT offset (London, BST)", () => {
-    expect(zoneAbbreviation("Europe/London", JULY)).toBe("BST");
+  it("returns the standard abbreviation outside DST", () => {
+    const london = zone({ timezone: "Europe/London", stdAbbreviation: "GMT", dstAbbreviation: "BST" });
+    expect(zoneAbbreviation(london, JANUARY)).toBe("GMT");
   });
 
-  it("returns a real abbreviation for a US zone (New York, EDT in July)", () => {
-    expect(zoneAbbreviation("America/New_York", JULY)).toBe("EDT");
+  it("returns the daylight abbreviation when the date falls in DST", () => {
+    const london = zone({ timezone: "Europe/London", stdAbbreviation: "GMT", dstAbbreviation: "BST" });
+    expect(zoneAbbreviation(london, JULY)).toBe("BST");
   });
 
-  it("returns null rather than a redundant 'GMT+X' duplicate when Intl has no real abbreviation (Tokyo)", () => {
-    expect(zoneAbbreviation("Asia/Tokyo", JULY)).toBeNull();
+  it("returns the standard abbreviation for a zone with no DST at all (India)", () => {
+    const mumbai = zone({ timezone: "Asia/Kolkata", stdAbbreviation: "IST" });
+    expect(zoneAbbreviation(mumbai, JULY)).toBe("IST");
+    expect(zoneAbbreviation(mumbai, JANUARY)).toBe("IST");
   });
 
-  it("returns null for a half-hour-offset zone with no letter abbreviation (India)", () => {
-    expect(zoneAbbreviation("Asia/Kolkata", JULY)).toBeNull();
+  it("returns the SAME 'IST' for a completely different zone/country — collisions are allowed, not deduplicated", () => {
+    const mumbai = zone({ timezone: "Asia/Kolkata", countryCode: "IN", stdAbbreviation: "IST" });
+    const jerusalem = zone({ timezone: "Asia/Jerusalem", countryCode: "IL", stdAbbreviation: "IST", dstAbbreviation: "IDT" });
+    expect(zoneAbbreviation(mumbai, JANUARY)).toBe("IST");
+    expect(zoneAbbreviation(jerusalem, JANUARY)).toBe("IST");
   });
 
-  it("returns null rather than the bare word 'GMT' (London in January, no DST)", () => {
-    expect(zoneAbbreviation("Europe/London", JANUARY)).toBeNull();
+  it("returns null when tzdb has no traditional abbreviation at all (numeric-offset-only zones)", () => {
+    const chatham = zone({ timezone: "Pacific/Chatham" }); // No stdAbbreviation/dstAbbreviation set.
+    expect(zoneAbbreviation(chatham, JULY)).toBeNull();
   });
 
-  it("returns null for UTC itself rather than the redundant word 'UTC'", () => {
-    expect(zoneAbbreviation("UTC", JULY)).toBeNull();
-  });
-
-  it("returns null rather than throwing for an unresolvable zone id", () => {
-    expect(zoneAbbreviation("Not/A_Real_Zone", JULY)).toBeNull();
+  it("falls back to the standard abbreviation if isInDST is true but no dst abbreviation was stored (defensive)", () => {
+    const london = zone({ timezone: "Europe/London", stdAbbreviation: "GMT" }); // dstAbbreviation omitted.
+    expect(zoneAbbreviation(london, JULY)).toBe("GMT");
   });
 });
 
 describe("zoneDisplayLabel", () => {
-  const london: TimeZoneCatalogEntry = { id: "gb-london", city: "London", country: "United Kingdom", countryCode: "GB", timezone: "Europe/London" };
-  const tokyo: TimeZoneCatalogEntry = { id: "jp-tokyo", city: "Tokyo", country: "Japan", countryCode: "JP", timezone: "Asia/Tokyo" };
+  const london = zone({ city: "London", country: "United Kingdom", countryCode: "GB", timezone: "Europe/London", stdAbbreviation: "GMT", dstAbbreviation: "BST" });
+  const tokyo = zone({ city: "Tokyo", country: "Japan", countryCode: "JP", timezone: "Asia/Tokyo", stdAbbreviation: "JST" });
+  const chatham = zone({ city: "Chatham", country: "New Zealand", countryCode: "NZ", timezone: "Pacific/Chatham" });
 
   it("includes the abbreviation before the GMT offset when one exists", () => {
     expect(zoneDisplayLabel(london, JULY)).toBe(`London — United Kingdom (BST / ${gmtOffsetLabel("Europe/London", JULY)})`);
   });
 
-  it("falls back to the plain GMT offset alone when there's no real abbreviation", () => {
-    expect(zoneDisplayLabel(tokyo, JULY)).toBe(`Tokyo — Japan (${gmtOffsetLabel("Asia/Tokyo", JULY)})`);
+  it("switches to the standard abbreviation once DST ends", () => {
+    expect(zoneDisplayLabel(london, JANUARY)).toBe(`London — United Kingdom (GMT / ${gmtOffsetLabel("Europe/London", JANUARY)})`);
   });
 
-  it("drops the abbreviation (not just leaves it blank) once DST ends and Intl only offers the bare word 'GMT'", () => {
-    expect(zoneDisplayLabel(london, JANUARY)).toBe(`London — United Kingdom (${gmtOffsetLabel("Europe/London", JANUARY)})`);
+  it("shows a single, non-DST abbreviation for a zone that never observes DST (Japan)", () => {
+    expect(zoneDisplayLabel(tokyo, JULY)).toBe(`Tokyo — Japan (JST / ${gmtOffsetLabel("Asia/Tokyo", JULY)})`);
+  });
+
+  it("falls back to the plain GMT offset alone when tzdb has no abbreviation at all", () => {
+    expect(zoneDisplayLabel(chatham, JULY)).toBe(`Chatham — New Zealand (${gmtOffsetLabel("Pacific/Chatham", JULY)})`);
   });
 });

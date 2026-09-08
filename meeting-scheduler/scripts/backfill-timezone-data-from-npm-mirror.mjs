@@ -47,6 +47,7 @@ import { fileURLToPath } from "node:url";
 import { curateMajorCitiesAndCapitals, parseCities, validateEntries } from "./update-timezone-data.mjs";
 import { buildTimezoneBackbone, mergeWithBackbone } from "./timezoneBackbone.mjs";
 import { buildNotableCityEntries, mergeWithNotableCities } from "./notableCities.mjs";
+import { attachTzdbAbbreviations } from "./tzPosixFooter.mjs";
 
 const PACKAGE_TARBALL_URL = "https://registry.npmjs.org/cities-15000-structured/-/cities-15000-structured-1.0.1.tgz";
 const BUNDLED_ENTRY_PATH = "package/dist/cities15000.txt";
@@ -146,7 +147,8 @@ async function main() {
     const backbone = buildTimezoneBackbone({ zone1970Raw, backwardRaw, countryInfoRaw });
     const withBackbone = mergeWithBackbone(curated, backbone, backwardRaw);
     const notableCityEntries = buildNotableCityEntries(countryByCode);
-    const merged = mergeWithNotableCities(withBackbone, notableCityEntries);
+    const withNotableCities = mergeWithNotableCities(withBackbone, notableCityEntries);
+    const merged = attachTzdbAbbreviations(withNotableCities);
 
     merged.sort((a, b) => a.city.localeCompare(b.city)); // Matches the app's own display order.
     writeFileSync(OUTPUT_PATH, JSON.stringify(merged, null, 2) + "\n");
