@@ -1,3 +1,5 @@
+import { TIMEZONE_CATALOG, type TimeZoneCatalogEntry } from "./timezoneData";
+
 export interface Colleague {
   id: string;
   firstName: string;
@@ -6,6 +8,13 @@ export interface Colleague {
   email: string;
   /** A TimeZoneCatalogEntry.id in TIMEZONE_CATALOG — selecting this colleague adds that entry. */
   timezoneId: string;
+}
+
+/** The catalog entry a colleague is based in — their city, country, and current offset. */
+export function colleagueTimeZone(colleague: Colleague): TimeZoneCatalogEntry {
+  const zone = TIMEZONE_CATALOG.find((z) => z.id === colleague.timezoneId);
+  if (!zone) throw new Error(`No timezone catalog entry "${colleague.timezoneId}" for colleague "${colleague.id}"`);
+  return zone;
 }
 
 /**

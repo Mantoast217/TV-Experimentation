@@ -42,7 +42,7 @@ describe("MeetingScheduler — add a participant", () => {
     expect(screen.queryByRole("heading", { name: "Add a time zone" })).not.toBeInTheDocument();
   });
 
-  it("searches colleagues by name and shows their avatar, name, and role", async () => {
+  it("searches colleagues by name and shows their avatar, name, role, and city", async () => {
     const user = userEvent.setup();
     render(<MeetingScheduler />);
 
@@ -51,16 +51,34 @@ describe("MeetingScheduler — add a participant", () => {
     await user.type(combo, "Priya");
 
     // No comma in the match: the option's accessible name comes from its rendered text
-    // nodes (name and role, no separator between them), not from a hand-written string —
-    // "Priya Nair" alone is enough to disambiguate it from the other nine.
+    // nodes (name, role, and city, no separator between them), not from a hand-written
+    // string — "Priya Nair" alone is enough to disambiguate it from the other nine.
     const option = await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 });
     expect(option).toBeInTheDocument();
     expect(option).toHaveTextContent("PN");
     expect(option).toHaveTextContent("Priya Nair");
     expect(option).toHaveTextContent("Product Designer");
+    expect(option).toHaveTextContent("Kolkata");
   });
 
-  it("adds the selected colleague's time zone", async () => {
+  it("adds a participant chip with the colleague's avatar, name, and city under the search box", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const combo = screen.getByRole("combobox", { name: "Search for colleagues" });
+    await user.click(combo);
+    await user.type(combo, "Priya");
+    await user.click(await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 }));
+    // The open popover marks the rest of the page aria-hidden until dismissed — needed
+    // before the next getByRole lookup can see the chip's remove button at all.
+    await user.keyboard("{Escape}");
+
+    expect(await screen.findByText("Priya Nair — Kolkata")).toBeInTheDocument();
+    const removeButton = screen.getByRole("button", { name: "Remove Priya Nair" });
+    expect(removeButton.closest("li")).toHaveTextContent("PN");
+  });
+
+  it("adds the selected colleague's time zone to the schedule", async () => {
     const user = userEvent.setup();
     render(<MeetingScheduler />);
 
@@ -69,9 +87,49 @@ describe("MeetingScheduler — add a participant", () => {
     await user.type(combo, "Priya");
     await user.click(await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 }));
 
-    // getAllByText, not getByText: Kolkata's label appears both as a chip and in the
-    // schedule list below once it's added — this only cares that it shows up somewhere.
-    expect((await screen.findAllByText(/^Kolkata — India/)).length).toBeGreaterThan(0);
+    // Kolkata now shows up as part of the schedule (e.g. the anchor-zone picker and the
+    // time list below), just not as its own plain city chip — see the no-duplication test.
+    expect((await screen.findAllByText(/Kolkata/)).length).toBeGreaterThan(0);
+  });
+
+  it("doesn't also show a participant's city as a separate plain time zone chip", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const combo = screen.getByRole("combobox", { name: "Search for colleagues" });
+    await user.click(combo);
+    await user.type(combo, "Priya");
+    await user.click(await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 }));
+    await user.keyboard("{Escape}");
+    await screen.findByText("Priya Nair — Kolkata");
+
+    expect(screen.queryByRole("button", { name: /^Remove Kolkata/ })).not.toBeInTheDocument();
+  });
+
+  it("removes the participant and their time zone together", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const combo = screen.getByRole("combobox", { name: "Search for colleagues" });
+    await user.click(combo);
+    await user.type(combo, "Priya");
+    await user.click(await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 }));
+    await user.keyboard("{Escape}");
+    await screen.findByText("Priya Nair — Kolkata");
+
+    await user.click(screen.getByRole("button", { name: "Remove Priya Nair" }));
+    await user.keyboard("{Escape}");
+
+    expect(screen.queryByText("Priya Nair — Kolkata")).not.toBeInTheDocument();
+
+    // Confirms the zone itself came out of the schedule, not just the chip: Kolkata is
+    // only excluded from the time zone search's own results while it's still in `zones`
+    // (see availableZones), so it reappearing there proves it's gone.
+    await revealTimezoneSearch(user);
+    const tzCombo = screen.getByRole("combobox", { name: "Add a time zone" });
+    await user.click(tzCombo);
+    await user.type(tzCombo, "Kolkata");
+    expect(await screen.findByRole("option", { name: /^Kolkata — India/ }, { timeout: 5000 })).toBeInTheDocument();
   });
 
   it("keeps the time zone search hidden behind an 'Add a time zone' button until clicked", async () => {

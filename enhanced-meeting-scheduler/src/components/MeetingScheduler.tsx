@@ -2,7 +2,7 @@ import { CalendarDate, Time, today, getLocalTimeZone } from "@internationalized/
 import { Avatar, Button, Calendar, Card, ComboBox, Input, ListBox, Popover, Separator, TimeField } from "@heroui/react";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { asItems } from "../lib/collection";
-import { COLLEAGUES, type Colleague } from "../lib/colleagues";
+import { COLLEAGUES, colleagueTimeZone, type Colleague } from "../lib/colleagues";
 import { useAnchorZone } from "../lib/useAnchorZone";
 import { useTheme } from "../lib/useTheme";
 import { AnchorZoneCallout } from "./AnchorZoneCallout";
@@ -18,6 +18,7 @@ function formatSignedOffset(totalMinutes: number): string {
 }
 import { SendInviteMenu } from "./SendInviteMenu";
 import { TimePickerField } from "./TimePickerField";
+import { ParticipantChipList } from "./ParticipantChipList";
 import { TimezoneChipList } from "./TimezoneChipList";
 import { ZoneTimeList } from "./ZoneTimeList";
 import {
@@ -83,6 +84,7 @@ export function MeetingScheduler() {
   const addZoneInputRef = useRef<HTMLInputElement>(null);
   const [colleagueQuery, setColleagueQuery] = useState("");
   const addColleagueInputRef = useRef<HTMLInputElement>(null);
+  const [participants, setParticipants] = useState<Colleague[]>([]);
   // One-way reveal, not a toggle: the button's whole job is to bring the time zone
   // section into existence for someone who doesn't need the colleague directory — once
   // it's on screen there's no reason to hide it again.
@@ -100,18 +102,33 @@ export function MeetingScheduler() {
     setZones((prev) => prev.filter((z) => z.id !== id));
   };
 
-  // A colleague is just a person attached to a time zone in the catalog — selecting one
-  // adds that zone exactly like picking a city does, reusing addZone's own dedup so two
-  // colleagues who happen to share a zone don't produce two chips.
+  // A colleague is a person attached to a time zone in the catalog — selecting one adds
+  // them to the participant list (shown as its own chip: avatar, name, city) *and* adds
+  // their zone exactly like picking a city does, reusing addZone's own dedup, so the
+  // schedule grid below sees them the same way it sees any other added time zone.
   const addColleague = (colleagueId: string) => {
     const colleague = COLLEAGUES.find((c) => c.id === colleagueId);
     if (!colleague) return;
+    setParticipants((prev) => (prev.some((p) => p.id === colleague.id) ? prev : [...prev, colleague]));
     addZone(colleague.timezoneId);
   };
 
+  const removeParticipant = (colleagueId: string) => {
+    const colleague = participants.find((p) => p.id === colleagueId);
+    setParticipants((prev) => prev.filter((p) => p.id !== colleagueId));
+    if (!colleague) return;
+    // Only drop the zone if no other selected participant is still based there — two
+    // colleagues can share a city (none currently do, but nothing rules it out).
+    const zoneId = colleagueTimeZone(colleague).id;
+    const stillNeeded = participants.some((p) => p.id !== colleagueId && colleagueTimeZone(p).id === zoneId);
+    if (!stillNeeded) removeZone(zoneId);
+  };
+
+  // Already-added colleagues drop out of their own search results — selecting someone a
+  // second time would otherwise look like it did nothing.
   const availableColleagues = useMemo(
-    () => COLLEAGUES.filter((c) => matchesColleagueQuery(c, colleagueQuery)),
-    [colleagueQuery],
+    () => COLLEAGUES.filter((c) => !participants.some((p) => p.id === c.id) && matchesColleagueQuery(c, colleagueQuery)),
+    [participants, colleagueQuery],
   );
 
   // The catalog is curated to ~650 major cities/capitals (see
@@ -147,6 +164,15 @@ export function MeetingScheduler() {
   const orderedZones = useMemo(
     () => (anchorZone ? [anchorZone, ...zones.filter((zone) => zone.id !== anchorZone.id)] : zones),
     [zones, anchorZone],
+  );
+
+  // Zones that came from a selected participant already have their own chip (name +
+  // avatar + city) in ParticipantChipList — this excludes them from the plain time zone
+  // chip list below so nobody shows up twice. `zones` itself stays the single source of
+  // truth for the actual schedule grid; this only trims what's rendered as a bare-city chip.
+  const manuallyAddedZones = useMemo(
+    () => zones.filter((zone) => !participants.some((p) => colleagueTimeZone(p).id === zone.id)),
+    [zones, participants],
   );
   const hostZone = anchorZone?.timezone ?? "UTC";
 
@@ -266,27 +292,33 @@ export function MeetingScheduler() {
             </ComboBox.InputGroup>
             <ComboBox.Popover className="max-h-72" translate="no">
               <ListBox<Colleague> items={asItems(availableColleagues)}>
-                {(colleague) => (
-                  <ListBox.Item
-                    id={colleague.id}
-                    textValue={`${colleague.firstName} ${colleague.lastName}, ${colleague.role}`}
-                  >
-                    <div className="flex items-center gap-3 py-0.5">
-                      <Avatar.Root size="sm">
-                        <Avatar.Fallback>{colleagueInitials(colleague)}</Avatar.Fallback>
-                      </Avatar.Root>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium text-foreground">
-                          {colleague.firstName} {colleague.lastName}
-                        </span>
-                        <span className="text-xs text-[var(--secondary-text)]">{colleague.role}</span>
+                {(colleague) => {
+                  const city = colleagueTimeZone(colleague).city;
+                  return (
+                    <ListBox.Item
+                      id={colleague.id}
+                      textValue={`${colleague.firstName} ${colleague.lastName}, ${colleague.role}, ${city}`}
+                    >
+                      <div className="flex items-center gap-3 py-0.5">
+                        <Avatar.Root size="sm">
+                          <Avatar.Fallback>{colleagueInitials(colleague)}</Avatar.Fallback>
+                        </Avatar.Root>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium text-foreground">
+                            {colleague.firstName} {colleague.lastName}
+                          </span>
+                          <span className="text-xs text-[var(--secondary-text)]">
+                            {colleague.role} · {city}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  </ListBox.Item>
-                )}
+                    </ListBox.Item>
+                  );
+                }}
               </ListBox>
             </ComboBox.Popover>
           </ComboBox.Root>
+          <ParticipantChipList participants={participants} onRemove={removeParticipant} addInputRef={addColleagueInputRef} />
 
           {!showTimezoneSearch && (
             <Button
@@ -347,7 +379,7 @@ export function MeetingScheduler() {
             </div>
           )}
 
-          <TimezoneChipList zones={zones} onRemove={removeZone} addInputRef={addZoneInputRef} dateStr={dateStr} />
+          <TimezoneChipList zones={manuallyAddedZones} onRemove={removeZone} addInputRef={addZoneInputRef} dateStr={dateStr} />
         </div>
 
         <Separator />
