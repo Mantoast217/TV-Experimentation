@@ -6,6 +6,11 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // Deployed as a subpath of the standalone app (meeting-scheduler), not its own domain
+  // root — see /build.mjs at the repo root, which builds this app and copies its output
+  // into meeting-scheduler/dist/enhanced-meeting-scheduler/. Every %BASE_URL% reference in
+  // index.html/privacy.html/terms.html picks this up at build time.
+  base: '/enhanced-meeting-scheduler/',
   build: {
     rollupOptions: {
       // Static, non-React legal pages linked from the app's footer — plain multi-page

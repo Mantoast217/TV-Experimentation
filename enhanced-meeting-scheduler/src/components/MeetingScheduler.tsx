@@ -509,13 +509,13 @@ export function MeetingScheduler() {
       <footer className="flex justify-center px-6 pb-8">
         <div className="flex w-full max-w-[640px] flex-wrap gap-x-4 gap-y-1 text-xs text-[var(--secondary-text)]">
           <a
-            href="/privacy.html"
+            href="privacy.html"
             className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
           >
             Privacy Policy
           </a>
           <a
-            href="/terms.html"
+            href="terms.html"
             className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
           >
             Terms of Use
@@ -528,11 +528,8 @@ export function MeetingScheduler() {
           >
             Feedback
           </a>
-          {/* Mirrors meeting-scheduler's own link back to this app: points at "/",
-              matching how that app links here (/enhanced-meeting-scheduler/) — both assume
-              a shared-domain, path-based deployment neither app has yet (see that app's own
-              footer-link commit). Left pointing at the intended destination rather than
-              omitted. */}
+          {/* Absolute, unlike the privacy/terms links above: this points back at the root
+              app (meeting-scheduler), not a page within this app. */}
           <a
             href="/"
             className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"

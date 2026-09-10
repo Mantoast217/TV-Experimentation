@@ -200,8 +200,8 @@ describe("MeetingScheduler — invite action redesign", () => {
 describe("MeetingScheduler — footer", () => {
   it("links to the Privacy Policy and Terms of Use pages", () => {
     render(<MeetingScheduler />);
-    expect(screen.getByRole("link", { name: "Privacy Policy" })).toHaveAttribute("href", "/privacy.html");
-    expect(screen.getByRole("link", { name: "Terms of Use" })).toHaveAttribute("href", "/terms.html");
+    expect(screen.getByRole("link", { name: "Privacy Policy" })).toHaveAttribute("href", "privacy.html");
+    expect(screen.getByRole("link", { name: "Terms of Use" })).toHaveAttribute("href", "terms.html");
   });
 
   it("links Feedback to the feedback form, opened in a new tab", () => {

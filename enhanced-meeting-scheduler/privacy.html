@@ -16,14 +16,16 @@
         mq.addEventListener("change", apply);
       })();
     </script>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <!-- %BASE_URL%: see index.html — this app is deployed under a subpath, and public/
+         files need it since Vite doesn't rewrite them automatically. -->
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f5f5f5" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#060607" media="(prefers-color-scheme: dark)" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Privacy Policy — Meeting Scheduler</title>
+    <title>Privacy Policy — Enhanced Meeting Scheduler</title>
     <style>
       :root {
         color-scheme: light;
@@ -90,7 +92,12 @@
   </head>
   <body>
     <main>
-      <a class="back" href="/">← Back to Meeting Scheduler</a>
+      <!-- Relative, not "/": privacy.html and index.html are siblings in this app's own
+           output directory, so "./" reaches this app's own index regardless of which
+           subpath it's deployed under (unlike the cross-app footer links in
+           MeetingScheduler.tsx, which intentionally point at the OTHER app and so stay
+           absolute). -->
+      <a class="back" href="./">← Back to Enhanced Meeting Scheduler</a>
       <h1>Privacy Policy</h1>
       <p class="updated">Last updated: September 2026</p>
 

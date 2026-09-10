@@ -16,14 +16,16 @@
         mq.addEventListener("change", apply);
       })();
     </script>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <!-- %BASE_URL%: see index.html — this app is deployed under a subpath, and public/
+         files need it since Vite doesn't rewrite them automatically. -->
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f5f5f5" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#060607" media="(prefers-color-scheme: dark)" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Terms of Use — Meeting Scheduler</title>
+    <title>Terms of Use — Enhanced Meeting Scheduler</title>
     <style>
       :root {
         color-scheme: light;
@@ -90,7 +92,8 @@
   </head>
   <body>
     <main>
-      <a class="back" href="/">← Back to Meeting Scheduler</a>
+      <!-- Relative, not "/": see privacy.html for why. -->
+      <a class="back" href="./">← Back to Enhanced Meeting Scheduler</a>
       <h1>Terms of Use</h1>
       <p class="updated">Last updated: September 2026</p>
 
@@ -118,14 +121,14 @@
         The <strong>Feedback</strong> link in the footer opens a separate Google Form; submitting it is entirely
         optional, and by doing so you agree that we may review your responses for user research and to guide
         design improvements to this tool. This site's hosting provider may also collect basic, aggregated web
-        analytics. See the <a href="/privacy.html">Privacy Policy</a> for what's collected and how it's used.
+        analytics. See the <a href="privacy.html">Privacy Policy</a> for what's collected and how it's used.
       </p>
 
       <h2>Changes</h2>
       <p>This tool and these terms may change or the service may be discontinued at any time, without notice.</p>
 
       <h2>Questions</h2>
-      <p>See the feedback link on the main page, or the <a href="/privacy.html">Privacy Policy</a> for data-related questions.</p>
+      <p>See the feedback link on the main page, or the <a href="privacy.html">Privacy Policy</a> for data-related questions.</p>
     </main>
   </body>
 </html>

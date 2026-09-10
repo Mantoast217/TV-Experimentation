@@ -509,13 +509,13 @@ export function MeetingScheduler() {
       <footer className="flex justify-center px-6 pb-8">
         <div className="flex w-full max-w-[640px] flex-wrap gap-x-4 gap-y-1 text-xs text-[var(--secondary-text)]">
           <a
-            href="/privacy.html"
+            href="privacy.html"
             className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
           >
             Privacy Policy
           </a>
           <a
-            href="/terms.html"
+            href="terms.html"
             className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
           >
             Terms of Use
@@ -528,10 +528,9 @@ export function MeetingScheduler() {
           >
             Feedback
           </a>
-          {/* Points at /enhanced-meeting-scheduler/, matching the sibling app's own folder
-              name (see enhanced-meeting-scheduler/ at the repo root) — not live yet: that
-              app has no build/deploy configuration of its own, so this link 404s until one
-              exists. Left in place as the intended destination rather than omitted. */}
+          {/* Absolute, unlike the privacy/terms links above: this points at a sibling app
+              served from its own subpath (see enhanced-meeting-scheduler/vite.config.ts's
+              base), not a page within this app. */}
           <a
             href="/enhanced-meeting-scheduler/"
             className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
