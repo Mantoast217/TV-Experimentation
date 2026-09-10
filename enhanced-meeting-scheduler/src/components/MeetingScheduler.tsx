@@ -528,6 +528,17 @@ export function MeetingScheduler() {
           >
             Feedback
           </a>
+          {/* Mirrors meeting-scheduler's own link back to this app: points at "/",
+              matching how that app links here (/enhanced-meeting-scheduler/) — both assume
+              a shared-domain, path-based deployment neither app has yet (see that app's own
+              footer-link commit). Left pointing at the intended destination rather than
+              omitted. */}
+          <a
+            href="/"
+            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+          >
+            Standalone Meeting Scheduler
+          </a>
         </div>
       </footer>
     </div>

@@ -211,6 +211,11 @@ describe("MeetingScheduler — footer", () => {
     expect(feedback).toHaveAttribute("target", "_blank");
     expect(feedback).toHaveAttribute("rel", "noopener noreferrer");
   });
+
+  it("links back to the Standalone Meeting Scheduler", () => {
+    render(<MeetingScheduler />);
+    expect(screen.getByRole("link", { name: "Standalone Meeting Scheduler" })).toHaveAttribute("href", "/");
+  });
 });
 
 describe("MeetingScheduler — 24-hour duration clarification", () => {
