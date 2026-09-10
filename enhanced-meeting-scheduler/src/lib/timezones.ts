@@ -45,11 +45,20 @@ export function zoneAbbreviation(zone: TimeZoneCatalogEntry, dateStr: string): s
   return zone.stdAbbreviation ?? null;
 }
 
-export function zoneDisplayLabel(zone: TimeZoneCatalogEntry, dateStr: string): string {
+/**
+ * Just the abbreviation/offset portion of zoneDisplayLabel, e.g. "IST / GMT+5:30" or
+ * "GMT+9" when the zone has no traditional abbreviation — for anything that needs a
+ * zone's current time label without repeating the city/country part, such as a
+ * colleague's search result or participant chip, which already show their name and city.
+ */
+export function zoneTimeLabel(zone: TimeZoneCatalogEntry, dateStr: string): string {
   const offset = gmtOffsetLabel(zone.timezone, dateStr);
   const abbrev = zoneAbbreviation(zone, dateStr);
-  const timeLabel = abbrev ? `${abbrev} / ${offset}` : offset;
-  return `${zone.city} — ${zone.country} (${timeLabel})`;
+  return abbrev ? `${abbrev} / ${offset}` : offset;
+}
+
+export function zoneDisplayLabel(zone: TimeZoneCatalogEntry, dateStr: string): string {
+  return `${zone.city} — ${zone.country} (${zoneTimeLabel(zone, dateStr)})`;
 }
 
 export function formatHm(hour: number, minute: number): string {

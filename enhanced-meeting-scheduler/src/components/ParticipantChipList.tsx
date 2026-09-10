@@ -1,12 +1,15 @@
 import { Avatar, Chip } from "@heroui/react";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { colleagueTimeZone, type Colleague } from "../lib/colleagues";
+import { zoneTimeLabel } from "../lib/timezones";
 
 interface ParticipantChipListProps {
   participants: Colleague[];
   onRemove: (id: string) => void;
   /** Focus target when the last chip is removed. */
   addInputRef: RefObject<HTMLInputElement | null>;
+  /** Reference date ("YYYY-MM-DD") each chip's GMT offset is computed against. */
+  dateStr: string;
 }
 
 /**
@@ -22,7 +25,7 @@ function colleagueInitials(colleague: Colleague): string {
 
 /** Mirrors TimezoneChipList's own add/remove announcement and focus-management pattern —
  * a person chip should behave exactly like a time zone chip, not a lesser copy of one. */
-export function ParticipantChipList({ participants, onRemove, addInputRef }: ParticipantChipListProps) {
+export function ParticipantChipList({ participants, onRemove, addInputRef, dateStr }: ParticipantChipListProps) {
   const buttonRefs = useRef(new Map<string, HTMLButtonElement>());
   const prevParticipantsRef = useRef(participants);
   const [announcement, setAnnouncement] = useState("");
@@ -63,16 +66,20 @@ export function ParticipantChipList({ participants, onRemove, addInputRef }: Par
     <>
       <ul role="list" translate="no" className="m-0 flex list-none flex-wrap gap-2.5 p-0">
         {participants.map((colleague) => {
-          const city = colleagueTimeZone(colleague).city;
+          const zone = colleagueTimeZone(colleague);
+          const timeLabel = zoneTimeLabel(zone, dateStr);
           const fullName = `${colleague.firstName} ${colleague.lastName}`;
           return (
             <li key={colleague.id} role="listitem">
-              <Chip variant="soft" color="default" size="lg" className="items-center gap-1.5 border border-[#767676] pl-1">
+              {/* h-10, explicit rather than left to the avatar to drive: TimezoneChipList's
+                  plain chip matches this same fixed height so the two chip kinds sit flush
+                  in a mixed row regardless of which one has an avatar. */}
+              <Chip variant="soft" color="default" size="lg" className="h-10 items-center gap-1.5 border border-[#767676] pl-1">
                 <Avatar.Root size="sm">
                   <Avatar.Fallback>{colleagueInitials(colleague)}</Avatar.Fallback>
                 </Avatar.Root>
                 <Chip.Label>
-                  {fullName} — {city}
+                  {fullName} — {zone.city} ({timeLabel})
                 </Chip.Label>
                 <button
                   ref={(el) => {

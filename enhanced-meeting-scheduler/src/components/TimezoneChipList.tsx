@@ -64,7 +64,10 @@ export function TimezoneChipList({ zones, onRemove, addInputRef, dateStr }: Time
           const label = zoneDisplayLabel(zone, dateStr);
           return (
             <li key={zone.id} role="listitem">
-              <Chip variant="soft" color="default" size="lg" className="items-center gap-1.5 border border-[#767676]">
+              {/* h-10: matches the participant chip's height, which the avatar (32px) plus its
+                  own vertical padding drives to 40px — a plain text chip would otherwise sit
+                  shorter, since it has no avatar forcing that same height. */}
+              <Chip variant="soft" color="default" size="lg" className="h-10 items-center gap-1.5 border border-[#767676]">
                 <Chip.Label>{label}</Chip.Label>
                 <button
                   ref={(el) => {

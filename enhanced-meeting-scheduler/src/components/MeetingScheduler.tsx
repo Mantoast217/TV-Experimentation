@@ -31,11 +31,11 @@ import {
   shiftTimeValue,
 } from "../lib/scheduling";
 import {
-  DEFAULT_TIMEZONE_ID,
   TIMEZONE_CATALOG,
   longDateLabel,
   wallClockToUtcDate,
   zoneDisplayLabel,
+  zoneTimeLabel,
   type TimeZoneCatalogEntry,
 } from "../lib/timezones";
 
@@ -72,10 +72,10 @@ function colleagueInitials(colleague: Colleague): string {
 }
 
 export function MeetingScheduler() {
-  const [zones, setZones] = useState<TimeZoneCatalogEntry[]>(() => {
-    const uk = TIMEZONE_CATALOG.find((z) => z.id === DEFAULT_TIMEZONE_ID)!;
-    return [uk];
-  });
+  // No default zone: an empty list (and no chip for it) is the correct starting state,
+  // not a placeholder London entry — the schedule/invite sections below already guard on
+  // zones.length themselves for exactly this case.
+  const [zones, setZones] = useState<TimeZoneCatalogEntry[]>([]);
   const [selectedDate, setSelectedDate] = useState<CalendarDate>(() => today(getLocalTimeZone()));
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("10:00");
@@ -293,11 +293,12 @@ export function MeetingScheduler() {
             <ComboBox.Popover className="max-h-72" translate="no">
               <ListBox<Colleague> items={asItems(availableColleagues)}>
                 {(colleague) => {
-                  const city = colleagueTimeZone(colleague).city;
+                  const zone = colleagueTimeZone(colleague);
+                  const timeLabel = zoneTimeLabel(zone, dateStr);
                   return (
                     <ListBox.Item
                       id={colleague.id}
-                      textValue={`${colleague.firstName} ${colleague.lastName}, ${colleague.role}, ${city}`}
+                      textValue={`${colleague.firstName} ${colleague.lastName}, ${colleague.role}, ${zone.city} ${timeLabel}`}
                     >
                       <div className="flex items-center gap-3 py-0.5">
                         <Avatar.Root size="sm">
@@ -307,8 +308,9 @@ export function MeetingScheduler() {
                           <span className="text-sm font-medium text-foreground">
                             {colleague.firstName} {colleague.lastName}
                           </span>
+                          <span className="text-xs text-[var(--secondary-text)]">{colleague.role}</span>
                           <span className="text-xs text-[var(--secondary-text)]">
-                            {colleague.role} · {city}
+                            {zone.city} ({timeLabel})
                           </span>
                         </div>
                       </div>
@@ -318,7 +320,12 @@ export function MeetingScheduler() {
               </ListBox>
             </ComboBox.Popover>
           </ComboBox.Root>
-          <ParticipantChipList participants={participants} onRemove={removeParticipant} addInputRef={addColleagueInputRef} />
+          <ParticipantChipList
+            participants={participants}
+            onRemove={removeParticipant}
+            addInputRef={addColleagueInputRef}
+            dateStr={dateStr}
+          />
 
           {!showTimezoneSearch && (
             <Button

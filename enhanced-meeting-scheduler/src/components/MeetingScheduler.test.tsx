@@ -10,6 +10,17 @@ async function revealTimezoneSearch(user: ReturnType<typeof userEvent.setup>) {
   await user.click(screen.getByRole("button", { name: "Add a time zone" }));
 }
 
+/** There's no default zone anymore (see MeetingScheduler — empty state) — tests that
+ * need a lone, host-only zone to exercise the schedule/invite UI add one explicitly. */
+async function addOneZone(user: ReturnType<typeof userEvent.setup>, city = "London") {
+  await revealTimezoneSearch(user);
+  const combo = screen.getByRole("combobox", { name: "Add a time zone" });
+  await user.click(combo);
+  await user.type(combo, city);
+  await user.click(await screen.findByRole("option", { name: new RegExp(`^${city} —`) }, { timeout: 5000 }));
+  await user.keyboard("{Escape}");
+}
+
 describe("MeetingScheduler — copy", () => {
   it("shows the updated subheading under the H1", () => {
     render(<MeetingScheduler />);
@@ -73,9 +84,12 @@ describe("MeetingScheduler — add a participant", () => {
     // before the next getByRole lookup can see the chip's remove button at all.
     await user.keyboard("{Escape}");
 
-    expect(await screen.findByText("Priya Nair — Kolkata")).toBeInTheDocument();
-    const removeButton = screen.getByRole("button", { name: "Remove Priya Nair" });
-    expect(removeButton.closest("li")).toHaveTextContent("PN");
+    const removeButton = await screen.findByRole("button", { name: "Remove Priya Nair" });
+    const chip = removeButton.closest("li");
+    expect(chip).toHaveTextContent("PN");
+    expect(chip).toHaveTextContent("Priya Nair");
+    // Includes the city and current offset/abbreviation, same format as a plain zone chip.
+    expect(chip).toHaveTextContent(/Kolkata \(IST \/ GMT\+5:30\)/);
   });
 
   it("adds the selected colleague's time zone to the schedule", async () => {
@@ -101,36 +115,40 @@ describe("MeetingScheduler — add a participant", () => {
     await user.type(combo, "Priya");
     await user.click(await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 }));
     await user.keyboard("{Escape}");
-    await screen.findByText("Priya Nair — Kolkata");
+    await screen.findByRole("button", { name: "Remove Priya Nair" });
 
     expect(screen.queryByRole("button", { name: /^Remove Kolkata/ })).not.toBeInTheDocument();
   });
 
-  it("removes the participant and their time zone together", async () => {
-    const user = userEvent.setup();
-    render(<MeetingScheduler />);
+  it(
+    "removes the participant and their time zone together",
+    async () => {
+      const user = userEvent.setup();
+      render(<MeetingScheduler />);
 
-    const combo = screen.getByRole("combobox", { name: "Search for colleagues" });
-    await user.click(combo);
-    await user.type(combo, "Priya");
-    await user.click(await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 }));
-    await user.keyboard("{Escape}");
-    await screen.findByText("Priya Nair — Kolkata");
+      const combo = screen.getByRole("combobox", { name: "Search for colleagues" });
+      await user.click(combo);
+      await user.type(combo, "Priya");
+      await user.click(await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 }));
+      await user.keyboard("{Escape}");
+      await screen.findByRole("button", { name: "Remove Priya Nair" });
 
-    await user.click(screen.getByRole("button", { name: "Remove Priya Nair" }));
-    await user.keyboard("{Escape}");
+      await user.click(screen.getByRole("button", { name: "Remove Priya Nair" }));
+      await user.keyboard("{Escape}");
 
-    expect(screen.queryByText("Priya Nair — Kolkata")).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "Remove Priya Nair" })).not.toBeInTheDocument();
 
-    // Confirms the zone itself came out of the schedule, not just the chip: Kolkata is
-    // only excluded from the time zone search's own results while it's still in `zones`
-    // (see availableZones), so it reappearing there proves it's gone.
-    await revealTimezoneSearch(user);
-    const tzCombo = screen.getByRole("combobox", { name: "Add a time zone" });
-    await user.click(tzCombo);
-    await user.type(tzCombo, "Kolkata");
-    expect(await screen.findByRole("option", { name: /^Kolkata — India/ }, { timeout: 5000 })).toBeInTheDocument();
-  });
+      // Confirms the zone itself came out of the schedule, not just the chip: Kolkata is
+      // only excluded from the time zone search's own results while it's still in `zones`
+      // (see availableZones), so it reappearing there proves it's gone.
+      await revealTimezoneSearch(user);
+      const tzCombo = screen.getByRole("combobox", { name: "Add a time zone" });
+      await user.click(tzCombo);
+      await user.type(tzCombo, "Kolkata");
+      expect(await screen.findByRole("option", { name: /^Kolkata — India/ }, { timeout: 5000 })).toBeInTheDocument();
+    },
+    10_000,
+  );
 
   it("keeps the time zone search hidden behind an 'Add a time zone' button until clicked", async () => {
     const user = userEvent.setup();
@@ -145,6 +163,49 @@ describe("MeetingScheduler — add a participant", () => {
     // The reveal button did its job — no reason for it to still be sitting there once the
     // section it opens is already on screen.
     expect(screen.queryByRole("button", { name: "Add a time zone" })).not.toBeInTheDocument();
+  });
+
+  it("gives a plain time zone chip and a participant chip the same fixed height", async () => {
+    // jsdom has no layout engine, so this asserts the structural CSS contract (both chips
+    // share the same h-10) rather than measuring real pixels — verified live, with real
+    // pixel measurements showing both chips at exactly 40px, in the browser.
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const combo = screen.getByRole("combobox", { name: "Search for colleagues" });
+    await user.click(combo);
+    await user.type(combo, "Priya");
+    await user.click(await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 }));
+    await user.keyboard("{Escape}");
+
+    await revealTimezoneSearch(user);
+    const tzCombo = screen.getByRole("combobox", { name: "Add a time zone" });
+    await user.click(tzCombo);
+    await user.type(tzCombo, "Tokyo");
+    await user.click(await screen.findByRole("option", { name: /^Tokyo — Japan/ }, { timeout: 5000 }));
+    await user.keyboard("{Escape}");
+
+    const participantChip = (await screen.findByRole("button", { name: "Remove Priya Nair" })).closest("li")
+      ?.firstElementChild;
+    const zoneChip = (await screen.findByRole("button", { name: /^Remove Tokyo/ })).closest("li")?.firstElementChild;
+    expect(participantChip).toHaveClass("h-10");
+    expect(zoneChip).toHaveClass("h-10");
+  }, 10_000);
+});
+
+describe("MeetingScheduler — empty state", () => {
+  it("shows no time zone chips by default, including no seeded default city", () => {
+    render(<MeetingScheduler />);
+    // No chip means no remove button for one — the only reliable signal a chip list is
+    // actually empty, since an empty <ul> renders no visible text to query for.
+    expect(screen.queryByRole("button", { name: /^Remove /i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/^London/)).not.toBeInTheDocument();
+  });
+
+  it("hides the invite buttons and shows a placeholder until a time zone is added", () => {
+    render(<MeetingScheduler />);
+    expect(screen.queryByRole("button", { name: /^Set up invite for/ })).not.toBeInTheDocument();
+    expect(screen.getAllByText("Add a timezone to see local times").length).toBeGreaterThan(0);
   });
 });
 
@@ -176,8 +237,6 @@ describe("MeetingScheduler — add a time zone search", () => {
   });
 
   it("matches a daylight-saving abbreviation too, not just the standard one", async () => {
-    // Birmingham, not London: London is already in the default zone list, so it wouldn't
-    // appear among the *addable* search results regardless of whether the query matched.
     const user = userEvent.setup();
     render(<MeetingScheduler />);
 
@@ -226,19 +285,22 @@ describe("MeetingScheduler — accessibility punch list", () => {
     expect(icon).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("gives the two Set up invite buttons distinct accessible names, even in the default state where their times coincide", () => {
+  it("gives the two Set up invite buttons distinct accessible names, even when their times coincide", async () => {
+    const user = userEvent.setup();
     render(<MeetingScheduler />);
     // Deliberately NOT nudging the start time: the default Start time (09:00) coincides
-    // with the default Best-time suggestion for a single, host-only zone, so this is
-    // exactly the case that used to produce two identically-named buttons. The labels
-    // must differ by card context (selected vs. best-for-everyone) regardless of times.
+    // with the Best-time suggestion for a single, host-only zone, so this is exactly the
+    // case that used to produce two identically-named buttons. The labels must differ by
+    // card context (selected vs. best-for-everyone) regardless of times.
+    await addOneZone(user);
+
     const inviteButtons = screen.getAllByRole("button", { name: /^Set up invite for/ });
     expect(inviteButtons).toHaveLength(2);
     expect(inviteButtons[0]).toHaveAccessibleName(inviteButtons[0].getAttribute("aria-label") ?? "");
     expect(inviteButtons[0].getAttribute("aria-label")).not.toBe(inviteButtons[1].getAttribute("aria-label"));
     expect(inviteButtons[0]).toHaveAccessibleName(/your selected time/);
     expect(inviteButtons[1]).toHaveAccessibleName(/best time for everyone/);
-  });
+  }, 10_000);
 });
 
 describe("MeetingScheduler — invite action redesign", () => {
@@ -252,18 +314,24 @@ describe("MeetingScheduler — invite action redesign", () => {
     expect(screen.queryByText("Choose a calendar app, then send it from there")).not.toBeInTheDocument();
   });
 
-  it("associates both invite buttons with the shared note via aria-describedby", () => {
+  it("associates both invite buttons with the shared note via aria-describedby", async () => {
+    const user = userEvent.setup();
     render(<MeetingScheduler />);
+    await addOneZone(user);
+
     const note = screen.getByText("Invites are set up through your own calendar/meeting app.");
     const noteId = note.getAttribute("id");
     expect(noteId).toBeTruthy();
 
     const inviteButtons = screen.getAllByRole("button", { name: /^Set up invite for/ });
     inviteButtons.forEach((button) => expect(button).toHaveAttribute("aria-describedby", noteId));
-  });
+  }, 10_000);
 
-  it("gives each invite button a decorative external-link icon that doesn't affect its accessible name", () => {
+  it("gives each invite button a decorative external-link icon that doesn't affect its accessible name", async () => {
+    const user = userEvent.setup();
     render(<MeetingScheduler />);
+    await addOneZone(user);
+
     const inviteButtons = screen.getAllByRole("button", { name: /^Set up invite for/ });
     inviteButtons.forEach((button) => {
       const icon = button.querySelector("svg");
@@ -272,7 +340,7 @@ describe("MeetingScheduler — invite action redesign", () => {
       // the icon's presence — accessible name computation skips aria-hidden content.
       expect(button).toHaveAccessibleName(button.getAttribute("aria-label") ?? "");
     });
-  });
+  }, 10_000);
 
   it("keeps the invite button's position anchor fixed regardless of attendee count", async () => {
     // jsdom has no layout engine, so this asserts the structural CSS contract that
@@ -286,6 +354,7 @@ describe("MeetingScheduler — invite action redesign", () => {
     // vitest's default 5s test timeout.
     const user = userEvent.setup();
     render(<MeetingScheduler />);
+    await addOneZone(user);
 
     const getAnchorClasses = () => {
       const button = screen.getAllByRole("button", { name: /^Set up invite for/ })[0];
@@ -301,8 +370,8 @@ describe("MeetingScheduler — invite action redesign", () => {
     // Anchored to the option label's full "City — Country" so a same-named city in a
     // different country (Sydney, Nova Scotia; Nishi-Tokyo-shi alongside Tokyo) — real
     // entries now that the catalog is ~26,000 GeoNames cities, not the old ~300-entry
-    // one-city-per-zone seed — can't also match a loose substring search.
-    await revealTimezoneSearch(user);
+    // one-city-per-zone seed — can't also match a loose substring search. The time zone
+    // search is already revealed from addOneZone above, adding London as attendee #1.
     const combo = screen.getByRole("combobox", { name: "Add a time zone" });
     for (const { city, country } of [
       { city: "Tokyo", country: "Japan" },
@@ -437,87 +506,129 @@ describe("MeetingScheduler — Best time for everyone, manual adjustment", () =>
   const backButton = () => screen.getByRole("button", { name: /Move best time back 15 minutes/ });
   const forwardButton = () => screen.getByRole("button", { name: /Move best time forward 15 minutes/ });
 
-  it("shows 'Adjust time' before any nudge", () => {
-    render(<MeetingScheduler />);
-    expect(screen.getByText("Adjust time")).toBeInTheDocument();
-  });
+  it(
+    "shows 'Adjust time' before any nudge",
+    async () => {
+      const user = userEvent.setup();
+      render(<MeetingScheduler />);
+      await addOneZone(user);
 
-  it("switches to a signed, zero-padded HH:MM offset after a single nudge", async () => {
-    const user = userEvent.setup();
-    render(<MeetingScheduler />);
+      expect(screen.getByText("Adjust time")).toBeInTheDocument();
+    },
+    10_000,
+  );
 
-    await user.click(backButton());
+  it(
+    "switches to a signed, zero-padded HH:MM offset after a single nudge",
+    async () => {
+      const user = userEvent.setup();
+      render(<MeetingScheduler />);
+      await addOneZone(user);
 
-    expect(screen.getByText("Adjusted -00:15")).toBeInTheDocument();
-    expect(screen.queryByText("Adjust time")).not.toBeInTheDocument();
-  });
+      await user.click(backButton());
 
-  it("accumulates across repeated clicks and rolls the offset into the hour digit", async () => {
-    const user = userEvent.setup();
-    render(<MeetingScheduler />);
+      expect(screen.getByText("Adjusted -00:15")).toBeInTheDocument();
+      expect(screen.queryByText("Adjust time")).not.toBeInTheDocument();
+    },
+    10_000,
+  );
 
-    for (let i = 0; i < 5; i++) await user.click(backButton());
+  it(
+    "accumulates across repeated clicks and rolls the offset into the hour digit",
+    async () => {
+      const user = userEvent.setup();
+      render(<MeetingScheduler />);
+      await addOneZone(user);
 
-    expect(screen.getByText("Adjusted -01:15")).toBeInTheDocument();
-  });
+      for (let i = 0; i < 5; i++) await user.click(backButton());
 
-  it("supports the forward direction with a '+' sign", async () => {
-    const user = userEvent.setup();
-    render(<MeetingScheduler />);
+      expect(screen.getByText("Adjusted -01:15")).toBeInTheDocument();
+    },
+    10_000,
+  );
 
-    await user.click(forwardButton());
+  it(
+    "supports the forward direction with a '+' sign",
+    async () => {
+      const user = userEvent.setup();
+      render(<MeetingScheduler />);
+      await addOneZone(user);
 
-    expect(screen.getByText("Adjusted +00:15")).toBeInTheDocument();
-  });
+      await user.click(forwardButton());
 
-  it("announces the adjustment via a polite live region", async () => {
-    const user = userEvent.setup();
-    render(<MeetingScheduler />);
+      expect(screen.getByText("Adjusted +00:15")).toBeInTheDocument();
+    },
+    10_000,
+  );
 
-    await user.click(backButton());
+  it(
+    "announces the adjustment via a polite live region",
+    async () => {
+      const user = userEvent.setup();
+      render(<MeetingScheduler />);
+      await addOneZone(user);
 
-    expect(screen.getByText(/^Best time adjusted to/)).toBeInTheDocument();
-  });
+      await user.click(backButton());
 
-  it("resets to 'Adjust time' when a timezone is added", async () => {
-    const user = userEvent.setup();
-    render(<MeetingScheduler />);
+      expect(screen.getByText(/^Best time adjusted to/)).toBeInTheDocument();
+    },
+    10_000,
+  );
 
-    await user.click(backButton());
-    expect(screen.getByText("Adjusted -00:15")).toBeInTheDocument();
+  it(
+    "resets to 'Adjust time' when a timezone is added",
+    async () => {
+      const user = userEvent.setup();
+      render(<MeetingScheduler />);
+      await addOneZone(user);
 
-    await revealTimezoneSearch(user);
-    const combo = screen.getByRole("combobox", { name: "Add a time zone" });
-    await user.click(combo);
-    await user.type(combo, "Tokyo");
-    const option = await screen.findByRole("option", { name: /^Tokyo — Japan/ });
-    await user.click(option);
+      await user.click(backButton());
+      expect(screen.getByText("Adjusted -00:15")).toBeInTheDocument();
 
-    expect(screen.getByText("Adjust time")).toBeInTheDocument();
-    expect(screen.queryByText(/^Adjusted/)).not.toBeInTheDocument();
-  });
+      // Time zone search is already revealed from addOneZone above.
+      const combo = screen.getByRole("combobox", { name: "Add a time zone" });
+      await user.click(combo);
+      await user.type(combo, "Tokyo");
+      const option = await screen.findByRole("option", { name: /^Tokyo — Japan/ });
+      await user.click(option);
 
-  it("resets when only the start time moves — duration (and so the computed best time) doesn't change, since the end time shifts to match it, but this is still an edit to the original settings", async () => {
-    const user = userEvent.setup();
-    render(<MeetingScheduler />);
+      expect(screen.getByText("Adjust time")).toBeInTheDocument();
+      expect(screen.queryByText(/^Adjusted/)).not.toBeInTheDocument();
+    },
+    10_000,
+  );
 
-    await user.click(backButton());
-    expect(screen.getByText("Adjusted -00:15")).toBeInTheDocument();
+  it(
+    "resets when only the start time moves — duration (and so the computed best time) doesn't change, since the end time shifts to match it, but this is still an edit to the original settings",
+    async () => {
+      const user = userEvent.setup();
+      render(<MeetingScheduler />);
+      await addOneZone(user);
 
-    await user.click(screen.getByRole("button", { name: /Increase start time by 15 minutes/ }));
+      await user.click(backButton());
+      expect(screen.getByText("Adjusted -00:15")).toBeInTheDocument();
 
-    expect(screen.getByText("Adjust time")).toBeInTheDocument();
-  });
+      await user.click(screen.getByRole("button", { name: /Increase start time by 15 minutes/ }));
 
-  it("resets when the end time (duration) changes", async () => {
-    const user = userEvent.setup();
-    render(<MeetingScheduler />);
+      expect(screen.getByText("Adjust time")).toBeInTheDocument();
+    },
+    10_000,
+  );
 
-    await user.click(backButton());
-    expect(screen.getByText("Adjusted -00:15")).toBeInTheDocument();
+  it(
+    "resets when the end time (duration) changes",
+    async () => {
+      const user = userEvent.setup();
+      render(<MeetingScheduler />);
+      await addOneZone(user);
 
-    await user.click(screen.getByRole("button", { name: /Increase end time by 15 minutes/ }));
+      await user.click(backButton());
+      expect(screen.getByText("Adjusted -00:15")).toBeInTheDocument();
 
-    expect(screen.getByText("Adjust time")).toBeInTheDocument();
-  });
+      await user.click(screen.getByRole("button", { name: /Increase end time by 15 minutes/ }));
+
+      expect(screen.getByText("Adjust time")).toBeInTheDocument();
+    },
+    10_000,
+  );
 });
