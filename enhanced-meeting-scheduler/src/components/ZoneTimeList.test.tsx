@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import type { Colleague } from "../lib/colleagues";
 import type { ZoneTimeSlot } from "../lib/scheduling";
 import type { TimeZoneCatalogEntry } from "../lib/timezones";
 import { ZoneTimeList } from "./ZoneTimeList";
@@ -133,5 +134,54 @@ describe("ZoneTimeList — day-offset badges", () => {
   it("gives each badge a screen-reader-only explanation instead of a bare, ambiguous number", () => {
     render(<ZoneTimeList slots={[slot("London", 9, 8.75, 0, 1)]} />);
     expect(screen.getByText(/1 day later/)).toBeInTheDocument();
+  });
+});
+
+function colleague(firstName: string, lastName: string): Colleague {
+  return {
+    id: `${firstName}-${lastName}`.toLowerCase(),
+    firstName,
+    lastName,
+    role: "Test Role",
+    email: `${firstName}.${lastName}@kestrelglobal.example`.toLowerCase(),
+    timezoneId: "irrelevant-for-this-fixture",
+  };
+}
+
+describe("ZoneTimeList — participant labels", () => {
+  it("shows a participant's name ahead of the city when the zone matches them", () => {
+    const londonSlot = slot("London", 9, 10);
+    const participantByZoneId = new Map([[londonSlot.zone.id, [colleague("Arnold", "Beethoven")]]]);
+
+    render(<ZoneTimeList slots={[londonSlot]} participantByZoneId={participantByZoneId} />);
+
+    expect(screen.getByRole("listitem")).toHaveTextContent("Arnold Beethoven — London 09:00");
+  });
+
+  it("joins two participants who share a zone with '&', crediting both instead of dropping one", () => {
+    const londonSlot = slot("London", 9, 10);
+    const participantByZoneId = new Map([
+      [londonSlot.zone.id, [colleague("Arnold", "Beethoven"), colleague("Liam", "Sinclair")]],
+    ]);
+
+    render(<ZoneTimeList slots={[londonSlot]} participantByZoneId={participantByZoneId} />);
+
+    expect(screen.getByRole("listitem")).toHaveTextContent("Arnold Beethoven & Liam Sinclair — London 09:00");
+  });
+
+  it("falls back to the bare city when no participant is based in that zone", () => {
+    const tokyoSlot = slot("Tokyo", 12, 13);
+    const participantByZoneId = new Map([["some-other-zone-id", [colleague("Arnold", "Beethoven")]]]);
+
+    render(<ZoneTimeList slots={[tokyoSlot]} participantByZoneId={participantByZoneId} />);
+
+    const item = screen.getByRole("listitem");
+    expect(item).toHaveTextContent("Tokyo 12:00");
+    expect(item).not.toHaveTextContent("Beethoven");
+  });
+
+  it("renders exactly as before when no participantByZoneId is given at all", () => {
+    render(<ZoneTimeList slots={[slot("London", 9, 10)]} />);
+    expect(screen.getByRole("listitem")).toHaveTextContent("London 09:00");
   });
 });

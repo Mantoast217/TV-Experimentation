@@ -1,3 +1,4 @@
+import type { Colleague } from "../lib/colleagues";
 import type { ZoneTimeSlot } from "../lib/scheduling";
 import { classifyTimeQuality } from "../lib/timeQuality";
 
@@ -5,6 +6,9 @@ interface ZoneTimeListProps {
   slots: ZoneTimeSlot[];
   className?: string;
   chipClassName?: string;
+  /** Keyed by TimeZoneCatalogEntry.id — a slot whose zone matches one or more selected
+   * participants shows their name(s) ahead of the city instead of just the bare city. */
+  participantByZoneId?: Map<string, Colleague[]>;
 }
 
 /** A "+1"/"-1"-style pill marking a time as landing on a different day than the card's displayed date. */
@@ -24,7 +28,7 @@ function dayOffsetAnnouncement(offset: number): string {
   return offset > 0 ? `, ${offset} day${offset === 1 ? "" : "s"} later` : `, ${Math.abs(offset)} day${offset === -1 ? "" : "s"} earlier`;
 }
 
-export function ZoneTimeList({ slots, className, chipClassName }: ZoneTimeListProps) {
+export function ZoneTimeList({ slots, className, chipClassName, participantByZoneId }: ZoneTimeListProps) {
   if (slots.length === 0) {
     return <p className={className}>Add a timezone to see local times</p>;
   }
@@ -45,11 +49,16 @@ export function ZoneTimeList({ slots, className, chipClassName }: ZoneTimeListPr
           quality.dotColors.length === 2
             ? { background: `linear-gradient(90deg, ${quality.dotColors[0]} 50%, ${quality.dotColors[1]} 50%)` }
             : { backgroundColor: quality.dotColors[0] };
+        const people = participantByZoneId?.get(slot.zone.id);
+        const label =
+          people && people.length > 0
+            ? `${people.map((p) => `${p.firstName} ${p.lastName}`).join(" & ")} — ${slot.zone.city}`
+            : slot.zone.city;
         return (
           <li key={slot.zone.id} role="listitem" className="flex flex-wrap items-center gap-1.5">
             <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={dotStyle} />
             <span>
-              {slot.zone.city} {slot.startText}
+              {label} {slot.startText}
               {slot.dayOffset !== 0 && <span className="sr-only">{dayOffsetAnnouncement(slot.dayOffset)}</span>}
             </span>
             {slot.dayOffset !== 0 && <DayOffsetBadge offset={slot.dayOffset} className={chipClassName} />}

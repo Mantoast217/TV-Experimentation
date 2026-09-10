@@ -72,6 +72,20 @@ describe("MeetingScheduler — add a participant", () => {
     expect(option).toHaveTextContent("Kolkata");
   });
 
+  it("includes Arnold Beethoven, based in London, in the colleague directory", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const combo = screen.getByRole("combobox", { name: "Search for colleagues" });
+    await user.click(combo);
+    await user.type(combo, "Arnold");
+
+    const option = await screen.findByRole("option", { name: /Arnold Beethoven/ }, { timeout: 5000 });
+    expect(option).toHaveTextContent("AB");
+    expect(option).toHaveTextContent("Lead Experience Designer");
+    expect(option).toHaveTextContent("London");
+  });
+
   it("adds a participant chip with the colleague's avatar, name, and city under the search box", async () => {
     const user = userEvent.setup();
     render(<MeetingScheduler />);
@@ -104,6 +118,23 @@ describe("MeetingScheduler — add a participant", () => {
     // Kolkata now shows up as part of the schedule (e.g. the anchor-zone picker and the
     // time list below), just not as its own plain city chip — see the no-duplication test.
     expect((await screen.findAllByText(/Kolkata/)).length).toBeGreaterThan(0);
+  });
+
+  it("features the participant's name alongside their city and local time in the schedule cards", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const combo = screen.getByRole("combobox", { name: "Search for colleagues" });
+    await user.click(combo);
+    await user.type(combo, "Priya");
+    await user.click(await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 }));
+
+    // Matches only the schedule cards' "Priya Nair — Kolkata HH:MM" entries, not the
+    // participant chip's own similarly-prefixed "Priya Nair — Kolkata (IST / GMT+5:30)"
+    // label — "Selected time" and "Best time for everyone" both render a ZoneTimeList,
+    // so this is expected to show up exactly twice, in her own name, not as a bare city.
+    const entries = await screen.findAllByText(/^Priya Nair — Kolkata \d\d:\d\d/);
+    expect(entries).toHaveLength(2);
   });
 
   it("doesn't also show a participant's city as a separate plain time zone chip", async () => {

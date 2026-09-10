@@ -174,6 +174,23 @@ export function MeetingScheduler() {
     () => zones.filter((zone) => !participants.some((p) => colleagueTimeZone(p).id === zone.id)),
     [zones, participants],
   );
+
+  // Lets the "Selected time" / "Best time for everyone" cards below show a participant's
+  // own name in place of a bare city label, keyed by the same zone id computeZoneTimes
+  // already attaches to each slot. An array, not a single Colleague: two participants can
+  // share a city (e.g. Liam Sinclair and Arnold Beethoven, both London), and that one zone
+  // row needs to credit both of them, not silently pick one.
+  const participantByZoneId = useMemo(() => {
+    const map = new Map<string, Colleague[]>();
+    for (const p of participants) {
+      const zoneId = colleagueTimeZone(p).id;
+      const existing = map.get(zoneId);
+      if (existing) existing.push(p);
+      else map.set(zoneId, [p]);
+    }
+    return map;
+  }, [participants]);
+
   const hostZone = anchorZone?.timezone ?? "UTC";
 
   const selectedSlots = useMemo(
@@ -548,7 +565,7 @@ export function MeetingScheduler() {
                 is what let the button overlap the date heading on a real phone. */}
             <Card.Content className="flex flex-col gap-1 p-4 px-5 pr-40 text-sm">
               <span className="font-bold">{selectedDateLabel}</span>
-              <ZoneTimeList slots={selectedSlots} />
+              <ZoneTimeList slots={selectedSlots} participantByZoneId={participantByZoneId} />
             </Card.Content>
             {/* No invite for a meeting with no attendees: with zero zones added there's
                 nothing to invite anyone to (or to compute a timezone-aware time for) —
@@ -587,7 +604,7 @@ export function MeetingScheduler() {
                 is what let the button overlap the date heading on a real phone. */}
             <Card.Content className="flex flex-col gap-1 p-4 px-5 pr-40 text-sm">
               <span className="font-bold">{selectedDateLabel}</span>
-              <ZoneTimeList slots={adjustedOptimalSlots} />
+              <ZoneTimeList slots={adjustedOptimalSlots} participantByZoneId={participantByZoneId} />
               {/* Adjusting or inviting to a "best time" computed from zero attendees isn't
                   meaningful — hidden along with the invite button below until at least one
                   zone is added (see the matching guard on "Selected time" above). */}

@@ -104,4 +104,14 @@ export const COLLEAGUES: Colleague[] = [
     email: "noah.bergman@kestrelglobal.example",
     timezoneId: "us-los-angeles-5368361",
   },
+  {
+    id: "arnold-beethoven",
+    firstName: "Arnold",
+    lastName: "Beethoven",
+    role: "Lead Experience Designer",
+    email: "arnold.beethoven@kestrelglobal.example",
+    // Shares London with Liam Sinclair above — the fixture's one deliberate same-city
+    // pair, exercising the case where two participants map to a single zone chip.
+    timezoneId: "gb-london-2643743",
+  },
 ];
