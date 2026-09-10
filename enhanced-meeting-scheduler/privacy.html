@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- See index.html for why this runs inline, before first paint, and why it checks
+         localStorage — the footer toggle on the main page writes an explicit choice there
+         that this page respects too. -->
+    <script>
+      (function () {
+        var mq = window.matchMedia("(prefers-color-scheme: dark)");
+        function apply() {
+          var stored = localStorage.getItem("theme");
+          document.documentElement.dataset.theme = stored === "light" || stored === "dark" ? stored : mq.matches ? "dark" : "light";
+        }
+        apply();
+        mq.addEventListener("change", apply);
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#060607" media="(prefers-color-scheme: dark)" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Privacy Policy — Meeting Scheduler</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      [data-theme="dark"] {
+        color-scheme: dark;
+      }
+      body {
+        margin: 0;
+        min-height: 100%;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        background: #f5f5f5;
+        color: #18181b;
+      }
+      [data-theme="dark"] body {
+        background: #060607;
+        color: #e4e4e7;
+      }
+      main {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 4rem;
+      }
+      a {
+        color: #0d3f9c;
+      }
+      [data-theme="dark"] a {
+        color: #5c9cff;
+      }
+      h1 {
+        font-size: 1.25rem;
+        font-weight: 500;
+        margin: 0 0 0.5rem;
+      }
+      h2 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 2rem 0 0.5rem;
+      }
+      p,
+      li {
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        color: #27272a;
+      }
+      [data-theme="dark"] p,
+      [data-theme="dark"] li {
+        color: #e4e4e7;
+      }
+      .updated {
+        font-size: 0.8125rem;
+        color: #515158;
+        margin: 0 0 2rem;
+      }
+      [data-theme="dark"] .updated {
+        color: #a0a0aa;
+      }
+      .back {
+        display: inline-block;
+        font-size: 0.875rem;
+        margin-bottom: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back" href="/">← Back to Meeting Scheduler</a>
+      <h1>Privacy Policy</h1>
+      <p class="updated">Last updated: September 2026</p>
+
+      <p>
+        Meeting Scheduler is a browser-only tool. There is no account, no login, and no server that stores your
+        data — everything you do on the page (adding time zones, picking a date and time) happens locally in your
+        browser and is gone when you close or reload the tab.
+      </p>
+
+      <h2>What we collect</h2>
+      <p>
+        The scheduling tool itself collects nothing — no accounts, no cookies, and no tracking scripts run while
+        you're adding time zones, picking a date, or finding a time. Two things outside the tool itself can
+        involve data, described below: the feedback form, and this site's hosting-level web analytics.
+      </p>
+
+      <h2>What leaves your browser</h2>
+      <ul>
+        <li>
+          If you choose <strong>Outlook</strong>, <strong>Microsoft Teams</strong>, or <strong>Google Meet</strong>
+          from the "Set up invite" menu, this app opens that provider's own compose page in a new tab, with the
+          meeting title, the generated time summary (the city names and local times you see on screen), and the
+          start/end time included in that page's URL. From that point on, Microsoft's or Google's own privacy
+          policy applies to what they do with it —
+          <a href="https://privacy.microsoft.com/" target="_blank" rel="noopener noreferrer">Microsoft's privacy statement</a>
+          and
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's privacy policy</a>.
+        </li>
+        <li>
+          <strong>Download .ics</strong> does not send anything anywhere — it generates a calendar file on your
+          own device.
+        </li>
+        <li>
+          The <strong>Feedback</strong> link in the footer opens a separate Google Form in a new tab. Using it is
+          entirely optional. Anything you submit there — your responses, and any technical details Google Forms
+          collects automatically when you fill in a form — is stored by Google Forms and may be reviewed by us for
+          user research and to guide design improvements to this tool. Google's own privacy policy applies to the
+          form itself —
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's privacy policy</a>.
+        </li>
+      </ul>
+
+      <h2>Hosting and web analytics</h2>
+      <p>
+        This site is hosted on Cloudflare Pages. Like effectively any web host, Cloudflare's infrastructure
+        processes basic request-level information (e.g. IP address, browser type, requested page) to serve the
+        page and to protect it from abuse — this is standard for any website and isn't specific to this tool.
+      </p>
+      <p>
+        If Cloudflare Web Analytics is enabled for this site, it's the cookie-less, no-persistent-identifier
+        variant Cloudflare offers: it reports aggregate, anonymized traffic metrics — page views, approximate
+        (country-level) location, referrer, and browser/device type — and doesn't build a profile of you or track
+        you across other websites. See
+        <a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener noreferrer">Cloudflare's Web Analytics page</a>
+        for how it works.
+      </p>
+
+      <h2>Data retention</h2>
+      <p>
+        The scheduling tool itself retains nothing — not in a database, not in cookies, not in your browser's
+        local storage. Refreshing the page resets everything you entered. Feedback form responses (see above) are
+        retained separately, in Google Forms, for as long as needed for the research and design purposes described
+        above.
+      </p>
+
+      <h2>Changes to this policy</h2>
+      <p>If this ever changes (for example, if we add accounts in the future), this page will be updated first.</p>
+    </main>
+  </body>
+</html>

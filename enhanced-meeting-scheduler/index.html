@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      Sets [data-theme] before first paint (avoids a flash of the wrong theme) and keeps it
+      in sync if the OS-level preference changes while the page is open. HeroUI's own theme
+      tokens (and this app's --brand-blue/--secondary-text in index.css) key off this exact
+      attribute, so setting it is enough to switch the whole app's palette.
+
+      Checks localStorage first: the footer's light/dark toggle (useTheme.ts) writes an
+      explicit choice there, which then wins over the OS preference on every subsequent
+      load — on this page and on privacy.html/terms.html, so a choice made once carries
+      across the whole site. Until a choice exists, this just follows the OS preference
+      live, same as before the toggle existed.
+    -->
+    <script>
+      (function () {
+        var mq = window.matchMedia("(prefers-color-scheme: dark)");
+        function apply() {
+          var stored = localStorage.getItem("theme");
+          document.documentElement.dataset.theme = stored === "light" || stored === "dark" ? stored : mq.matches ? "dark" : "light";
+        }
+        apply();
+        mq.addEventListener("change", apply);
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#060607" media="(prefers-color-scheme: dark)" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Enhanced Meeting Scheduler</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

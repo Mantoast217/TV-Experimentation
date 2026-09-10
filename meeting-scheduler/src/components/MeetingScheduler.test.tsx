@@ -211,6 +211,14 @@ describe("MeetingScheduler — footer", () => {
     expect(feedback).toHaveAttribute("target", "_blank");
     expect(feedback).toHaveAttribute("rel", "noopener noreferrer");
   });
+
+  it("links to the Enhanced Meeting Scheduler", () => {
+    render(<MeetingScheduler />);
+    expect(screen.getByRole("link", { name: "Enhanced Meeting Scheduler" })).toHaveAttribute(
+      "href",
+      "/enhanced-meeting-scheduler/",
+    );
+  });
 });
 
 describe("MeetingScheduler — 24-hour duration clarification", () => {

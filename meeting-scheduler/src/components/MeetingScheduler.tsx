@@ -528,6 +528,16 @@ export function MeetingScheduler() {
           >
             Feedback
           </a>
+          {/* Points at /enhanced-meeting-scheduler/, matching the sibling app's own folder
+              name (see enhanced-meeting-scheduler/ at the repo root) — not live yet: that
+              app has no build/deploy configuration of its own, so this link 404s until one
+              exists. Left in place as the intended destination rather than omitted. */}
+          <a
+            href="/enhanced-meeting-scheduler/"
+            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+          >
+            Enhanced Meeting Scheduler
+          </a>
         </div>
       </footer>
     </div>
