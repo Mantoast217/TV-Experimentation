@@ -10,6 +10,18 @@ interface ZoneTimeListProps {
   /** Keyed by TimeZoneCatalogEntry.id — a slot whose zone matches one or more selected
    * participants shows their name(s) ahead of the city instead of just the bare city. */
   participantByZoneId?: Map<string, Colleague[]>;
+  /**
+   * Color class for text that would otherwise use the theme-reactive --secondary-text
+   * token: the quality label ("Morning", ...) and OutsideHoursFlag's text/border (which
+   * tracks it via border-current). --secondary-text is only verified against the page
+   * background — wrong on a card with its own fixed (non-theme-reactive) background, e.g.
+   * "Selected time"'s bg-zinc-800: in light mode that pairs --secondary-text's dark-grey
+   * light-theme value with an always-dark card background, measuring ~1.7:1 (fails WCAG
+   * AA's 4.5:1 badly). Callers on a fixed-background card should pass a fixed color
+   * verified against that specific background instead — see MeetingScheduler.tsx's
+   * "Selected time" card, and the same problem already solved for its invite button.
+   */
+  mutedTextClassName?: string;
 }
 
 /** A "+1"/"-1"-style pill marking a time as landing on a different day than the card's displayed date. */
@@ -60,11 +72,13 @@ function OutsideHoursFlag({
   people,
   ofTotal,
   startText,
+  mutedTextClassName,
   className,
 }: {
   people: Colleague[];
   ofTotal: number;
   startText: string;
+  mutedTextClassName: string;
   className?: string;
 }) {
   const text =
@@ -75,17 +89,18 @@ function OutsideHoursFlag({
         : `Outside ${namesLabel(people)}'s hours`;
   return (
     <span
-      className={`inline-flex items-center rounded-full border border-dashed border-current/50 px-2 py-0.5 text-[11px] font-medium whitespace-nowrap text-[var(--secondary-text)] ${className ?? ""}`}
+      className={`inline-flex items-center rounded-full border border-dashed border-current/50 px-2 py-0.5 text-[11px] font-medium whitespace-nowrap ${mutedTextClassName} ${className ?? ""}`}
     >
       {text}
     </span>
   );
 }
 
-export function ZoneTimeList({ slots, className, chipClassName, participantByZoneId }: ZoneTimeListProps) {
+export function ZoneTimeList({ slots, className, chipClassName, participantByZoneId, mutedTextClassName }: ZoneTimeListProps) {
   if (slots.length === 0) {
     return <p className={className}>Add a timezone to see local times</p>;
   }
+  const mutedText = mutedTextClassName ?? "text-[var(--secondary-text)]";
 
   return (
     // translate="no": these times re-render on every chevron nudge/settings edit. A
@@ -96,7 +111,7 @@ export function ZoneTimeList({ slots, className, chipClassName, participantByZon
     // range stays frozen once the page has been translated). Opting this high-churn region
     // out of translation keeps it under React's control; the surrounding static copy
     // (headings, labels, footer) still translates normally.
-    <ul role="list" translate="no" className={`m-0 flex list-none flex-col gap-1 p-0 ${className ?? ""}`}>
+    <ul role="list" translate="no" className={`m-0 flex list-none flex-col gap-2 p-0 ${className ?? ""}`}>
       {slots.map((slot) => {
         const quality = classifyTimeQuality(slot.startHourRaw, slot.endHourRaw);
         const dotStyle =
@@ -115,23 +130,42 @@ export function ZoneTimeList({ slots, className, chipClassName, participantByZon
           .filter((p) => isOutsideDeclaredHours(p, slot.startText, slot.endText));
 
         return (
-          <li key={slot.zone.id} role="listitem" className="flex flex-wrap items-center gap-1.5">
-            <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={dotStyle} />
-            <span>
-              {label} {slot.startText}
-              {slot.dayOffset !== 0 && <span className="sr-only">{dayOffsetAnnouncement(slot.dayOffset)}</span>}
+          // Name/city, time range, and quality label (plus any holiday/outside-hours
+          // flags) each get their own line, rather than packed onto one row, so a long
+          // participant name or compound label like "Afternoon - Evening" can't force an
+          // awkward mid-row wrap on a narrow phone — see MeetingScheduler.tsx's
+          // card-heading fix for the related, but distinct, bug where the invite button
+          // was narrowing this list's available width to begin with.
+          <li key={slot.zone.id} role="listitem" className="flex flex-col gap-0.5">
+            <span className="flex items-center gap-1.5">
+              <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={dotStyle} />
+              <span>
+                {label}
+                {slot.dayOffset !== 0 && <span className="sr-only">{dayOffsetAnnouncement(slot.dayOffset)}</span>}
+              </span>
+              {slot.dayOffset !== 0 && <DayOffsetBadge offset={slot.dayOffset} className={chipClassName} />}
             </span>
-            {slot.dayOffset !== 0 && <DayOffsetBadge offset={slot.dayOffset} className={chipClassName} />}
-            <span>
-              - {slot.endText}
-              {slot.endDayOffset !== 0 && <span className="sr-only">{dayOffsetAnnouncement(slot.endDayOffset)}</span>}
-              {" "}({quality.label})
+            {/* pl-[14px]: aligns with the name/city text above (past the 8px dot + 6px gap), not the dot itself. */}
+            <span className="flex flex-wrap items-center gap-1.5 pl-[14px]">
+              <span>
+                {slot.startText} - {slot.endText}
+                {slot.endDayOffset !== 0 && <span className="sr-only">{dayOffsetAnnouncement(slot.endDayOffset)}</span>}
+              </span>
+              {slot.endDayOffset !== 0 && <DayOffsetBadge offset={slot.endDayOffset} className={chipClassName} />}
             </span>
-            {slot.endDayOffset !== 0 && <DayOffsetBadge offset={slot.endDayOffset} className={chipClassName} />}
-            {onHoliday.length > 0 && <HolidayFlag people={onHoliday} ofTotal={people.length} className={chipClassName} />}
-            {outsideHours.length > 0 && (
-              <OutsideHoursFlag people={outsideHours} ofTotal={people.length} startText={slot.startText} className={chipClassName} />
-            )}
+            <span className="flex flex-wrap items-center gap-1.5 pl-[14px]">
+              <span className={mutedText}>{quality.label}</span>
+              {onHoliday.length > 0 && <HolidayFlag people={onHoliday} ofTotal={people.length} className={chipClassName} />}
+              {outsideHours.length > 0 && (
+                <OutsideHoursFlag
+                  people={outsideHours}
+                  ofTotal={people.length}
+                  startText={slot.startText}
+                  mutedTextClassName={mutedText}
+                  className={chipClassName}
+                />
+              )}
+            </span>
           </li>
         );
       })}

@@ -588,60 +588,93 @@ export function MeetingScheduler() {
           </div>
 
           <h2 className="m-0 text-base font-medium text-foreground">Selected time</h2>
-          <Card.Root variant="default" className="relative flex-col gap-3 bg-zinc-800 p-0 text-zinc-50">
-            {/* pr-40: reserves enough space for the invite button, whose ~131px width is fixed
-                regardless of viewport. The old pr-32/sm:pr-36 split under-reserved at every
-                breakpoint (worst case: 131px button + 20px right-inset at sm+ needs ~151px), which
-                is what let the button overlap the date heading on a real phone. */}
-            <Card.Content className="flex flex-col gap-1 p-4 px-5 pr-40 text-sm">
-              <span className="font-bold">{selectedDateLabel}</span>
-              <ZoneTimeList slots={selectedSlots} participantByZoneId={participantByZoneId} />
-            </Card.Content>
-            {/* No invite for a meeting with no attendees: with zero zones added there's
-                nothing to invite anyone to (or to compute a timezone-aware time for) —
-                see ZoneTimeList's own "Add a timezone..." placeholder just above this. */}
-            {zones.length > 0 && (
-              <div className="absolute top-4 right-4 sm:right-5">
-                <SendInviteMenu
-                  title="Meeting"
-                  description={formatZoneTimesText(selectedSlots)}
-                  start={selectedStartUtc}
-                  end={selectedEndUtc}
-                  variant="secondary"
-                  // Fixed (not theme-reactive): this button always sits on the "Selected time"
-                  // card's own fixed dark background (bg-zinc-800, unaffected by dark mode below),
-                  // so it needs to stay a fixed light pill regardless of theme. The default
-                  // "secondary" variant's --button-bg comes from HeroUI's --default token, which
-                  // goes dark in dark mode (verified live: that drops this to a 1.57:1 button-text
-                  // contrast, failing badly) — overriding it here keeps the pairing at 7.98:1 in
-                  // both themes, since neither color it's built from ever changes.
-                  buttonStyle={{ "--button-fg": "#0D3F9C", "--button-bg": "#ebebec" } as CSSProperties}
-                  ariaLabel={`Set up invite for your selected time, ${selectedDateLabel}, ${startTime}–${endTime}`}
-                  describedById="invite-note"
-                />
+          <Card.Root variant="default" className="flex-col gap-3 bg-zinc-800 p-0 text-zinc-50">
+            <Card.Content className="flex flex-col gap-1 p-4 px-5 text-sm">
+              {/* Heading and invite button share a row (rather than the button being
+                  absolutely positioned over a padding-reserved column) so the date label
+                  and every ZoneTimeList row below it can each use the card's full width —
+                  a fixed pr-* reservation on the whole column narrowed every attendee row,
+                  not just the one row the button actually sits beside, which is what forced
+                  name/city/time/period onto extra lines on a real phone. */}
+              <div className="flex items-start justify-between gap-3">
+                <span className="font-bold">{selectedDateLabel}</span>
+                {/* No invite for a meeting with no attendees: with zero zones added there's
+                    nothing to invite anyone to (or to compute a timezone-aware time for) —
+                    see ZoneTimeList's own "Add a timezone..." placeholder just above this. */}
+                {zones.length > 0 && (
+                  <div className="shrink-0">
+                    <SendInviteMenu
+                      title="Meeting"
+                      description={formatZoneTimesText(selectedSlots)}
+                      start={selectedStartUtc}
+                      end={selectedEndUtc}
+                      variant="secondary"
+                      // Fixed (not theme-reactive): this button always sits on the "Selected time"
+                      // card's own fixed dark background (bg-zinc-800, unaffected by dark mode below),
+                      // so it needs to stay a fixed light pill regardless of theme. The default
+                      // "secondary" variant's --button-bg comes from HeroUI's --default token, which
+                      // goes dark in dark mode (verified live: that drops this to a 1.57:1 button-text
+                      // contrast, failing badly) — overriding it here keeps the pairing at 7.98:1 in
+                      // both themes, since neither color it's built from ever changes.
+                      buttonStyle={{ "--button-fg": "#0D3F9C", "--button-bg": "#ebebec" } as CSSProperties}
+                      ariaLabel={`Set up invite for your selected time, ${selectedDateLabel}, ${startTime}–${endTime}`}
+                      describedById="invite-note"
+                    />
+                  </div>
+                )}
               </div>
-            )}
+              {/* mutedTextClassName: this card's bg-zinc-800 is fixed-dark regardless of app
+                  theme (like the invite button above), so the quality label/OutsideHoursFlag
+                  need a fixed color verified against that exact background, not the
+                  theme-reactive --secondary-text default (which measures ~1.7:1 here in light
+                  mode) — see ZoneTimeList.tsx. #b3b3bb clears 7.15:1 against #27272a. */}
+              <ZoneTimeList slots={selectedSlots} participantByZoneId={participantByZoneId} mutedTextClassName="text-[#b3b3bb]" />
+            </Card.Content>
           </Card.Root>
 
           <h2 className="m-0 text-base font-medium text-foreground">Best time for everyone</h2>
           <div role="status" aria-live="polite" className="sr-only">
             {isManuallyAdjusted ? `Best time adjusted to ${adjustedOptimalSlots[0]?.startText ?? ""}` : ""}
           </div>
-          <Card.Root variant="default" className="relative flex-col gap-3 border border-[var(--brand-blue)] bg-accent/10 p-0">
-            {/* pr-40: reserves enough space for the invite button, whose ~131px width is fixed
-                regardless of viewport. The old pr-32/sm:pr-36 split under-reserved at every
-                breakpoint (worst case: 131px button + 20px right-inset at sm+ needs ~151px), which
-                is what let the button overlap the date heading on a real phone. */}
-            <Card.Content className="flex flex-col gap-1 p-4 px-5 pr-40 text-sm">
+          <Card.Root variant="default" className="flex-col gap-3 border border-[var(--brand-blue)] bg-accent/10 p-0">
+            <Card.Content className="flex flex-col gap-1 p-4 px-5 text-sm">
               {bestTimeDateChanged && (
                 <span className="mb-1 inline-flex w-fit items-center rounded-full border border-[var(--brand-blue)] bg-background px-2 py-0.5 text-[11px] font-medium whitespace-nowrap text-[var(--brand-blue)]">
                   {bestTimeSuggestionReason}
                 </span>
               )}
-              <span className="font-bold">{bestTimeDateLabel}</span>
+              {/* Heading and invite button share a row — see the matching comment on the
+                  "Selected time" card above for why this replaced the old pr-40 reservation. */}
+              <div className="flex items-start justify-between gap-3">
+                <span className="font-bold">{bestTimeDateLabel}</span>
+                {zones.length > 0 && (
+                  <div className="shrink-0">
+                    <SendInviteMenu
+                      title="Meeting"
+                      description={formatZoneTimesText(adjustedOptimalSlots)}
+                      start={adjustedOptimalStartUtc}
+                      end={adjustedOptimalEndUtc}
+                      variant="primary"
+                      buttonStyle={
+                        {
+                          "--button-bg": "#0D3F9C",
+                          "--button-bg-hover": "#0D3F9C",
+                          "--button-bg-pressed": "#0D3F9C",
+                        } as CSSProperties
+                      }
+                      ariaLabel={`Set up invite for the best time for everyone, ${bestTimeDateLabel}, ${adjustedOptimalSlots[0]?.startText ?? ""}–${adjustedOptimalSlots[0]?.endText ?? ""}`}
+                      describedById="invite-note"
+                    />
+                  </div>
+                )}
+              </div>
+              {/* No mutedTextClassName override here: unlike "Selected time" above, this
+                  card's bg-accent/10 is a translucent tint over the theme-reactive page
+                  background, so the default --secondary-text token (verified live at
+                  ~7.2:1 against the actual composited color, in both themes) is correct. */}
               <ZoneTimeList slots={adjustedOptimalSlots} participantByZoneId={participantByZoneId} />
               {/* Adjusting or inviting to a "best time" computed from zero attendees isn't
-                  meaningful — hidden along with the invite button below until at least one
+                  meaningful — hidden along with the invite button above until at least one
                   zone is added (see the matching guard on "Selected time" above). */}
               {zones.length > 0 && (
                 <div className="mt-2 flex items-center gap-2 border-t border-[var(--brand-blue)]/25 pt-2">
@@ -669,26 +702,6 @@ export function MeetingScheduler() {
                 </div>
               )}
             </Card.Content>
-            {zones.length > 0 && (
-              <div className="absolute top-4 right-4 sm:right-5">
-                <SendInviteMenu
-                  title="Meeting"
-                  description={formatZoneTimesText(adjustedOptimalSlots)}
-                  start={adjustedOptimalStartUtc}
-                  end={adjustedOptimalEndUtc}
-                  variant="primary"
-                  buttonStyle={
-                    {
-                      "--button-bg": "#0D3F9C",
-                      "--button-bg-hover": "#0D3F9C",
-                      "--button-bg-pressed": "#0D3F9C",
-                    } as CSSProperties
-                  }
-                  ariaLabel={`Set up invite for the best time for everyone, ${bestTimeDateLabel}, ${adjustedOptimalSlots[0]?.startText ?? ""}–${adjustedOptimalSlots[0]?.endText ?? ""}`}
-                  describedById="invite-note"
-                />
-              </div>
-            )}
           </Card.Root>
         </div>
         </div>

@@ -139,12 +139,17 @@ describe("MeetingScheduler — add a participant", () => {
     await user.type(combo, "Priya");
     await user.click(await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 }));
 
-    // Matches only the schedule cards' "Priya Nair — Kolkata HH:MM" entries, not the
+    // Matches only the schedule cards' "Priya Nair — Kolkata" name/city line, not the
     // participant chip's own similarly-prefixed "Priya Nair — Kolkata (IST / GMT+5:30)"
     // label — "Selected time" and "Best time for everyone" both render a ZoneTimeList,
     // so this is expected to show up exactly twice, in her own name, not as a bare city.
-    const entries = await screen.findAllByText(/^Priya Nair — Kolkata \d\d:\d\d/);
+    // Name/city and the time range are separate lines now (see ZoneTimeList.tsx), so the
+    // time is asserted on the enclosing list item rather than the same text node.
+    const entries = await screen.findAllByText("Priya Nair — Kolkata");
     expect(entries).toHaveLength(2);
+    entries.forEach((entry) => {
+      expect(entry.closest("li")).toHaveTextContent(/\d\d:\d\d - \d\d:\d\d/);
+    });
   });
 
   it("doesn't also show a participant's city as a separate plain time zone chip", async () => {
@@ -387,8 +392,9 @@ describe("MeetingScheduler — invite action redesign", () => {
     // jsdom has no layout engine, so this asserts the structural CSS contract that
     // guarantees position-independence from content instead of measuring pixels
     // (verified live, with real pixel measurements showing zero drift, in the browser):
-    // the card is the positioning root and the button wrapper is anchored within it,
-    // rather than being laid out inline with (and therefore shifted by) the attendee list.
+    // the button shares a flex row with the date heading, and that row is always the
+    // first child of the card's content — laid out above the attendee list, not
+    // shifted by (or narrowing) it, regardless of how many attendees are added.
     //
     // Three real type-search-select round trips against the full timezone catalog are
     // slow enough (especially under full-suite CPU contention) to need more than
@@ -399,14 +405,17 @@ describe("MeetingScheduler — invite action redesign", () => {
 
     const getAnchorClasses = () => {
       const button = screen.getAllByRole("button", { name: /^Set up invite for/ })[0];
-      const anchorWrapper = button.closest("[class*='absolute']");
-      const card = anchorWrapper?.closest("[class*='relative']");
-      return { anchorClass: anchorWrapper?.className, cardClass: card?.className };
+      const headingRow = button.closest("[class*='justify-between']");
+      const cardContent = headingRow?.parentElement;
+      return {
+        headingRowClass: headingRow?.className,
+        isFirstChildOfCardContent: cardContent != null && cardContent.firstElementChild === headingRow,
+      };
     };
 
     const withOneAttendee = getAnchorClasses();
-    expect(withOneAttendee.anchorClass).toMatch(/\babsolute\b/);
-    expect(withOneAttendee.cardClass).toMatch(/\brelative\b/);
+    expect(withOneAttendee.headingRowClass).toMatch(/\bjustify-between\b/);
+    expect(withOneAttendee.isFirstChildOfCardContent).toBe(true);
 
     // Anchored to the option label's full "City — Country" so a same-named city in a
     // different country (Sydney, Nova Scotia; Nishi-Tokyo-shi alongside Tokyo) — real

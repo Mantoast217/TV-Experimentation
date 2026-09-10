@@ -42,13 +42,14 @@ describe("ZoneTimeList", () => {
     // utility strips the implicit list/listitem role in real browsers (Chromium/WebKit),
     // a gap jsdom's role inference alone wouldn't catch.
     items.forEach((item) => expect(item).toHaveAttribute("role", "listitem"));
-    // Two checks rather than one concatenated string: the visible " - " gap between start
-    // and end time comes from the row's flex `gap`, not a text-node space character (jsdom
-    // has no layout, so it can't see that CSS-driven gap) — see ZoneTimeList.tsx.
-    expect(items[0]).toHaveTextContent("London 09:00");
-    expect(items[0]).toHaveTextContent("- 10:00 (Morning)");
-    expect(items[1]).toHaveTextContent("Tokyo 12:00");
-    expect(items[1]).toHaveTextContent("- 13:00 (Afternoon)");
+    // City, time range, and quality label are separate lines/elements now (see
+    // ZoneTimeList.tsx), so each is asserted independently rather than as one string.
+    expect(items[0]).toHaveTextContent("London");
+    expect(items[0]).toHaveTextContent("09:00 - 10:00");
+    expect(items[0]).toHaveTextContent("Morning");
+    expect(items[1]).toHaveTextContent("Tokyo");
+    expect(items[1]).toHaveTextContent("12:00 - 13:00");
+    expect(items[1]).toHaveTextContent("Afternoon");
   });
 
   it("does not join attendees with a slash separator", () => {
@@ -70,10 +71,12 @@ describe("ZoneTimeList", () => {
     // and should show a compound label, entirely independently of London's.
     render(<ZoneTimeList slots={[slot("London", 9, 10), slot("Paris", 16, 18)]} />);
     const items = screen.getAllByRole("listitem");
-    expect(items[0]).toHaveTextContent("London 09:00");
-    expect(items[0]).toHaveTextContent("- 10:00 (Morning)");
-    expect(items[1]).toHaveTextContent("Paris 16:00");
-    expect(items[1]).toHaveTextContent("- 18:00 (Afternoon - Evening)");
+    expect(items[0]).toHaveTextContent("London");
+    expect(items[0]).toHaveTextContent("09:00 - 10:00");
+    expect(items[0]).toHaveTextContent("Morning");
+    expect(items[1]).toHaveTextContent("Paris");
+    expect(items[1]).toHaveTextContent("16:00 - 18:00");
+    expect(items[1]).toHaveTextContent("Afternoon - Evening");
   });
 
   it("renders a split dot as a two-color gradient for a slot spanning two bands", () => {
@@ -110,8 +113,8 @@ describe("ZoneTimeList — day-offset badges", () => {
     // the start (still the host's own zone, same date) doesn't move at all.
     render(<ZoneTimeList slots={[slot("London", 9, 8.75, 0, 1)]} />);
     const item = screen.getByRole("listitem");
-    expect(item).toHaveTextContent("London 09:00");
-    expect(item).toHaveTextContent("- 08:45");
+    expect(item).toHaveTextContent("London");
+    expect(item).toHaveTextContent("09:00 - 08:45");
     expect(item.textContent).toContain("+1");
     // Exactly one badge (for the end), not two — the start didn't move.
     const badges = item.querySelectorAll("span[aria-hidden='true'].rounded-full.bg-warning");
@@ -169,7 +172,9 @@ describe("ZoneTimeList — participant labels", () => {
 
     render(<ZoneTimeList slots={[londonSlot]} participantByZoneId={participantByZoneId} />);
 
-    expect(screen.getByRole("listitem")).toHaveTextContent("Arnold Beethoven — London 09:00");
+    const item = screen.getByRole("listitem");
+    expect(item).toHaveTextContent("Arnold Beethoven — London");
+    expect(item).toHaveTextContent("09:00 - 10:00");
   });
 
   it("joins two participants who share a zone with '&', crediting both instead of dropping one", () => {
@@ -180,7 +185,9 @@ describe("ZoneTimeList — participant labels", () => {
 
     render(<ZoneTimeList slots={[londonSlot]} participantByZoneId={participantByZoneId} />);
 
-    expect(screen.getByRole("listitem")).toHaveTextContent("Arnold Beethoven & Liam Sinclair — London 09:00");
+    const item = screen.getByRole("listitem");
+    expect(item).toHaveTextContent("Arnold Beethoven & Liam Sinclair — London");
+    expect(item).toHaveTextContent("09:00 - 10:00");
   });
 
   it("falls back to the bare city when no participant is based in that zone", () => {
@@ -190,13 +197,16 @@ describe("ZoneTimeList — participant labels", () => {
     render(<ZoneTimeList slots={[tokyoSlot]} participantByZoneId={participantByZoneId} />);
 
     const item = screen.getByRole("listitem");
-    expect(item).toHaveTextContent("Tokyo 12:00");
+    expect(item).toHaveTextContent("Tokyo");
+    expect(item).toHaveTextContent("12:00 - 13:00");
     expect(item).not.toHaveTextContent("Beethoven");
   });
 
   it("renders exactly as before when no participantByZoneId is given at all", () => {
     render(<ZoneTimeList slots={[slot("London", 9, 10)]} />);
-    expect(screen.getByRole("listitem")).toHaveTextContent("London 09:00");
+    const item = screen.getByRole("listitem");
+    expect(item).toHaveTextContent("London");
+    expect(item).toHaveTextContent("09:00 - 10:00");
   });
 });
 
@@ -229,7 +239,7 @@ describe("ZoneTimeList — holiday and outside-hours flags", () => {
     render(<ZoneTimeList slots={[sydneySlot]} participantByZoneId={participantByZoneId} />);
 
     const item = screen.getByRole("listitem");
-    expect(item).toHaveTextContent("(Evening)");
+    expect(item).toHaveTextContent("Evening");
     expect(item).toHaveTextContent("Outside hours");
     expect(item).toHaveTextContent("ends 17:00");
   });
