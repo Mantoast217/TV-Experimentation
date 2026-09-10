@@ -1,7 +1,8 @@
 import { CalendarDate, Time, today, getLocalTimeZone } from "@internationalized/date";
-import { Button, Calendar, Card, ComboBox, Input, ListBox, Popover, Separator, TimeField } from "@heroui/react";
+import { Avatar, Button, Calendar, Card, ComboBox, Input, ListBox, Popover, Separator, TimeField } from "@heroui/react";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { asItems } from "../lib/collection";
+import { COLLEAGUES, type Colleague } from "../lib/colleagues";
 import { useAnchorZone } from "../lib/useAnchorZone";
 import { useTheme } from "../lib/useTheme";
 import { AnchorZoneCallout } from "./AnchorZoneCallout";
@@ -56,6 +57,19 @@ function matchesQuery(zone: TimeZoneCatalogEntry, query: string): boolean {
   );
 }
 
+function matchesColleagueQuery(colleague: Colleague, query: string): boolean {
+  if (!query.trim()) return true;
+  const q = query.trim().toLowerCase();
+  return (
+    `${colleague.firstName} ${colleague.lastName}`.toLowerCase().includes(q) ||
+    colleague.role.toLowerCase().includes(q)
+  );
+}
+
+function colleagueInitials(colleague: Colleague): string {
+  return `${colleague.firstName[0]}${colleague.lastName[0]}`;
+}
+
 export function MeetingScheduler() {
   const [zones, setZones] = useState<TimeZoneCatalogEntry[]>(() => {
     const uk = TIMEZONE_CATALOG.find((z) => z.id === DEFAULT_TIMEZONE_ID)!;
@@ -67,6 +81,12 @@ export function MeetingScheduler() {
   const [isDateOpen, setIsDateOpen] = useState(false);
   const [tzQuery, setTzQuery] = useState("");
   const addZoneInputRef = useRef<HTMLInputElement>(null);
+  const [colleagueQuery, setColleagueQuery] = useState("");
+  const addColleagueInputRef = useRef<HTMLInputElement>(null);
+  // One-way reveal, not a toggle: the button's whole job is to bring the time zone
+  // section into existence for someone who doesn't need the colleague directory — once
+  // it's on screen there's no reason to hide it again.
+  const [showTimezoneSearch, setShowTimezoneSearch] = useState(false);
 
   const dateStr = useMemo(() => toDateStr(selectedDate), [selectedDate]);
 
@@ -79,6 +99,20 @@ export function MeetingScheduler() {
   const removeZone = (id: string) => {
     setZones((prev) => prev.filter((z) => z.id !== id));
   };
+
+  // A colleague is just a person attached to a time zone in the catalog — selecting one
+  // adds that zone exactly like picking a city does, reusing addZone's own dedup so two
+  // colleagues who happen to share a zone don't produce two chips.
+  const addColleague = (colleagueId: string) => {
+    const colleague = COLLEAGUES.find((c) => c.id === colleagueId);
+    if (!colleague) return;
+    addZone(colleague.timezoneId);
+  };
+
+  const availableColleagues = useMemo(
+    () => COLLEAGUES.filter((c) => matchesColleagueQuery(c, colleagueQuery)),
+    [colleagueQuery],
+  );
 
   // The catalog is curated to ~650 major cities/capitals (see
   // scripts/update-timezone-data.mjs's curateMajorCitiesAndCapitals) specifically so it's
@@ -208,49 +242,111 @@ export function MeetingScheduler() {
         </div>
 
         <div className="flex flex-col gap-3">
-          <h2 className="m-0 text-base font-medium text-foreground">Add a time zone</h2>
-          <ComboBox.Root<TimeZoneCatalogEntry>
-            items={asItems(availableZones)}
-            inputValue={tzQuery}
-            onInputChange={setTzQuery}
+          <h2 className="m-0 text-base font-medium text-foreground">Add a participant</h2>
+          <ComboBox.Root<Colleague>
+            items={asItems(availableColleagues)}
+            inputValue={colleagueQuery}
+            onInputChange={setColleagueQuery}
             selectedKey={null}
             onSelectionChange={(key) => {
               if (key == null) return;
-              addZone(String(key));
-              setTzQuery("");
+              addColleague(String(key));
+              setColleagueQuery("");
             }}
             fullWidth
-            aria-label="Add a time zone"
+            aria-label="Search for colleagues"
           >
             <ComboBox.InputGroup>
               <Input
-                ref={addZoneInputRef}
-                placeholder="Search for a city, country or time zone"
+                ref={addColleagueInputRef}
+                placeholder="Search for colleagues"
                 className="border border-[#767676]"
               />
               <ComboBox.Trigger />
             </ComboBox.InputGroup>
-            {/* max-h-72: without a max-height the popover renders full-height (measured
-                ~12,460px against an earlier, much larger catalog), which can open upward
-                and cover the page header on a short viewport. The popover already has
-                overflow-y-auto built in (combo-box.css), so this just gives it something
-                to actually scroll within — the ~800-entry catalog itself renders in full,
-                unpaginated (verified live: render time is flat regardless of result count
-                at this scale, see MeetingScheduler.test.tsx). */}
-            {/* translate="no": this list re-renders on every keystroke as the query
-                filters it — a browser page-translator replacing these text nodes with its
-                own wrapper elements on that cadence is the same failure reproduced and
-                fixed in ZoneTimeList.tsx. */}
             <ComboBox.Popover className="max-h-72" translate="no">
-              <ListBox<TimeZoneCatalogEntry> items={asItems(availableZones)}>
-                {(zone) => (
-                  <ListBox.Item id={zone.id} textValue={zoneDisplayLabel(zone, dateStr)}>
-                    {zoneDisplayLabel(zone, dateStr)}
+              <ListBox<Colleague> items={asItems(availableColleagues)}>
+                {(colleague) => (
+                  <ListBox.Item
+                    id={colleague.id}
+                    textValue={`${colleague.firstName} ${colleague.lastName}, ${colleague.role}`}
+                  >
+                    <div className="flex items-center gap-3 py-0.5">
+                      <Avatar.Root size="sm">
+                        <Avatar.Fallback>{colleagueInitials(colleague)}</Avatar.Fallback>
+                      </Avatar.Root>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-foreground">
+                          {colleague.firstName} {colleague.lastName}
+                        </span>
+                        <span className="text-xs text-[var(--secondary-text)]">{colleague.role}</span>
+                      </div>
+                    </div>
                   </ListBox.Item>
                 )}
               </ListBox>
             </ComboBox.Popover>
           </ComboBox.Root>
+
+          {!showTimezoneSearch && (
+            <Button
+              type="button"
+              variant="outline"
+              className="self-start border-[#767676] font-normal"
+              onClick={() => setShowTimezoneSearch(true)}
+            >
+              Add a time zone
+            </Button>
+          )}
+
+          {showTimezoneSearch && (
+            <div className="flex flex-col gap-3">
+              <h2 className="m-0 text-base font-medium text-foreground">Add a time zone</h2>
+              <ComboBox.Root<TimeZoneCatalogEntry>
+                items={asItems(availableZones)}
+                inputValue={tzQuery}
+                onInputChange={setTzQuery}
+                selectedKey={null}
+                onSelectionChange={(key) => {
+                  if (key == null) return;
+                  addZone(String(key));
+                  setTzQuery("");
+                }}
+                fullWidth
+                aria-label="Add a time zone"
+              >
+                <ComboBox.InputGroup>
+                  <Input
+                    ref={addZoneInputRef}
+                    placeholder="Search for a city, country or time zone"
+                    className="border border-[#767676]"
+                  />
+                  <ComboBox.Trigger />
+                </ComboBox.InputGroup>
+                {/* max-h-72: without a max-height the popover renders full-height (measured
+                    ~12,460px against an earlier, much larger catalog), which can open upward
+                    and cover the page header on a short viewport. The popover already has
+                    overflow-y-auto built in (combo-box.css), so this just gives it something
+                    to actually scroll within — the ~800-entry catalog itself renders in full,
+                    unpaginated (verified live: render time is flat regardless of result count
+                    at this scale, see MeetingScheduler.test.tsx). */}
+                {/* translate="no": this list re-renders on every keystroke as the query
+                    filters it — a browser page-translator replacing these text nodes with its
+                    own wrapper elements on that cadence is the same failure reproduced and
+                    fixed in ZoneTimeList.tsx. */}
+                <ComboBox.Popover className="max-h-72" translate="no">
+                  <ListBox<TimeZoneCatalogEntry> items={asItems(availableZones)}>
+                    {(zone) => (
+                      <ListBox.Item id={zone.id} textValue={zoneDisplayLabel(zone, dateStr)}>
+                        {zoneDisplayLabel(zone, dateStr)}
+                      </ListBox.Item>
+                    )}
+                  </ListBox>
+                </ComboBox.Popover>
+              </ComboBox.Root>
+            </div>
+          )}
+
           <TimezoneChipList zones={zones} onRemove={removeZone} addInputRef={addZoneInputRef} dateStr={dateStr} />
         </div>
 

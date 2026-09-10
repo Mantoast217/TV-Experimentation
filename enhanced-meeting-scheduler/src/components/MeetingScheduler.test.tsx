@@ -3,6 +3,13 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import { MeetingScheduler } from "./MeetingScheduler";
 
+/** The time zone section is now behind an "Add a time zone" reveal button, off by
+ * default in favor of the colleague search — tests that need the time zone combobox
+ * have to open it first. */
+async function revealTimezoneSearch(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole("button", { name: "Add a time zone" }));
+}
+
 describe("MeetingScheduler — copy", () => {
   it("shows the updated subheading under the H1", () => {
     render(<MeetingScheduler />);
@@ -26,6 +33,63 @@ describe("MeetingScheduler — copy", () => {
   });
 });
 
+describe("MeetingScheduler — add a participant", () => {
+  it("titles the section 'Add a participant', not 'Add a time zone'", () => {
+    render(<MeetingScheduler />);
+    expect(screen.getByRole("heading", { name: "Add a participant" })).toBeInTheDocument();
+    // The old heading text still exists once the time zone section is revealed (see the
+    // reveal-button test below) — but nothing should show it before that click.
+    expect(screen.queryByRole("heading", { name: "Add a time zone" })).not.toBeInTheDocument();
+  });
+
+  it("searches colleagues by name and shows their avatar, name, and role", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const combo = screen.getByRole("combobox", { name: "Search for colleagues" });
+    await user.click(combo);
+    await user.type(combo, "Priya");
+
+    // No comma in the match: the option's accessible name comes from its rendered text
+    // nodes (name and role, no separator between them), not from a hand-written string —
+    // "Priya Nair" alone is enough to disambiguate it from the other nine.
+    const option = await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 });
+    expect(option).toBeInTheDocument();
+    expect(option).toHaveTextContent("PN");
+    expect(option).toHaveTextContent("Priya Nair");
+    expect(option).toHaveTextContent("Product Designer");
+  });
+
+  it("adds the selected colleague's time zone", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const combo = screen.getByRole("combobox", { name: "Search for colleagues" });
+    await user.click(combo);
+    await user.type(combo, "Priya");
+    await user.click(await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 }));
+
+    // getAllByText, not getByText: Kolkata's label appears both as a chip and in the
+    // schedule list below once it's added — this only cares that it shows up somewhere.
+    expect((await screen.findAllByText(/^Kolkata — India/)).length).toBeGreaterThan(0);
+  });
+
+  it("keeps the time zone search hidden behind an 'Add a time zone' button until clicked", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    expect(screen.queryByRole("combobox", { name: "Add a time zone" })).not.toBeInTheDocument();
+    const button = screen.getByRole("button", { name: "Add a time zone" });
+
+    await user.click(button);
+
+    expect(screen.getByRole("combobox", { name: "Add a time zone" })).toBeInTheDocument();
+    // The reveal button did its job — no reason for it to still be sitting there once the
+    // section it opens is already on screen.
+    expect(screen.queryByRole("button", { name: "Add a time zone" })).not.toBeInTheDocument();
+  });
+});
+
 describe("MeetingScheduler — add a time zone search", () => {
   it("matches a timezone abbreviation, not just city/country — and surfaces every zone that shares it", async () => {
     // IST is a real, current abbreviation for India, Ireland, AND Israel (see
@@ -38,6 +102,7 @@ describe("MeetingScheduler — add a time zone search", () => {
     const user = userEvent.setup();
     render(<MeetingScheduler />);
 
+    await revealTimezoneSearch(user);
     const combo = screen.getByRole("combobox", { name: "Add a time zone" });
     await user.click(combo);
     await user.type(combo, "IST");
@@ -58,6 +123,7 @@ describe("MeetingScheduler — add a time zone search", () => {
     const user = userEvent.setup();
     render(<MeetingScheduler />);
 
+    await revealTimezoneSearch(user);
     const combo = screen.getByRole("combobox", { name: "Add a time zone" });
     await user.click(combo);
     await user.type(combo, "BST");
@@ -69,6 +135,7 @@ describe("MeetingScheduler — add a time zone search", () => {
     const user = userEvent.setup();
     render(<MeetingScheduler />);
 
+    await revealTimezoneSearch(user);
     const combo = screen.getByRole("combobox", { name: "Add a time zone" });
     await user.click(combo);
     await user.type(combo, "Japan");
@@ -177,6 +244,7 @@ describe("MeetingScheduler — invite action redesign", () => {
     // different country (Sydney, Nova Scotia; Nishi-Tokyo-shi alongside Tokyo) — real
     // entries now that the catalog is ~26,000 GeoNames cities, not the old ~300-entry
     // one-city-per-zone seed — can't also match a loose substring search.
+    await revealTimezoneSearch(user);
     const combo = screen.getByRole("combobox", { name: "Add a time zone" });
     for (const { city, country } of [
       { city: "Tokyo", country: "Japan" },
@@ -360,6 +428,7 @@ describe("MeetingScheduler — Best time for everyone, manual adjustment", () =>
     await user.click(backButton());
     expect(screen.getByText("Adjusted -00:15")).toBeInTheDocument();
 
+    await revealTimezoneSearch(user);
     const combo = screen.getByRole("combobox", { name: "Add a time zone" });
     await user.click(combo);
     await user.type(combo, "Tokyo");
