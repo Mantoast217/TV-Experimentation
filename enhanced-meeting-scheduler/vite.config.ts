@@ -7,8 +7,9 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   // Deployed as a subpath of the standalone app (meeting-scheduler), not its own domain
-  // root — see /build.mjs at the repo root, which builds this app and copies its output
-  // into meeting-scheduler/dist/enhanced-meeting-scheduler/. Every %BASE_URL% reference in
+  // root — see meeting-scheduler/scripts/build-ems.mjs, which meeting-scheduler's own
+  // `npm run build` runs to build this app and copy its output into
+  // meeting-scheduler/dist/enhanced-meeting-scheduler/. Every %BASE_URL% reference in
   // index.html/privacy.html/terms.html picks this up at build time.
   base: '/enhanced-meeting-scheduler/',
   build: {
