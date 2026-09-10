@@ -3,6 +3,7 @@ import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 import { isoDateInRange, NUM_RUNS, startAndDuration, zoneList } from "../test/arbitraries";
 import { computeZoneTimes } from "../lib/scheduling";
+import { classifyTimeQuality } from "../lib/timeQuality";
 import type { TimeZoneCatalogEntry } from "../lib/timezones";
 import { ZoneTimeList } from "./ZoneTimeList";
 
@@ -44,9 +45,14 @@ describe("ZoneTimeList — attendee rendering (property-based)", () => {
 
               items.forEach((item, index) => {
                 expect(item.textContent).toBeTruthy();
-                // A classification label in parentheses, e.g. "City 0 09:00–10:00 (Morning)".
-                expect(item.textContent).toMatch(/\([^()]+\)/);
                 expect(item.textContent).toContain(zones[index].city);
+                // City, time range, and classification label are now separate lines (see
+                // ZoneTimeList.tsx) — independently re-derived rather than hardcoded, so
+                // this stays correct across every band/compound-label combination the
+                // fuzzer can produce (e.g. "Afternoon - Evening", "Spans full day").
+                const slot = slots[index];
+                const expectedLabel = classifyTimeQuality(slot.startHourRaw, slot.endHourRaw).label;
+                expect(item.textContent).toContain(expectedLabel);
               });
 
               // Regression guard (generalized across list length): attendees were

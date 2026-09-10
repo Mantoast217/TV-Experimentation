@@ -153,8 +153,9 @@ describe("MeetingScheduler — invite action redesign", () => {
     // jsdom has no layout engine, so this asserts the structural CSS contract that
     // guarantees position-independence from content instead of measuring pixels
     // (verified live, with real pixel measurements showing zero drift, in the browser):
-    // the card is the positioning root and the button wrapper is anchored within it,
-    // rather than being laid out inline with (and therefore shifted by) the attendee list.
+    // the button shares a flex row with the date heading, and that row is always the
+    // first child of the card's content — laid out above the attendee list, not
+    // shifted by (or narrowing) it, regardless of how many attendees are added.
     //
     // Three real type-search-select round trips against the full timezone catalog are
     // slow enough (especially under full-suite CPU contention) to need more than
@@ -164,14 +165,17 @@ describe("MeetingScheduler — invite action redesign", () => {
 
     const getAnchorClasses = () => {
       const button = screen.getAllByRole("button", { name: /^Set up invite for/ })[0];
-      const anchorWrapper = button.closest("[class*='absolute']");
-      const card = anchorWrapper?.closest("[class*='relative']");
-      return { anchorClass: anchorWrapper?.className, cardClass: card?.className };
+      const headingRow = button.closest("[class*='justify-between']");
+      const cardContent = headingRow?.parentElement;
+      return {
+        headingRowClass: headingRow?.className,
+        isFirstChildOfCardContent: cardContent != null && cardContent.firstElementChild === headingRow,
+      };
     };
 
     const withOneAttendee = getAnchorClasses();
-    expect(withOneAttendee.anchorClass).toMatch(/\babsolute\b/);
-    expect(withOneAttendee.cardClass).toMatch(/\brelative\b/);
+    expect(withOneAttendee.headingRowClass).toMatch(/\bjustify-between\b/);
+    expect(withOneAttendee.isFirstChildOfCardContent).toBe(true);
 
     // Anchored to the option label's full "City — Country" so a same-named city in a
     // different country (Sydney, Nova Scotia; Nishi-Tokyo-shi alongside Tokyo) — real
