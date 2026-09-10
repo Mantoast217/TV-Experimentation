@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { googleMeetUrl, outlookComposeUrl, teamsMeetingUrl, type MeetingDetails } from "./calendarLinks";
+import { googleMeetUrl, icsContent, outlookComposeUrl, teamsMeetingUrl, type MeetingDetails } from "./calendarLinks";
 
 const details: MeetingDetails = {
   title: "Meeting",
@@ -43,5 +43,49 @@ describe("outlookComposeUrl / googleMeetUrl — unaffected by the Teams-only fix
   it("still builds valid Outlook and Google Calendar URLs for the same input", () => {
     expect(new URL(outlookComposeUrl(details)).searchParams.get("subject")).toBe(details.title);
     expect(new URL(googleMeetUrl(details)).searchParams.get("text")).toBe(details.title);
+  });
+});
+
+const attendeeEmails = ["priya.nair@kestrelglobal.example", "arnold.beethoven@kestrelglobal.example"];
+
+describe("attendee emails — filled into each platform's own recipient field, not the description", () => {
+  it("joins attendeeEmails with ';' into Outlook's 'to' field", () => {
+    const url = new URL(outlookComposeUrl(details, attendeeEmails));
+    expect(url.searchParams.get("to")).toBe(attendeeEmails.join(";"));
+    expect(url.searchParams.get("body")).toBe(details.description);
+  });
+
+  it("omits Outlook's 'to' param entirely when there are no attendees", () => {
+    const url = new URL(outlookComposeUrl(details, []));
+    expect(url.searchParams.has("to")).toBe(false);
+  });
+
+  it("joins attendeeEmails with ',' into Teams' 'attendees' field", () => {
+    const url = teamsMeetingUrl(details, attendeeEmails);
+    const parsed = new URL(url);
+    expect(parsed.searchParams.get("attendees")).toBe(attendeeEmails.join(","));
+    // Teams' deep-link parser rejects '+' for spaces (see the describe block above) — the
+    // comma-joined attendees param doesn't contain spaces, but the fix-up regex applies to
+    // the whole query string, so this guards against a future param reintroducing one.
+    expect(url).not.toContain("+");
+  });
+
+  it("joins attendeeEmails with ',' into Google Calendar's 'add' field", () => {
+    const url = new URL(googleMeetUrl(details, attendeeEmails));
+    expect(url.searchParams.get("add")).toBe(attendeeEmails.join(","));
+  });
+
+  it("gives the .ics file one ATTENDEE line per email", () => {
+    const ics = icsContent(details, attendeeEmails);
+    for (const email of attendeeEmails) {
+      expect(ics).toContain(`ATTENDEE:mailto:${email}`);
+    }
+    // One line per address, not a combined list on a single ATTENDEE line (RFC 5545 §3.8.4.1).
+    expect(ics.match(/^ATTENDEE:/gm)).toHaveLength(attendeeEmails.length);
+  });
+
+  it("omits ATTENDEE lines entirely when there are no attendees", () => {
+    expect(icsContent(details, [])).not.toContain("ATTENDEE");
+    expect(icsContent(details)).not.toContain("ATTENDEE");
   });
 });

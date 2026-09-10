@@ -15,8 +15,13 @@ function googleDateStamp(date: Date): string {
   return isoSeconds(date).replace(/[-:]/g, "");
 }
 
-/** Opens Outlook's web calendar with a new event pre-filled. Works for outlook.com and Microsoft 365. */
-export function outlookComposeUrl({ title, description, start, end }: MeetingDetails): string {
+/**
+ * Opens Outlook's web calendar with a new event pre-filled. Works for outlook.com and
+ * Microsoft 365. `attendeeEmails` fills the `to` field — OWA's compose deep link accepts
+ * multiple recipients there as a semicolon-separated list, the same separator Outlook
+ * itself uses when you paste addresses into the To field by hand.
+ */
+export function outlookComposeUrl({ title, description, start, end }: MeetingDetails, attendeeEmails: string[] = []): string {
   const params = new URLSearchParams({
     path: "/calendar/action/compose",
     rru: "addevent",
@@ -25,6 +30,7 @@ export function outlookComposeUrl({ title, description, start, end }: MeetingDet
     subject: title,
     body: description,
   });
+  if (attendeeEmails.length > 0) params.set("to", attendeeEmails.join(";"));
   return `https://outlook.office.com/calendar/0/deeplink/compose?${params.toString()}`;
 }
 
@@ -39,28 +45,35 @@ export function outlookComposeUrl({ title, description, start, end }: MeetingDet
  * itself escaped to `%2B`, so this replace can't misfire on genuine `+` characters), so
  * that has to be patched afterward — this is the one calendar link of the four that needs
  * it, since Outlook/Google/`.ics` don't share this restriction.
+ *
+ * `attendeeEmails` fills `attendees`, the same deep-link doc's comma-separated list of
+ * addresses to invite.
  */
-export function teamsMeetingUrl({ title, description, start, end }: MeetingDetails): string {
+export function teamsMeetingUrl({ title, description, start, end }: MeetingDetails, attendeeEmails: string[] = []): string {
   const params = new URLSearchParams({
     subject: title,
     content: description,
     startTime: isoSeconds(start),
     endTime: isoSeconds(end),
   });
+  if (attendeeEmails.length > 0) params.set("attendees", attendeeEmails.join(","));
   return `https://teams.microsoft.com/l/meeting/new?${params.toString().replace(/\+/g, "%20")}`;
 }
 
 /**
  * Opens Google Calendar with a new event pre-filled; Calendar itself offers a one-click
- * "Add Google Meet video conferencing" button on that event once created.
+ * "Add Google Meet video conferencing" button on that event once created. `attendeeEmails`
+ * fills `add`, Calendar's own comma-separated guest-list parameter for this same template
+ * link.
  */
-export function googleMeetUrl({ title, description, start, end }: MeetingDetails): string {
+export function googleMeetUrl({ title, description, start, end }: MeetingDetails, attendeeEmails: string[] = []): string {
   const params = new URLSearchParams({
     action: "TEMPLATE",
     text: title,
     dates: `${googleDateStamp(start)}/${googleDateStamp(end)}`,
     details: description,
   });
+  if (attendeeEmails.length > 0) params.set("add", attendeeEmails.join(","));
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
@@ -74,8 +87,12 @@ function escapeIcsText(text: string): string {
   return text.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
 }
 
-/** Builds a single-event .ics file, importable into Outlook, Apple Calendar, Google Calendar, etc. */
-export function icsContent({ title, description, start, end }: MeetingDetails): string {
+/**
+ * Builds a single-event .ics file, importable into Outlook, Apple Calendar, Google
+ * Calendar, etc. One `ATTENDEE` line per email, per RFC 5545 §3.8.4.1 — each attendee gets
+ * its own property rather than a combined list.
+ */
+export function icsContent({ title, description, start, end }: MeetingDetails, attendeeEmails: string[] = []): string {
   const uid = `${crypto.randomUUID()}@meeting-scheduler`;
   const lines = [
     "BEGIN:VCALENDAR",
@@ -89,6 +106,7 @@ export function icsContent({ title, description, start, end }: MeetingDetails): 
     `DTEND:${icsDateStamp(end)}`,
     `SUMMARY:${escapeIcsText(title)}`,
     `DESCRIPTION:${escapeIcsText(description)}`,
+    ...attendeeEmails.map((email) => `ATTENDEE:mailto:${email}`),
     "END:VEVENT",
     "END:VCALENDAR",
   ];
@@ -96,8 +114,8 @@ export function icsContent({ title, description, start, end }: MeetingDetails): 
 }
 
 /** Triggers a browser download of the meeting as a .ics file. */
-export function downloadIcsFile(details: MeetingDetails, filename = "meeting.ics"): void {
-  const blob = new Blob([icsContent(details)], { type: "text/calendar;charset=utf-8" });
+export function downloadIcsFile(details: MeetingDetails, attendeeEmails: string[] = [], filename = "meeting.ics"): void {
+  const blob = new Blob([icsContent(details, attendeeEmails)], { type: "text/calendar;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { MeetingScheduler } from "./MeetingScheduler";
 
 /** The time zone section is now behind an "Add a time zone" reveal button, off by
@@ -150,6 +150,32 @@ describe("MeetingScheduler — add a participant", () => {
     entries.forEach((entry) => {
       expect(entry.closest("li")).toHaveTextContent(/\d\d:\d\d - \d\d:\d\d/);
     });
+  });
+
+  it("fills each participant's email into both invite buttons' platform links, not just the schedule cards", async () => {
+    const user = userEvent.setup();
+    const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+    render(<MeetingScheduler />);
+
+    await addColleague(user, "Priya");
+    await addColleague(user, "Arnold");
+
+    const inviteButtons = screen.getAllByRole("button", { name: /^Set up invite for/ });
+    expect(inviteButtons).toHaveLength(2); // "Selected time" and "Best time for everyone"
+
+    for (const button of inviteButtons) {
+      await user.click(button);
+      await user.click(await screen.findByRole("menuitem", { name: "Microsoft Outlook" }));
+    }
+
+    expect(openSpy).toHaveBeenCalledTimes(2);
+    for (const call of openSpy.mock.calls) {
+      const url = new URL(call[0] as string);
+      const to = url.searchParams.get("to")!.split(";");
+      expect(to).toContain("priya.nair@kestrelglobal.example");
+      expect(to).toContain("arnold.beethoven@kestrelglobal.example");
+    }
+    openSpy.mockRestore();
   });
 
   it("doesn't also show a participant's city as a separate plain time zone chip", async () => {

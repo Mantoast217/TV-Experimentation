@@ -86,6 +86,9 @@ export function MeetingScheduler() {
   const [colleagueQuery, setColleagueQuery] = useState("");
   const addColleagueInputRef = useRef<HTMLInputElement>(null);
   const [participants, setParticipants] = useState<Colleague[]>([]);
+  // Filled into each invite's platform-native attendee/recipient field (not the event
+  // title/description) — see SendInviteMenu's attendeeEmails prop.
+  const participantEmails = useMemo(() => participants.map((p) => p.email), [participants]);
   // One-way reveal, not a toggle: the button's whole job is to bring the time zone
   // section into existence for someone who doesn't need the colleague directory — once
   // it's on screen there's no reason to hide it again.
@@ -608,6 +611,7 @@ export function MeetingScheduler() {
                       description={formatZoneTimesText(selectedSlots)}
                       start={selectedStartUtc}
                       end={selectedEndUtc}
+                      attendeeEmails={participantEmails}
                       variant="secondary"
                       // Fixed (not theme-reactive): this button always sits on the "Selected time"
                       // card's own fixed dark background (bg-zinc-800, unaffected by dark mode below),
@@ -654,6 +658,7 @@ export function MeetingScheduler() {
                       description={formatZoneTimesText(adjustedOptimalSlots)}
                       start={adjustedOptimalStartUtc}
                       end={adjustedOptimalEndUtc}
+                      attendeeEmails={participantEmails}
                       variant="primary"
                       buttonStyle={
                         {

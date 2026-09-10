@@ -33,6 +33,10 @@ interface SendInviteMenuProps extends MeetingDetails {
   ariaLabel?: string;
   /** id of an element (e.g. the shared "invites open your calendar app" note) to expose as this button's accessible description. */
   describedById?: string;
+  /** Selected participants' emails — filled into each platform's own attendee/recipient
+   * field (Outlook's `to`, Teams' `attendees`, Google Calendar's `add`, and one `ATTENDEE`
+   * line per address in the downloaded .ics), not into the event title/description. */
+  attendeeEmails?: string[];
 }
 
 export function SendInviteMenu({
@@ -44,24 +48,25 @@ export function SendInviteMenu({
   buttonStyle,
   ariaLabel,
   describedById,
+  attendeeEmails = [],
 }: SendInviteMenuProps) {
   const details: MeetingDetails = { title, description, start, end };
 
   const handleAction = (key: Key) => {
     switch (key) {
       case "outlook":
-        openInNewTab(outlookComposeUrl(details));
+        openInNewTab(outlookComposeUrl(details, attendeeEmails));
         break;
       case "teams":
-        openInNewTab(teamsMeetingUrl(details));
+        openInNewTab(teamsMeetingUrl(details, attendeeEmails));
         break;
       case "google-meet":
-        openInNewTab(googleMeetUrl(details));
+        openInNewTab(googleMeetUrl(details, attendeeEmails));
         break;
       case "ical":
         // A universal fallback — importable into Outlook, Apple Calendar, Google Calendar,
         // Zoom's desktop client, or anything else that reads .ics files.
-        downloadIcsFile(details);
+        downloadIcsFile(details, attendeeEmails);
         break;
     }
   };
