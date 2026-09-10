@@ -21,6 +21,16 @@ async function addOneZone(user: ReturnType<typeof userEvent.setup>, city = "Lond
   await user.keyboard("{Escape}");
 }
 
+/** Adds a colleague by (partial) name through the participant search, matching the same
+ * combobox-then-Escape pattern the individual colleague tests already use. */
+async function addColleague(user: ReturnType<typeof userEvent.setup>, name: string) {
+  const combo = screen.getByRole("combobox", { name: "Search for colleagues" });
+  await user.click(combo);
+  await user.type(combo, name);
+  await user.click(await screen.findByRole("option", { name: new RegExp(name) }, { timeout: 5000 }));
+  await user.keyboard("{Escape}");
+}
+
 describe("MeetingScheduler — copy", () => {
   it("shows the updated subheading under the H1", () => {
     render(<MeetingScheduler />);
@@ -659,6 +669,60 @@ describe("MeetingScheduler — Best time for everyone, manual adjustment", () =>
       await user.click(screen.getByRole("button", { name: /Increase end time by 15 minutes/ }));
 
       expect(screen.getByText("Adjust time")).toBeInTheDocument();
+    },
+    10_000,
+  );
+});
+
+describe("MeetingScheduler — holiday and outside-hours in the schedule cards", () => {
+  it(
+    "flags a participant on holiday today in Selected time, and moves Best time for everyone off that date",
+    async () => {
+      const user = userEvent.setup();
+      render(<MeetingScheduler />);
+      await addColleague(user, "Sofia Bergström");
+
+      // Exactly one holiday flag: "Selected time" stays pinned to today (Sofia's really
+      // away that day), while "Best time for everyone" has already moved off it — so her
+      // holiday only needs explaining in the first card, not the second.
+      expect(await screen.findAllByText("On holiday")).toHaveLength(1);
+      expect(screen.getByText(/^Suggested — Sofia's back/)).toBeInTheDocument();
+    },
+    10_000,
+  );
+
+  it(
+    "doesn't show a Suggested label or move the date when nobody's on holiday",
+    async () => {
+      const user = userEvent.setup();
+      const { container } = render(<MeetingScheduler />);
+      await addColleague(user, "Arnold Beethoven");
+
+      await screen.findAllByText(/Arnold Beethoven/);
+      expect(screen.queryByText(/^Suggested/)).not.toBeInTheDocument();
+
+      // The two schedule cards' own date headings specifically — distinct from the Date
+      // field button above them, which shows the same-looking text for a different
+      // reason. Both read identically when nothing forces Best time to move off Selected.
+      const dateHeadings = Array.from(container.querySelectorAll("span.font-bold"));
+      expect(dateHeadings).toHaveLength(2);
+      expect(dateHeadings[0].textContent).toBe(dateHeadings[1].textContent);
+    },
+    10_000,
+  );
+
+  it(
+    "flags a schedule-card slot that falls outside a real colleague's declared hours",
+    async () => {
+      const user = userEvent.setup();
+      render(<MeetingScheduler />);
+      await addColleague(user, "Arnold Beethoven");
+      await addColleague(user, "Zoe Fitzgerald");
+
+      // London and Sydney are 9-10 hours apart — wide enough that no single slot fits
+      // both people's declared hours, so at least one "Outside hours" flag has to show up
+      // somewhere on the page (Selected time, Best time for everyone, or both).
+      expect((await screen.findAllByText(/Outside/, {}, { timeout: 5000 })).length).toBeGreaterThan(0);
     },
     10_000,
   );

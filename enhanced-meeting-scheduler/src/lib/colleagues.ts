@@ -8,6 +8,10 @@ export interface Colleague {
   email: string;
   /** A TimeZoneCatalogEntry.id in TIMEZONE_CATALOG — selecting this colleague adds that entry. */
   timezoneId: string;
+  /** Declared working hours, "HH:MM"-"HH:MM" (zero-padded 24h), local to timezoneId's zone. */
+  workingHours: { start: string; end: string };
+  /** Out-of-office date ranges, ISO "YYYY-MM-DD", inclusive, local to timezoneId's zone. */
+  outOfOffice?: { start: string; end: string }[];
 }
 
 /** The catalog entry a colleague is based in — their city, country, and current offset. */
@@ -18,10 +22,10 @@ export function colleagueTimeZone(colleague: Colleague): TimeZoneCatalogEntry {
 }
 
 /**
- * Fixture directory for the "Add a participant" search — ten people at a fictional company
- * (Kestrel Global) standing in for a real account directory, which doesn't exist yet: EMS
- * has no accounts or backend of its own. Static and bundled, the same way the city catalog
- * in timezoneData.json is, rather than fetched from anywhere.
+ * Fixture directory for the "Add a participant" search — eleven people at a fictional
+ * company (Kestrel Global) standing in for a real account directory, which doesn't exist
+ * yet: EMS has no accounts or backend of its own. Static and bundled, the same way the
+ * city catalog in timezoneData.json is, rather than fetched from anywhere.
  */
 export const COLLEAGUES: Colleague[] = [
   {
@@ -31,6 +35,7 @@ export const COLLEAGUES: Colleague[] = [
     role: "Product Manager",
     email: "amara.okafor@kestrelglobal.example",
     timezoneId: "za-johannesburg-993800",
+    workingHours: { start: "08:00", end: "16:30" },
   },
   {
     id: "liam-sinclair",
@@ -39,6 +44,8 @@ export const COLLEAGUES: Colleague[] = [
     role: "Senior Engineer",
     email: "liam.sinclair@kestrelglobal.example",
     timezoneId: "gb-london-2643743",
+    workingHours: { start: "09:00", end: "17:30" },
+    outOfOffice: [{ start: "2026-09-15", end: "2026-09-26" }],
   },
   {
     id: "priya-nair",
@@ -47,6 +54,7 @@ export const COLLEAGUES: Colleague[] = [
     role: "Product Designer",
     email: "priya.nair@kestrelglobal.example",
     timezoneId: "in-kolkata-1275004",
+    workingHours: { start: "09:30", end: "18:00" },
   },
   {
     id: "carlos-mendoza",
@@ -55,6 +63,7 @@ export const COLLEAGUES: Colleague[] = [
     role: "Customer Success Lead",
     email: "carlos.mendoza@kestrelglobal.example",
     timezoneId: "mx-mexico-city-3530597",
+    workingHours: { start: "08:30", end: "17:00" },
   },
   {
     id: "hana-kobayashi",
@@ -63,6 +72,7 @@ export const COLLEAGUES: Colleague[] = [
     role: "Data Analyst",
     email: "hana.kobayashi@kestrelglobal.example",
     timezoneId: "jp-tokyo-1850147",
+    workingHours: { start: "09:00", end: "18:00" },
   },
   {
     id: "sofia-bergstrom",
@@ -71,6 +81,8 @@ export const COLLEAGUES: Colleague[] = [
     role: "Marketing Manager",
     email: "sofia.bergstrom@kestrelglobal.example",
     timezoneId: "se-stockholm-2673730",
+    workingHours: { start: "08:00", end: "16:00" },
+    outOfOffice: [{ start: "2026-09-08", end: "2026-09-19" }],
   },
   {
     id: "ethan-walker",
@@ -79,6 +91,7 @@ export const COLLEAGUES: Colleague[] = [
     role: "Sales Director",
     email: "ethan.walker@kestrelglobal.example",
     timezoneId: "us-new-york-city-5128581",
+    workingHours: { start: "08:30", end: "17:30" },
   },
   {
     id: "zoe-fitzgerald",
@@ -87,6 +100,7 @@ export const COLLEAGUES: Colleague[] = [
     role: "HR Business Partner",
     email: "zoe.fitzgerald@kestrelglobal.example",
     timezoneId: "au-sydney-2147714",
+    workingHours: { start: "09:00", end: "17:00" },
   },
   {
     id: "diego-fernandez",
@@ -95,6 +109,7 @@ export const COLLEAGUES: Colleague[] = [
     role: "Finance Analyst",
     email: "diego.fernandez@kestrelglobal.example",
     timezoneId: "br-sao-paulo-3448439",
+    workingHours: { start: "09:00", end: "18:00" },
   },
   {
     id: "noah-bergman",
@@ -103,6 +118,7 @@ export const COLLEAGUES: Colleague[] = [
     role: "VP Engineering",
     email: "noah.bergman@kestrelglobal.example",
     timezoneId: "us-los-angeles-5368361",
+    workingHours: { start: "08:00", end: "17:00" },
   },
   {
     id: "arnold-beethoven",
@@ -111,7 +127,10 @@ export const COLLEAGUES: Colleague[] = [
     role: "Lead Experience Designer",
     email: "arnold.beethoven@kestrelglobal.example",
     // Shares London with Liam Sinclair above — the fixture's one deliberate same-city
-    // pair, exercising the case where two participants map to a single zone chip.
+    // pair, exercising the case where two participants map to a single zone chip (and,
+    // with slightly different declared hours, the case where they don't agree on
+    // whether a given slot counts as "in hours" either).
     timezoneId: "gb-london-2643743",
+    workingHours: { start: "08:30", end: "17:00" },
   },
 ];

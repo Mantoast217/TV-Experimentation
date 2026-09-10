@@ -10,7 +10,14 @@ function zone(id: string, city: string): TimeZoneCatalogEntry {
 }
 
 /** A slot for `city`, given as start/end wall-clock hours (no midnight crossing). */
-function slot(city: string, startHour: number, endHour: number, dayOffset = 0, endDayOffset = 0): ZoneTimeSlot {
+function slot(
+  city: string,
+  startHour: number,
+  endHour: number,
+  dayOffset = 0,
+  endDayOffset = 0,
+  localDateStr = "2026-09-10",
+): ZoneTimeSlot {
   const text = (h: number) => `${String(Math.floor(h)).padStart(2, "0")}:${String((h % 1) * 60).padStart(2, "0")}`;
   return {
     zone: zone(city.toLowerCase(), city),
@@ -20,6 +27,7 @@ function slot(city: string, startHour: number, endHour: number, dayOffset = 0, e
     endDayOffset,
     startHourRaw: startHour,
     endHourRaw: endHour,
+    localDateStr,
   };
 }
 
@@ -137,7 +145,11 @@ describe("ZoneTimeList — day-offset badges", () => {
   });
 });
 
-function colleague(firstName: string, lastName: string): Colleague {
+function colleague(
+  firstName: string,
+  lastName: string,
+  overrides: Partial<Pick<Colleague, "workingHours" | "outOfOffice">> = {},
+): Colleague {
   return {
     id: `${firstName}-${lastName}`.toLowerCase(),
     firstName,
@@ -145,6 +157,8 @@ function colleague(firstName: string, lastName: string): Colleague {
     role: "Test Role",
     email: `${firstName}.${lastName}@kestrelglobal.example`.toLowerCase(),
     timezoneId: "irrelevant-for-this-fixture",
+    workingHours: { start: "09:00", end: "17:00" },
+    ...overrides,
   };
 }
 
@@ -183,5 +197,80 @@ describe("ZoneTimeList — participant labels", () => {
   it("renders exactly as before when no participantByZoneId is given at all", () => {
     render(<ZoneTimeList slots={[slot("London", 9, 10)]} />);
     expect(screen.getByRole("listitem")).toHaveTextContent("London 09:00");
+  });
+});
+
+describe("ZoneTimeList — holiday and outside-hours flags", () => {
+  it("flags a participant who's on holiday on the slot's own local date", () => {
+    const stockholmSlot = slot("Stockholm", 10, 11, 0, 0, "2026-09-10");
+    const sofia = colleague("Sofia", "Bergström", { outOfOffice: [{ start: "2026-09-08", end: "2026-09-19" }] });
+    const participantByZoneId = new Map([[stockholmSlot.zone.id, [sofia]]]);
+
+    render(<ZoneTimeList slots={[stockholmSlot]} participantByZoneId={participantByZoneId} />);
+
+    expect(screen.getByRole("listitem")).toHaveTextContent("On holiday");
+  });
+
+  it("doesn't flag a participant whose OOO range doesn't cover the slot's local date", () => {
+    const stockholmSlot = slot("Stockholm", 10, 11, 0, 0, "2026-09-25");
+    const sofia = colleague("Sofia", "Bergström", { outOfOffice: [{ start: "2026-09-08", end: "2026-09-19" }] });
+    const participantByZoneId = new Map([[stockholmSlot.zone.id, [sofia]]]);
+
+    render(<ZoneTimeList slots={[stockholmSlot]} participantByZoneId={participantByZoneId} />);
+
+    expect(screen.getByRole("listitem")).not.toHaveTextContent("On holiday");
+  });
+
+  it("flags a slot that falls outside a participant's declared hours, alongside the universal quality label", () => {
+    const sydneySlot = slot("Sydney", 18, 19);
+    const zoe = colleague("Zoe", "Fitzgerald", { workingHours: { start: "09:00", end: "17:00" } });
+    const participantByZoneId = new Map([[sydneySlot.zone.id, [zoe]]]);
+
+    render(<ZoneTimeList slots={[sydneySlot]} participantByZoneId={participantByZoneId} />);
+
+    const item = screen.getByRole("listitem");
+    expect(item).toHaveTextContent("(Evening)");
+    expect(item).toHaveTextContent("Outside hours");
+    expect(item).toHaveTextContent("ends 17:00");
+  });
+
+  it("doesn't flag a slot inside a participant's declared hours", () => {
+    const sydneySlot = slot("Sydney", 10, 11);
+    const zoe = colleague("Zoe", "Fitzgerald", { workingHours: { start: "09:00", end: "17:00" } });
+    const participantByZoneId = new Map([[sydneySlot.zone.id, [zoe]]]);
+
+    render(<ZoneTimeList slots={[sydneySlot]} participantByZoneId={participantByZoneId} />);
+
+    expect(screen.getByRole("listitem")).not.toHaveTextContent("Outside hours");
+  });
+
+  it("names the affected person when only some of the people sharing a zone are outside their hours", () => {
+    const londonSlot = slot("London", 8, 9);
+    const arnold = colleague("Arnold", "Beethoven", { workingHours: { start: "08:30", end: "17:00" } });
+    const liam = colleague("Liam", "Sinclair", { workingHours: { start: "09:00", end: "17:30" } });
+    const participantByZoneId = new Map([[londonSlot.zone.id, [arnold, liam]]]);
+
+    render(<ZoneTimeList slots={[londonSlot]} participantByZoneId={participantByZoneId} />);
+
+    const item = screen.getByRole("listitem");
+    // 08:00-09:00 is within neither's hours (Arnold starts 08:30, Liam 09:00) — both are
+    // affected here, so the flag reads as the plain, unnamed "Outside hours".
+    expect(item).toHaveTextContent("Outside hours");
+    expect(item).not.toHaveTextContent("Outside Arnold's hours");
+  });
+
+  it("doesn't also flag someone on holiday as outside their hours — the holiday flag already explains it", () => {
+    const stockholmSlot = slot("Stockholm", 22, 23, 0, 0, "2026-09-10");
+    const sofia = colleague("Sofia", "Bergström", {
+      workingHours: { start: "08:00", end: "16:00" },
+      outOfOffice: [{ start: "2026-09-08", end: "2026-09-19" }],
+    });
+    const participantByZoneId = new Map([[stockholmSlot.zone.id, [sofia]]]);
+
+    render(<ZoneTimeList slots={[stockholmSlot]} participantByZoneId={participantByZoneId} />);
+
+    const item = screen.getByRole("listitem");
+    expect(item).toHaveTextContent("On holiday");
+    expect(item).not.toHaveTextContent("Outside hours");
   });
 });

@@ -2,6 +2,7 @@ import { CalendarDate, Time, today, getLocalTimeZone } from "@internationalized/
 import { Avatar, Button, Calendar, Card, ComboBox, Input, ListBox, Popover, Separator, TimeField } from "@heroui/react";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { asItems } from "../lib/collection";
+import { isColleagueOutOfOffice, nextAvailableDate } from "../lib/availability";
 import { COLLEAGUES, colleagueTimeZone, type Colleague } from "../lib/colleagues";
 import { useAnchorZone } from "../lib/useAnchorZone";
 import { useTheme } from "../lib/useTheme";
@@ -207,9 +208,38 @@ export function MeetingScheduler() {
     [dateStr, startHour, durationHours, hostZone],
   );
 
+  // "Best time for everyone" moves itself off a date that's a dead end for someone —
+  // unlike "Selected time" above, which stays pinned to whatever the organizer actually
+  // picked (holiday included, since that's real for that date; see the holiday flag in
+  // selectedSlots). This is a suggestion, so it's the one free to move, and it says so.
+  const bestTimeDateStr = useMemo(
+    () => (participants.length > 0 ? nextAvailableDate(participants, hostZone, dateStr) : dateStr),
+    [participants, hostZone, dateStr],
+  );
+  const bestTimeDateChanged = bestTimeDateStr !== dateStr;
+  const bestTimeDateLabel = longDateLabel(bestTimeDateStr);
+
+  // Names the organizer's originally selected date away for, reusing selectedSlots'
+  // own per-zone local dates rather than re-deriving them — the same check that puts a
+  // holiday flag on their row in "Selected time" below is what explains why "Best time
+  // for everyone" moved off that date.
+  const bestTimeSuggestionReason = useMemo(() => {
+    if (!bestTimeDateChanged) return null;
+    const names = new Set<string>();
+    for (const slot of selectedSlots) {
+      for (const p of participantByZoneId.get(slot.zone.id) ?? []) {
+        if (isColleagueOutOfOffice(p, slot.localDateStr)) names.add(p.firstName);
+      }
+    }
+    const away = Array.from(names);
+    if (away.length === 0) return "Suggested — a later date works for everyone";
+    if (away.length === 1) return `Suggested — ${away[0]}'s back`;
+    return `Suggested — ${away.join(" & ")} are back`;
+  }, [bestTimeDateChanged, selectedSlots, participantByZoneId]);
+
   const optimalHour = useMemo(
-    () => findOptimalStartHour(orderedZones, dateStr, durationHours),
-    [orderedZones, dateStr, durationHours],
+    () => findOptimalStartHour(orderedZones, bestTimeDateStr, durationHours),
+    [orderedZones, bestTimeDateStr, durationHours],
   );
 
   // Manual 15-min nudge on top of the computed "best time". Resets on any edit to the
@@ -225,20 +255,20 @@ export function MeetingScheduler() {
   useEffect(() => {
     setManualOffsetMinutes(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zones, dateStr, startHour, durationHours]);
+  }, [zones, bestTimeDateStr, startHour, durationHours]);
   const isManuallyAdjusted = manualOffsetMinutes !== 0;
   const adjustedOptimalHour = optimalHour + manualOffsetMinutes / 60;
   const adjustedOptimalSlots = useMemo(
-    () => computeZoneTimes(orderedZones, dateStr, adjustedOptimalHour, durationHours),
-    [orderedZones, dateStr, adjustedOptimalHour, durationHours],
+    () => computeZoneTimes(orderedZones, bestTimeDateStr, adjustedOptimalHour, durationHours),
+    [orderedZones, bestTimeDateStr, adjustedOptimalHour, durationHours],
   );
   const adjustedOptimalStartUtc = useMemo(
-    () => wallClockToUtcDate(dateStr, adjustedOptimalHour, hostZone),
-    [dateStr, adjustedOptimalHour, hostZone],
+    () => wallClockToUtcDate(bestTimeDateStr, adjustedOptimalHour, hostZone),
+    [bestTimeDateStr, adjustedOptimalHour, hostZone],
   );
   const adjustedOptimalEndUtc = useMemo(
-    () => wallClockToUtcDate(dateStr, adjustedOptimalHour + durationHours, hostZone),
-    [dateStr, adjustedOptimalHour, durationHours, hostZone],
+    () => wallClockToUtcDate(bestTimeDateStr, adjustedOptimalHour + durationHours, hostZone),
+    [bestTimeDateStr, adjustedOptimalHour, durationHours, hostZone],
   );
   const nudgeOptimalTime = (direction: 1 | -1) => setManualOffsetMinutes((prev) => prev + direction * NUDGE_STEP_MINUTES);
 
@@ -603,7 +633,12 @@ export function MeetingScheduler() {
                 breakpoint (worst case: 131px button + 20px right-inset at sm+ needs ~151px), which
                 is what let the button overlap the date heading on a real phone. */}
             <Card.Content className="flex flex-col gap-1 p-4 px-5 pr-40 text-sm">
-              <span className="font-bold">{selectedDateLabel}</span>
+              {bestTimeDateChanged && (
+                <span className="mb-1 inline-flex w-fit items-center rounded-full border border-[var(--brand-blue)] bg-background px-2 py-0.5 text-[11px] font-medium whitespace-nowrap text-[var(--brand-blue)]">
+                  {bestTimeSuggestionReason}
+                </span>
+              )}
+              <span className="font-bold">{bestTimeDateLabel}</span>
               <ZoneTimeList slots={adjustedOptimalSlots} participantByZoneId={participantByZoneId} />
               {/* Adjusting or inviting to a "best time" computed from zero attendees isn't
                   meaningful — hidden along with the invite button below until at least one
@@ -649,7 +684,7 @@ export function MeetingScheduler() {
                       "--button-bg-pressed": "#0D3F9C",
                     } as CSSProperties
                   }
-                  ariaLabel={`Set up invite for the best time for everyone, ${selectedDateLabel}, ${adjustedOptimalSlots[0]?.startText ?? ""}–${adjustedOptimalSlots[0]?.endText ?? ""}`}
+                  ariaLabel={`Set up invite for the best time for everyone, ${bestTimeDateLabel}, ${adjustedOptimalSlots[0]?.startText ?? ""}–${adjustedOptimalSlots[0]?.endText ?? ""}`}
                   describedById="invite-note"
                 />
               </div>

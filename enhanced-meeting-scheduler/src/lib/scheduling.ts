@@ -28,6 +28,11 @@ export interface ZoneTimeSlot {
    */
   startHourRaw: number;
   endHourRaw: number;
+  /** The meeting's local calendar date in this zone, "YYYY-MM-DD" — the day `startText`
+   * actually falls on there, which can differ from the host's own `dateStr` by ±1 day.
+   * Needed to check a colleague's out-of-office ranges against the day it's actually
+   * happening for them, not the day it's happening for the host. */
+  localDateStr: string;
 }
 
 /** Wraps a decimal hour into [0, 24). */
@@ -118,6 +123,7 @@ export function computeZoneTimes(
       endDayOffset: calendarDayIndex(localEnd) - calendarDayIndexOf(dateStr),
       startHourRaw,
       endHourRaw,
+      localDateStr: localStart.toISODate()!,
     };
   });
 }
