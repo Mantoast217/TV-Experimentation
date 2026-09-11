@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { buildEndTimeOptions, computeDurationHours, computeZoneTimes, formatZoneTimesText, nextIncrementAfter } from "./scheduling";
+import {
+  buildEndTimeOptions,
+  computeDurationHours,
+  computeZoneTimes,
+  findOptimalStartHour,
+  formatZoneTimesText,
+  nextIncrementAfter,
+} from "./scheduling";
 import type { TimeZoneCatalogEntry } from "./timezones";
 
 const LONDON: TimeZoneCatalogEntry = {
@@ -19,6 +26,51 @@ const TOKYO: TimeZoneCatalogEntry = {
   countryCode: "JP",
   timezone: "Asia/Tokyo",
 };
+
+describe("findOptimalStartHour — declaredHoursByZoneId", () => {
+  // January: London sits on plain GMT (UTC+0), so the host-zone local hour and the
+  // candidate hour scanned are one and the same — no DST/offset arithmetic to account for.
+  const JAN = "2026-01-15";
+
+  it("falls back to the universal 9-18 band when no declaredHoursByZoneId is given at all", () => {
+    // Untouched pre-existing behavior: with a 1h meeting, every start from 09:00 to 17:00
+    // scores zero under the universal band, and the scan picks the first (lowest) of them.
+    expect(findOptimalStartHour([LONDON], JAN, 1)).toBe(9);
+  });
+
+  it("falls back to the universal band for a zone with no entry in the map", () => {
+    const declared = new Map<string, { start: string; end: string }[]>();
+    expect(findOptimalStartHour([LONDON], JAN, 1, declared)).toBe(9);
+  });
+
+  it("scores against a participant's own declared hours instead of the universal band when given", () => {
+    // Declared 11:00-15:00 is narrower than (and offset from) the universal 9-18 band —
+    // the pre-existing default of 09:00 would incur a real penalty here (11-9=2), so this
+    // only passes if the declared hours are actually driving the scan, not just annotating
+    // whatever the universal band already picked.
+    const declared = new Map([[LONDON.id, [{ start: "11:00", end: "15:00" }]]]);
+    const hour = findOptimalStartHour([LONDON], JAN, 1, declared);
+    expect(hour).toBeGreaterThanOrEqual(11);
+    expect(hour).toBeLessThanOrEqual(14);
+  });
+
+  it("sums each shared-zone participant's own hours independently, not a merged representative range", () => {
+    // Two people in the same zone with disjoint declared hours and a short (15min)
+    // duration: no single instant is inside both windows, so the two candidates
+    // straddling the 13:00 boundary (12:45-13:00 and 13:00-13:15) tie at the lowest
+    // possible combined penalty (0.25) — the scan keeps the first (lower) of a tie.
+    const declared = new Map([
+      [
+        LONDON.id,
+        [
+          { start: "09:00", end: "13:00" },
+          { start: "13:00", end: "17:00" },
+        ],
+      ],
+    ]);
+    expect(findOptimalStartHour([LONDON], JAN, 0.25, declared)).toBe(12.75);
+  });
+});
 
 describe("nextIncrementAfter", () => {
   it("rounds a non-aligned time up to the next step boundary", () => {

@@ -130,12 +130,27 @@ export function computeZoneTimes(
 
 /**
  * Scans candidate start hours (in the host zone, on `dateStr`) and returns the one that
- * keeps every zone's meeting time as close as possible to typical working hours (9-18),
- * with staying within awake hours (6-24) weighted far more heavily so it always wins when
- * the two constraints conflict. Each candidate's per-zone local hour is resolved via a
- * real DST-aware instant conversion, same as computeZoneTimes.
+ * keeps every zone's meeting time as close as possible to working hours, with staying
+ * within awake hours (6-24) weighted far more heavily so it always wins when the two
+ * constraints conflict. Each candidate's per-zone local hour is resolved via a real
+ * DST-aware instant conversion, same as computeZoneTimes.
+ *
+ * `declaredHoursByZoneId`, keyed by TimeZoneCatalogEntry.id, scores a zone against each
+ * participant's own declared hours there (one term per person, summed — two colleagues
+ * sharing a zone each pull the optimum toward their own hours independently, not some
+ * merged "representative" range) instead of the generic 9-18 band, which is used only as
+ * a fallback for a zone with no known participant (a bare city chip, or a future guest
+ * with no declared hours). Without this, the flags this scores against were being drawn
+ * on hours the algorithm never actually optimized for — verified live: it picked a start
+ * time that put a participant outside their own hours where a different hour, still
+ * optimal by the generic band, would have kept them inside them.
  */
-export function findOptimalStartHour(zones: TimeZoneCatalogEntry[], dateStr: string, durationHours: number): number {
+export function findOptimalStartHour(
+  zones: TimeZoneCatalogEntry[],
+  dateStr: string,
+  durationHours: number,
+  declaredHoursByZoneId?: Map<string, { start: string; end: string }[]>,
+): number {
   if (zones.length === 0) return 9;
   const hostZone = zones[0].timezone;
 
@@ -145,7 +160,15 @@ export function findOptimalStartHour(zones: TimeZoneCatalogEntry[], dateStr: str
     const startInstant = instantAt(dateStr, h, hostZone);
     const score = zones.reduce((sum, zone) => {
       const localHour = wrapHour(unwrappedLocalHour(startInstant.setZone(zone.timezone), dateStr));
-      const workingPenalty = Math.max(0, 9 - localHour) + Math.max(0, localHour + durationHours - 18);
+      const declared = declaredHoursByZoneId?.get(zone.id);
+      const workingPenalty =
+        declared && declared.length > 0
+          ? declared.reduce((personSum, { start, end }) => {
+              const startHour = parseHourValue(start);
+              const endHour = parseHourValue(end);
+              return personSum + Math.max(0, startHour - localHour) + Math.max(0, localHour + durationHours - endHour);
+            }, 0)
+          : Math.max(0, 9 - localHour) + Math.max(0, localHour + durationHours - 18);
       const awakePenalty = (Math.max(0, 6 - localHour) + Math.max(0, localHour + durationHours - 24)) * 10;
       return sum + workingPenalty + awakePenalty;
     }, 0);

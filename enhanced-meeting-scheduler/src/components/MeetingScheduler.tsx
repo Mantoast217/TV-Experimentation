@@ -194,6 +194,18 @@ export function MeetingScheduler() {
     return map;
   }, [participants]);
 
+  // Feeds each zone's actual participants' declared hours into findOptimalStartHour,
+  // rather than letting it fall back to a generic 9-18 band for every zone — see that
+  // function's own doc for why this matters (it's the fix for a real divergence found
+  // live between the algorithm's chosen hour and each attendee's own working hours).
+  const declaredHoursByZoneId = useMemo(() => {
+    const map = new Map<string, { start: string; end: string }[]>();
+    for (const [zoneId, people] of participantByZoneId) {
+      map.set(zoneId, people.map((p) => p.workingHours));
+    }
+    return map;
+  }, [participantByZoneId]);
+
   const hostZone = anchorZone?.timezone ?? "UTC";
 
   const selectedSlots = useMemo(
@@ -240,8 +252,8 @@ export function MeetingScheduler() {
   }, [bestTimeDateChanged, selectedSlots, participantByZoneId]);
 
   const optimalHour = useMemo(
-    () => findOptimalStartHour(orderedZones, bestTimeDateStr, durationHours),
-    [orderedZones, bestTimeDateStr, durationHours],
+    () => findOptimalStartHour(orderedZones, bestTimeDateStr, durationHours, declaredHoursByZoneId),
+    [orderedZones, bestTimeDateStr, durationHours, declaredHoursByZoneId],
   );
 
   // Manual 15-min nudge on top of the computed "best time". Resets on any edit to the
@@ -330,6 +342,10 @@ export function MeetingScheduler() {
             }}
             fullWidth
             aria-label="Search for colleagues"
+            // Without this, React Aria keeps the popover closed entirely once a query
+            // matches zero colleagues — the empty-state message below would never get a
+            // chance to render, and the organizer would see nothing happen at all.
+            allowsEmptyCollection
           >
             <ComboBox.InputGroup>
               <Input
@@ -340,33 +356,39 @@ export function MeetingScheduler() {
               <ComboBox.Trigger />
             </ComboBox.InputGroup>
             <ComboBox.Popover className="max-h-72" translate="no">
-              <ListBox<Colleague> items={asItems(availableColleagues)}>
-                {(colleague) => {
-                  const zone = colleagueTimeZone(colleague);
-                  return (
-                    <ListBox.Item
-                      id={colleague.id}
-                      textValue={`${colleague.firstName} ${colleague.lastName}, ${colleague.role}, ${zoneDisplayLabel(zone, dateStr)}`}
-                    >
-                      <div className="flex items-center gap-3 py-0.5">
-                        <Avatar.Root size="sm">
-                          <Avatar.Fallback>{colleagueInitials(colleague)}</Avatar.Fallback>
-                        </Avatar.Root>
-                        <div className="flex flex-col">
-                          <span className="text-sm font-medium text-foreground">
-                            {colleague.firstName} {colleague.lastName}
-                          </span>
-                          <span className="text-xs text-[var(--secondary-text)]">{colleague.role}</span>
-                          {/* zoneDisplayLabel: "City — Country (timezone)" — same format the
-                              "Add a time zone" search already uses, so a colleague's location
-                              reads the same way wherever it appears. */}
-                          <span className="text-xs text-[var(--secondary-text)]">{zoneDisplayLabel(zone, dateStr)}</span>
+              {colleagueQuery.trim() && availableColleagues.length === 0 ? (
+                // A silent empty popover left the organizer with no indication anything had
+                // happened — verified live by searching a name genuinely not in the fixture.
+                <p className="px-3 py-2.5 text-sm text-[var(--secondary-text)]">No colleagues found for &quot;{colleagueQuery}&quot;</p>
+              ) : (
+                <ListBox<Colleague> items={asItems(availableColleagues)}>
+                  {(colleague) => {
+                    const zone = colleagueTimeZone(colleague);
+                    return (
+                      <ListBox.Item
+                        id={colleague.id}
+                        textValue={`${colleague.firstName} ${colleague.lastName}, ${colleague.role}, ${zoneDisplayLabel(zone, dateStr)}`}
+                      >
+                        <div className="flex items-center gap-3 py-0.5">
+                          <Avatar.Root size="sm">
+                            <Avatar.Fallback>{colleagueInitials(colleague)}</Avatar.Fallback>
+                          </Avatar.Root>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium text-foreground">
+                              {colleague.firstName} {colleague.lastName}
+                            </span>
+                            <span className="text-xs text-[var(--secondary-text)]">{colleague.role}</span>
+                            {/* zoneDisplayLabel: "City — Country (timezone)" — same format the
+                                "Add a time zone" search already uses, so a colleague's location
+                                reads the same way wherever it appears. */}
+                            <span className="text-xs text-[var(--secondary-text)]">{zoneDisplayLabel(zone, dateStr)}</span>
+                          </div>
                         </div>
-                      </div>
-                    </ListBox.Item>
-                  );
-                }}
-              </ListBox>
+                      </ListBox.Item>
+                    );
+                  }}
+                </ListBox>
+              )}
             </ComboBox.Popover>
           </ComboBox.Root>
           <ParticipantChipList

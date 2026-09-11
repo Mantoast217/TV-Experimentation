@@ -97,6 +97,19 @@ describe("MeetingScheduler — add a participant", () => {
     expect(option).toHaveTextContent("London — United Kingdom");
   });
 
+  it("shows a message instead of a silent empty popover when a search matches no colleagues", async () => {
+    const user = userEvent.setup();
+    render(<MeetingScheduler />);
+
+    const combo = screen.getByRole("combobox", { name: "Search for colleagues" });
+    await user.click(combo);
+    // Genuinely not in the fixture — see colleagues.ts.
+    await user.type(combo, "Freya");
+
+    expect(await screen.findByText('No colleagues found for "Freya"')).toBeInTheDocument();
+    expect(screen.queryByRole("option")).not.toBeInTheDocument();
+  });
+
   it("adds a participant chip with the colleague's avatar, name, city, country, and time", async () => {
     const user = userEvent.setup();
     render(<MeetingScheduler />);
