@@ -63,7 +63,7 @@ describe("MeetingScheduler — add a participant", () => {
     expect(screen.queryByRole("heading", { name: "Add a time zone" })).not.toBeInTheDocument();
   });
 
-  it("searches colleagues by name and shows their avatar, name, role, and city", async () => {
+  it("searches colleagues by name and shows their avatar, name, role, city, country, and timezone", async () => {
     const user = userEvent.setup();
     render(<MeetingScheduler />);
 
@@ -72,17 +72,18 @@ describe("MeetingScheduler — add a participant", () => {
     await user.type(combo, "Priya");
 
     // No comma in the match: the option's accessible name comes from its rendered text
-    // nodes (name, role, and city, no separator between them), not from a hand-written
+    // nodes (name, role, and location, no separator between them), not from a hand-written
     // string — "Priya Nair" alone is enough to disambiguate it from the other nine.
     const option = await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 });
     expect(option).toBeInTheDocument();
     expect(option).toHaveTextContent("PN");
     expect(option).toHaveTextContent("Priya Nair");
     expect(option).toHaveTextContent("Product Designer");
-    expect(option).toHaveTextContent("Kolkata");
+    // City — Country (timezone), the same format the "Add a time zone" search uses.
+    expect(option).toHaveTextContent("Kolkata — India (IST / GMT+5:30)");
   });
 
-  it("includes Arnold Beethoven, based in London, in the colleague directory", async () => {
+  it("includes Arnold Beethoven, based in London, United Kingdom, in the colleague directory", async () => {
     const user = userEvent.setup();
     render(<MeetingScheduler />);
 
@@ -93,7 +94,7 @@ describe("MeetingScheduler — add a participant", () => {
     const option = await screen.findByRole("option", { name: /Arnold Beethoven/ }, { timeout: 5000 });
     expect(option).toHaveTextContent("AB");
     expect(option).toHaveTextContent("Lead Experience Designer");
-    expect(option).toHaveTextContent("London");
+    expect(option).toHaveTextContent("London — United Kingdom");
   });
 
   it("adds a participant chip with the colleague's avatar, name, and city under the search box", async () => {

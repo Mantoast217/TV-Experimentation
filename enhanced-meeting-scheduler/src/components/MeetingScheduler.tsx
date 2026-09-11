@@ -36,7 +36,6 @@ import {
   longDateLabel,
   wallClockToUtcDate,
   zoneDisplayLabel,
-  zoneTimeLabel,
   type TimeZoneCatalogEntry,
 } from "../lib/timezones";
 
@@ -344,11 +343,10 @@ export function MeetingScheduler() {
               <ListBox<Colleague> items={asItems(availableColleagues)}>
                 {(colleague) => {
                   const zone = colleagueTimeZone(colleague);
-                  const timeLabel = zoneTimeLabel(zone, dateStr);
                   return (
                     <ListBox.Item
                       id={colleague.id}
-                      textValue={`${colleague.firstName} ${colleague.lastName}, ${colleague.role}, ${zone.city} ${timeLabel}`}
+                      textValue={`${colleague.firstName} ${colleague.lastName}, ${colleague.role}, ${zoneDisplayLabel(zone, dateStr)}`}
                     >
                       <div className="flex items-center gap-3 py-0.5">
                         <Avatar.Root size="sm">
@@ -359,9 +357,10 @@ export function MeetingScheduler() {
                             {colleague.firstName} {colleague.lastName}
                           </span>
                           <span className="text-xs text-[var(--secondary-text)]">{colleague.role}</span>
-                          <span className="text-xs text-[var(--secondary-text)]">
-                            {zone.city} ({timeLabel})
-                          </span>
+                          {/* zoneDisplayLabel: "City — Country (timezone)" — same format the
+                              "Add a time zone" search already uses, so a colleague's location
+                              reads the same way wherever it appears. */}
+                          <span className="text-xs text-[var(--secondary-text)]">{zoneDisplayLabel(zone, dateStr)}</span>
                         </div>
                       </div>
                     </ListBox.Item>
