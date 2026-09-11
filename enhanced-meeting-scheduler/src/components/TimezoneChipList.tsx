@@ -1,6 +1,6 @@
 import { Chip } from "@heroui/react";
 import { useEffect, useRef, useState, type RefObject } from "react";
-import { zoneDisplayLabel, type TimeZoneCatalogEntry } from "../lib/timezones";
+import { zoneTimeLabel, type TimeZoneCatalogEntry } from "../lib/timezones";
 
 interface TimezoneChipListProps {
   zones: TimeZoneCatalogEntry[];
@@ -61,7 +61,10 @@ export function TimezoneChipList({ zones, onRemove, addInputRef, dateStr }: Time
           elements (see ZoneTimeList.tsx for the reproduced failure and full rationale). */}
       <ul role="list" translate="no" className="m-0 flex list-none flex-wrap gap-2.5 p-0">
         {zones.map((zone) => {
-          const label = zoneDisplayLabel(zone, dateStr);
+          // City, Country (timezone) — a comma, not the colleague search list's "City —
+          // Country" em dash, matching the participant chip's own City, Country pairing so
+          // the two chip kinds read consistently next to each other.
+          const label = `${zone.city}, ${zone.country} (${zoneTimeLabel(zone, dateStr)})`;
           return (
             <li key={zone.id} role="listitem">
               {/* h-10: matches the participant chip's height, which the avatar (32px) plus its

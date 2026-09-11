@@ -78,11 +78,12 @@ export function ParticipantChipList({ participants, onRemove, addInputRef, dateS
                 <Avatar.Root size="sm">
                   <Avatar.Fallback>{colleagueInitials(colleague)}</Avatar.Fallback>
                 </Avatar.Root>
-                {/* City, Country (not the "City — Country" em-dash pairing the colleague
-                    search list uses) — that dash is already spoken for here, separating
-                    the name from the location. */}
+                {/* A plain hyphen splits name from location, and a comma splits city from
+                    country — no em dash anywhere on this chip, unlike the colleague search
+                    list's "City — Country", so the two never look like the same separator
+                    doing two different jobs. */}
                 <Chip.Label>
-                  {fullName} — {zone.city}, {zone.country} ({timeLabel})
+                  {fullName} - {zone.city}, {zone.country} ({timeLabel})
                 </Chip.Label>
                 <button
                   ref={(el) => {
