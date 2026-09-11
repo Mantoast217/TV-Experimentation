@@ -129,6 +129,14 @@ export function ZoneTimeList({ slots, className, chipClassName, participantByZon
           .filter((p) => !onHoliday.includes(p))
           .filter((p) => isOutsideDeclaredHours(p, slot.startText, slot.endText));
 
+        // A meeting that's uniformly shifted — start and end both land on the same other
+        // day — only needs saying once. Badging both the name line and the time line with
+        // the same "-1" is redundant; reserve the name-line badge for when the start
+        // genuinely lands on a *different* day than the end (a long duration pushing only
+        // the end further out), which is the one case where two distinct badges carry two
+        // distinct pieces of information.
+        const startNeedsOwnBadge = slot.dayOffset !== 0 && slot.dayOffset !== slot.endDayOffset;
+
         return (
           // Name/city, time range, and quality label (plus any holiday/outside-hours
           // flags) each get their own line, rather than packed onto one row, so a long
@@ -141,9 +149,9 @@ export function ZoneTimeList({ slots, className, chipClassName, participantByZon
               <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={dotStyle} />
               <span>
                 {label}
-                {slot.dayOffset !== 0 && <span className="sr-only">{dayOffsetAnnouncement(slot.dayOffset)}</span>}
+                {startNeedsOwnBadge && <span className="sr-only">{dayOffsetAnnouncement(slot.dayOffset)}</span>}
               </span>
-              {slot.dayOffset !== 0 && <DayOffsetBadge offset={slot.dayOffset} className={chipClassName} />}
+              {startNeedsOwnBadge && <DayOffsetBadge offset={slot.dayOffset} className={chipClassName} />}
             </span>
             {/* pl-[14px]: aligns with the name/city text above (past the 8px dot + 6px gap), not the dot itself. */}
             <span className="flex flex-wrap items-center gap-1.5 pl-[14px]">

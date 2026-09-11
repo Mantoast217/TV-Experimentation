@@ -121,14 +121,20 @@ describe("ZoneTimeList — day-offset badges", () => {
     expect(badges).toHaveLength(1);
   });
 
-  it("badges the start time when only the start (not the end) lands on a different day", () => {
+  it("shows exactly one badge, on the time line, when start and end are offset by the same amount", () => {
     render(<ZoneTimeList slots={[slot("Tokyo", 23, 24, 1, 1)]} />);
     const item = screen.getByRole("listitem");
     const badges = item.querySelectorAll("span[aria-hidden='true'].rounded-full.bg-warning");
-    // Both start and end are offset +1 here (23:00 (+1)–00:00 (+1)), so both get badged —
-    // this is the "attendee's whole day is shifted" case, distinct from the "duration
-    // alone pushes the end past midnight" case above.
-    expect(badges).toHaveLength(2);
+    // Both start and end are offset +1 here (23:00 (+1)–00:00 (+1)) — the whole slot is
+    // uniformly shifted a day, so one badge says it; a second one on the name line would
+    // just repeat the same "+1" rather than adding information (a real case reported live:
+    // two identical "-1" chips on one row read as a doubled-up mistake, not two facts).
+    expect(badges).toHaveLength(1);
+    expect(badges[0]).toHaveTextContent("+1");
+    // On the time line, not the name line — matches the badge that would appear if only
+    // the end (not the start) had moved.
+    const timeLine = item.querySelector(".pl-\\[14px\\]");
+    expect(timeLine?.contains(badges[0])).toBe(true);
   });
 
   it("badges start and end independently when they land on different days from each other", () => {
@@ -140,6 +146,17 @@ describe("ZoneTimeList — day-offset badges", () => {
     const badges = item.querySelectorAll("span[aria-hidden='true'].rounded-full.bg-warning");
     expect(badges).toHaveLength(1);
     expect(badges[0]).toHaveTextContent("-1");
+  });
+
+  it("badges both the name and time line, with their own distinct offsets, when start and end land on two different other days", () => {
+    // A long enough duration pushes the start +1 day and the end +2 — genuinely different
+    // facts, unlike the equal-offset case above, so both badges earn their place here.
+    render(<ZoneTimeList slots={[slot("Tokyo", 23, 22, 1, 2)]} />);
+    const item = screen.getByRole("listitem");
+    const badges = item.querySelectorAll("span[aria-hidden='true'].rounded-full.bg-warning");
+    expect(badges).toHaveLength(2);
+    expect(badges[0]).toHaveTextContent("+1");
+    expect(badges[1]).toHaveTextContent("+2");
   });
 
   it("gives each badge a screen-reader-only explanation instead of a bare, ambiguous number", () => {

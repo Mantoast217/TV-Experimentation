@@ -57,6 +57,14 @@ export function ZoneTimeList({ slots, className, chipClassName, qualityLabelClas
           quality.dotColors.length === 2
             ? { background: `linear-gradient(90deg, ${quality.dotColors[0]} 50%, ${quality.dotColors[1]} 50%)` }
             : { backgroundColor: quality.dotColors[0] };
+        // A meeting that's uniformly shifted — start and end both land on the same other
+        // day — only needs saying once. Badging both the city line and the time line with
+        // the same "-1" is redundant; reserve the city-line badge for when the start
+        // genuinely lands on a *different* day than the end (a long duration pushing only
+        // the end further out), which is the one case where two distinct badges carry two
+        // distinct pieces of information.
+        const startNeedsOwnBadge = slot.dayOffset !== 0 && slot.dayOffset !== slot.endDayOffset;
+
         return (
           // City, time range, and time-of-day label each get their own line (rather than
           // packed onto one row) so a long city name or a compound label like "Afternoon -
@@ -68,9 +76,9 @@ export function ZoneTimeList({ slots, className, chipClassName, qualityLabelClas
               <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={dotStyle} />
               <span>
                 {slot.zone.city}
-                {slot.dayOffset !== 0 && <span className="sr-only">{dayOffsetAnnouncement(slot.dayOffset)}</span>}
+                {startNeedsOwnBadge && <span className="sr-only">{dayOffsetAnnouncement(slot.dayOffset)}</span>}
               </span>
-              {slot.dayOffset !== 0 && <DayOffsetBadge offset={slot.dayOffset} className={chipClassName} />}
+              {startNeedsOwnBadge && <DayOffsetBadge offset={slot.dayOffset} className={chipClassName} />}
             </span>
             {/* pl-[14px]: aligns with the city text above (past the 8px dot + 6px gap), not the dot itself. */}
             <span className="flex flex-wrap items-center gap-1.5 pl-[14px]">
