@@ -97,7 +97,7 @@ describe("MeetingScheduler — add a participant", () => {
     expect(option).toHaveTextContent("London — United Kingdom");
   });
 
-  it("adds a participant chip with the colleague's avatar, name, and city under the search box", async () => {
+  it("adds a participant chip with the colleague's avatar, name, city, country, and time", async () => {
     const user = userEvent.setup();
     render(<MeetingScheduler />);
 
@@ -113,8 +113,8 @@ describe("MeetingScheduler — add a participant", () => {
     const chip = removeButton.closest("li");
     expect(chip).toHaveTextContent("PN");
     expect(chip).toHaveTextContent("Priya Nair");
-    // Includes the city and current offset/abbreviation, same format as a plain zone chip.
-    expect(chip).toHaveTextContent(/Kolkata \(IST \/ GMT\+5:30\)/);
+    // Includes the city, country, and current offset/abbreviation.
+    expect(chip).toHaveTextContent(/Kolkata, India \(IST \/ GMT\+5:30\)/);
   });
 
   it("adds the selected colleague's time zone to the schedule", async () => {
@@ -141,7 +141,7 @@ describe("MeetingScheduler — add a participant", () => {
     await user.click(await screen.findByRole("option", { name: /Priya Nair/ }, { timeout: 5000 }));
 
     // Matches only the schedule cards' "Priya Nair — Kolkata" name/city line, not the
-    // participant chip's own similarly-prefixed "Priya Nair — Kolkata (IST / GMT+5:30)"
+    // participant chip's own similarly-prefixed "Priya Nair — Kolkata, India (IST / GMT+5:30)"
     // label — "Selected time" and "Best time for everyone" both render a ZoneTimeList,
     // so this is expected to show up exactly twice, in her own name, not as a bare city.
     // Name/city and the time range are separate lines now (see ZoneTimeList.tsx), so the
