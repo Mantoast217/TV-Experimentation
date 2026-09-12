@@ -251,10 +251,12 @@ describe("MeetingScheduler — add a participant", () => {
     expect(screen.queryByRole("button", { name: "Add a time zone" })).not.toBeInTheDocument();
   });
 
-  it("gives a plain time zone chip and a participant chip the same fixed height", async () => {
+  it("gives a plain time zone chip and a participant chip the same minimum height", async () => {
     // jsdom has no layout engine, so this asserts the structural CSS contract (both chips
-    // share the same h-10) rather than measuring real pixels — verified live, with real
-    // pixel measurements showing both chips at exactly 40px, in the browser.
+    // share the same min-h-10, so they agree on a floor without either being forced short
+    // when its own label wraps to two lines) rather than measuring real pixels — verified
+    // live, with real pixel measurements showing both chips at exactly 40px at one line, in
+    // the browser.
     const user = userEvent.setup();
     render(<MeetingScheduler />);
 
@@ -274,8 +276,8 @@ describe("MeetingScheduler — add a participant", () => {
     const participantChip = (await screen.findByRole("button", { name: "Remove Priya Nair" })).closest("li")
       ?.firstElementChild;
     const zoneChip = (await screen.findByRole("button", { name: /^Remove Tokyo/ })).closest("li")?.firstElementChild;
-    expect(participantChip).toHaveClass("h-10");
-    expect(zoneChip).toHaveClass("h-10");
+    expect(participantChip).toHaveClass("min-h-10");
+    expect(zoneChip).toHaveClass("min-h-10");
   }, 10_000);
 });
 

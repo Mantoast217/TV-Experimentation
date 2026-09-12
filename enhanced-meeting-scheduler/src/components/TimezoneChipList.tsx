@@ -67,10 +67,14 @@ export function TimezoneChipList({ zones, onRemove, addInputRef, dateStr }: Time
           const label = `${zone.city}, ${zone.country} (${zoneTimeLabel(zone, dateStr)})`;
           return (
             <li key={zone.id} role="listitem">
-              {/* h-10: matches the participant chip's height, which the avatar (32px) plus its
-                  own vertical padding drives to 40px — a plain text chip would otherwise sit
-                  shorter, since it has no avatar forcing that same height. */}
-              <Chip variant="soft" color="default" size="lg" className="h-10 items-center gap-1.5 border border-[#767676]">
+              {/* min-h-10 (not h-10): matches the participant chip's height, which the
+                  avatar (32px) plus its own vertical padding drives to 40px — a plain text
+                  chip would otherwise sit shorter, since it has no avatar forcing that same
+                  height. A fixed height, though, left zero room for the label's own padding
+                  once "City, Country (timezone)" wraps to two lines on a narrow phone
+                  (confirmed live: the text filled the full 40px, squeezing the pill's 4px
+                  top/bottom padding to nothing). min- lets the chip grow instead. */}
+              <Chip variant="soft" color="default" size="lg" className="min-h-10 items-center gap-1.5 border border-[#767676]">
                 <Chip.Label>{label}</Chip.Label>
                 <button
                   ref={(el) => {

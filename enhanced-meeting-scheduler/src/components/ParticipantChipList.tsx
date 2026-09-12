@@ -71,10 +71,15 @@ export function ParticipantChipList({ participants, onRemove, addInputRef, dateS
           const fullName = `${colleague.firstName} ${colleague.lastName}`;
           return (
             <li key={colleague.id} role="listitem">
-              {/* h-10, explicit rather than left to the avatar to drive: TimezoneChipList's
-                  plain chip matches this same fixed height so the two chip kinds sit flush
-                  in a mixed row regardless of which one has an avatar. */}
-              <Chip variant="soft" color="default" size="lg" className="h-10 items-center gap-1.5 border border-[#767676] pl-1">
+              {/* min-h-10 (not h-10), explicit rather than left to the avatar to drive:
+                  TimezoneChipList's plain chip matches this same 40px-at-one-line height so
+                  the two chip kinds sit flush in a mixed row regardless of which one has an
+                  avatar. A fixed height, though, left zero room for the label's own padding
+                  once "Fullname - City, Country (timezone)" wraps to two lines on a narrow
+                  phone (confirmed live: the text filled the full 40px, squeezing the pill's
+                  4px top/bottom padding to nothing). min- lets the chip grow instead, and
+                  the avatar (fixed 32px) stays vertically centered via items-center either way. */}
+              <Chip variant="soft" color="default" size="lg" className="min-h-10 items-center gap-1.5 border border-[#767676] pl-1">
                 <Avatar.Root size="sm">
                   <Avatar.Fallback>{colleagueInitials(colleague)}</Avatar.Fallback>
                 </Avatar.Root>
