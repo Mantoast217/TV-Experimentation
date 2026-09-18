@@ -40,15 +40,16 @@ function nowTimeStr(): string {
 /**
  * A trimmed-down companion to MeetingScheduler: add time zones, pick one instant (no
  * duration/end time), and see what that instant looks like in each added zone. Starts
- * on the viewer's own current time rather than a fixed default, matching the "what time
- * zone is it right now" framing.
+ * on the same 9am default as MeetingScheduler's own start time — "Set to now" is there
+ * for the "what time zone is it right now" case, rather than making it the default and
+ * losing a stable, repeatable starting point.
  */
 export function WhatTimeZone() {
   const [zones, setZones] = useState<TimeZoneCatalogEntry[]>(() => {
     const uk = TIMEZONE_CATALOG.find((z) => z.id === DEFAULT_TIMEZONE_ID)!;
     return [uk];
   });
-  const [startTime, setStartTime] = useState(nowTimeStr);
+  const [startTime, setStartTime] = useState("09:00");
   const [tzQuery, setTzQuery] = useState("");
   const [setToNowAnnouncement, setSetToNowAnnouncement] = useState("");
   const addZoneInputRef = useRef<HTMLInputElement>(null);
@@ -203,6 +204,40 @@ export function WhatTimeZone() {
                     time" card for the AAA-contrast rationale this reuses unchanged. */}
                 <ZoneTimeList slots={selectedSlots} instantOnly tileLayout qualityLabelClassName="text-[#b3b3bb]" />
               </div>
+            </div>
+
+            <Separator />
+
+            <div className="flex flex-col gap-3">
+              <h2 className="m-0 text-base font-medium text-foreground">
+                Need to find a meeting time across different time zones?
+              </h2>
+              {/* Continuing to a meeting with no attendees yet isn't meaningful — same
+                  guard MeetingScheduler.tsx uses for its own invite button. bg-[#0D3F9C]
+                  is fixed (not theme-reactive): paired with fixed white text, that
+                  pairing's contrast (9.51:1) doesn't depend on the surrounding page
+                  theme — same reasoning as ErrorBoundary's "Reload page" button. */}
+              {zones.length > 0 && (
+                <a
+                  href="/"
+                  className="inline-flex h-10 items-center justify-center gap-2 self-start rounded-md bg-[#0D3F9C] px-4 text-sm font-medium text-white hover:opacity-90 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+                >
+                  Continue to set up meeting invite
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                    className="h-4 w-4"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </a>
+              )}
             </div>
           </div>
         </div>

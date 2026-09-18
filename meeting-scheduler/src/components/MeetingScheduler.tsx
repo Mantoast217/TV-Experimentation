@@ -66,6 +66,7 @@ export function MeetingScheduler() {
   const [endTime, setEndTime] = useState("10:00");
   const [isDateOpen, setIsDateOpen] = useState(false);
   const [tzQuery, setTzQuery] = useState("");
+  const [setToNowAnnouncement, setSetToNowAnnouncement] = useState("");
   const addZoneInputRef = useRef<HTMLInputElement>(null);
 
   const dateStr = useMemo(() => toDateStr(selectedDate), [selectedDate]);
@@ -105,6 +106,17 @@ export function MeetingScheduler() {
   const handleStartTimeChange = (value: string) => {
     setStartTime(value);
     setEndTime(shiftTimeValue(value, durationHours));
+  };
+
+  // Mirrors TimePickerField's own step-chevron pattern: the button keeps focus on
+  // itself rather than moving it into the field it just changed, so — same as those
+  // chevrons — the result needs its own explicit announcement rather than relying on
+  // focus landing somewhere that would otherwise surface the new value.
+  const setStartTimeToNow = () => {
+    const now = new Date();
+    const value = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    handleStartTimeChange(value);
+    setSetToNowAnnouncement(`Start time set to ${value}`);
   };
 
   const { anchorZone, isAutoAnchor, selectAnchor } = useAnchorZone(zones);
@@ -337,11 +349,53 @@ export function MeetingScheduler() {
             <div className="@container">
               <div className="grid grid-cols-2 gap-2.5 @min-[480px]:grid-cols-3">
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-xs text-[var(--secondary-text)]">Start time</span>
+                  {/* min-h-6 on the row itself (not just the button): End time's and
+                      Duration's own label rows below match this same height even though
+                      they have no button, so all three columns' TimePickerField/TimeField
+                      boxes start at the same y position instead of Start's sitting lower
+                      than its siblings.
+                      items-center (not items-baseline): the button is itself a flex
+                      container, and a flex container's baseline is computed from its
+                      align-items-centered content rather than plain text metrics — with
+                      items-baseline that put the button's text a few pixels off from the
+                      label's true text baseline. Centering the row instead lines up both
+                      visually regardless of the button's taller (min-h-6) hit-area box. */}
+                  <div className="flex min-h-6 items-center justify-between gap-2">
+                    <span className="text-xs text-[var(--secondary-text)]">Start time</span>
+                    {/* min-h-6 (24px, WCAG 2.5.8): matches every other small button in this
+                        app's own floor — see the chip/trigger buttons elsewhere on this
+                        page. font-normal (not font-medium): matches the "Start time"
+                        label's own weight exactly, so the two read as the same size at a
+                        glance. */}
+                    <button
+                      type="button"
+                      onClick={setStartTimeToNow}
+                      className="inline-flex min-h-6 items-center gap-1 text-xs font-normal text-[var(--brand-blue)] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                        className="h-3 w-3"
+                      >
+                        <circle cx="12" cy="12" r="9" />
+                        <polyline points="12 7 12 12 15 14" />
+                      </svg>
+                      Set to now
+                    </button>
+                  </div>
                   <TimePickerField value={startTime} onChange={handleStartTimeChange} aria-label="Start time" />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-xs text-[var(--secondary-text)]">End time</span>
+                  {/* min-h-6: matches Start time's label+button row height, so this
+                      field's box starts at the same y position as Start's and Duration's. */}
+                  <div className="flex min-h-6 items-center">
+                    <span className="text-xs text-[var(--secondary-text)]">End time</span>
+                  </div>
                   <TimePickerField
                     value={endTime}
                     onChange={setEndTime}
@@ -350,7 +404,11 @@ export function MeetingScheduler() {
                   />
                 </div>
                 <div className="col-span-2 flex flex-col gap-1.5 @min-[480px]:col-span-1">
-                  <span className="text-xs text-[var(--secondary-text)]">Duration</span>
+                  {/* min-h-6: matches Start time's label+button row height, so this
+                      field's box starts at the same y position as Start's and End's. */}
+                  <div className="flex min-h-6 items-center">
+                    <span className="text-xs text-[var(--secondary-text)]">Duration</span>
+                  </div>
                   <TimeField
                     hourCycle={24}
                     isReadOnly
@@ -390,6 +448,9 @@ export function MeetingScheduler() {
                 </p>
               </div>
             )}
+            <div role="status" aria-live="polite" className="sr-only">
+              {setToNowAnnouncement}
+            </div>
           </div>
         </div>
 
