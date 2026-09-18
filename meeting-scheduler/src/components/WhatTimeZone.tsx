@@ -86,6 +86,16 @@ export function WhatTimeZone() {
     setSetToNowAnnouncement(`Start time set to ${value}`);
   };
 
+  // Carries this page's start time and added zones into MeetingScheduler, which reads
+  // these same two params (see MeetingScheduler.tsx) to pre-populate its own state
+  // instead of its usual London/09:00 defaults. Deliberately not the date: this page has
+  // no date picker, and MeetingScheduler already defaults to today on its own, so there's
+  // nothing to carry over there.
+  const continueHref = useMemo(() => {
+    const params = new URLSearchParams({ start: startTime, zones: zones.map((zone) => zone.id).join(",") });
+    return `/?${params.toString()}`;
+  }, [startTime, zones]);
+
   return (
     <div className="flex min-h-dvh flex-col">
       <main className="flex flex-1 justify-center px-6 pt-12 pb-6">
@@ -219,7 +229,7 @@ export function WhatTimeZone() {
                   theme — same reasoning as ErrorBoundary's "Reload page" button. */}
               {zones.length > 0 && (
                 <a
-                  href="/"
+                  href={continueHref}
                   className="inline-flex h-10 items-center justify-center gap-2 self-start rounded-md bg-[#0D3F9C] px-4 text-sm font-medium text-white hover:opacity-90 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
                 >
                   Continue to set up meeting invite

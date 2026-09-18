@@ -26,6 +26,7 @@ import {
   findOptimalStartHour,
   formatZoneTimesText,
   parseHourValue,
+  parseTimeInput,
   shiftTimeValue,
 } from "../lib/scheduling";
 import {
@@ -39,6 +40,25 @@ import {
 
 function toDateStr(date: CalendarDate): string {
   return `${date.year}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
+}
+
+/**
+ * Reads the "start"/"zones" query params a WhatTimeZone "Continue to set up meeting
+ * invite" link encodes (see WhatTimeZone.tsx's continueHref) — null for either one that's
+ * absent, unparseable, or (for zones) matches nothing in the current catalog, so callers
+ * fall back to this component's own defaults exactly as if the params weren't there.
+ * Deliberately doesn't read a date: WhatTimeZone has no date picker, and this component
+ * already defaults to today on its own, so there's nothing to hand off there.
+ */
+function readHandoffFromUrl(): { startTime: string | null; zones: TimeZoneCatalogEntry[] | null } {
+  const params = new URLSearchParams(window.location.search);
+  const startTime = parseTimeInput(params.get("start") ?? "");
+  const zonesParam = params.get("zones");
+  const zones = zonesParam
+    ?.split(",")
+    .map((id) => TIMEZONE_CATALOG.find((zone) => zone.id === id))
+    .filter((zone): zone is TimeZoneCatalogEntry => zone != null);
+  return { startTime, zones: zones && zones.length > 0 ? zones : null };
 }
 
 function matchesQuery(zone: TimeZoneCatalogEntry, query: string): boolean {
@@ -58,12 +78,14 @@ function matchesQuery(zone: TimeZoneCatalogEntry, query: string): boolean {
 
 export function MeetingScheduler() {
   const [zones, setZones] = useState<TimeZoneCatalogEntry[]>(() => {
+    const fromUrl = readHandoffFromUrl().zones;
+    if (fromUrl) return fromUrl;
     const uk = TIMEZONE_CATALOG.find((z) => z.id === DEFAULT_TIMEZONE_ID)!;
     return [uk];
   });
   const [selectedDate, setSelectedDate] = useState<CalendarDate>(() => today(getLocalTimeZone()));
-  const [startTime, setStartTime] = useState("09:00");
-  const [endTime, setEndTime] = useState("10:00");
+  const [startTime, setStartTime] = useState(() => readHandoffFromUrl().startTime ?? "09:00");
+  const [endTime, setEndTime] = useState(() => shiftTimeValue(readHandoffFromUrl().startTime ?? "09:00", 1));
   const [isDateOpen, setIsDateOpen] = useState(false);
   const [tzQuery, setTzQuery] = useState("");
   const [setToNowAnnouncement, setSetToNowAnnouncement] = useState("");

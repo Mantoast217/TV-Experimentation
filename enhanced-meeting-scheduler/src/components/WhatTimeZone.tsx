@@ -86,6 +86,17 @@ export function WhatTimeZone() {
     setSetToNowAnnouncement(`Start time set to ${value}`);
   };
 
+  // Carries this page's start time and added zones into the standalone Meeting
+  // Scheduler at the site root, which reads these same two params to pre-populate its
+  // own state instead of its usual 09:00 default (it has no default zone to override —
+  // see MeetingScheduler.tsx). Deliberately not the date: this page has no date picker,
+  // and MeetingScheduler already defaults to today on its own, so there's nothing to
+  // carry over there.
+  const continueHref = useMemo(() => {
+    const params = new URLSearchParams({ start: startTime, zones: zones.map((zone) => zone.id).join(",") });
+    return `/?${params.toString()}`;
+  }, [startTime, zones]);
+
   return (
     <div className="flex min-h-dvh flex-col">
       <main className="flex flex-1 justify-center px-6 pt-12 pb-6">
@@ -213,16 +224,17 @@ export function WhatTimeZone() {
                 Need to find a meeting time across different time zones?
               </h2>
               {/* Continuing to a meeting with no attendees yet isn't meaningful — same
-                  guard MeetingScheduler.tsx uses for its own invite button. href="/" (not
-                  a relative path): this always goes to the standalone Meeting Scheduler
-                  at the site root, matching this app's own footer's "Standalone Meeting
-                  Scheduler" link — not back into this app. bg-[#0D3F9C] is fixed (not
-                  theme-reactive): paired with fixed white text, that pairing's contrast
-                  (9.51:1) doesn't depend on the surrounding page theme — same reasoning
-                  as ErrorBoundary's "Reload page" button. */}
+                  guard MeetingScheduler.tsx uses for its own invite button. continueHref
+                  always points at the standalone Meeting Scheduler at the site root
+                  (matching this app's own footer's "Standalone Meeting Scheduler" link,
+                  not back into this app), carrying start time + zones as query params.
+                  bg-[#0D3F9C] is fixed (not theme-reactive): paired with fixed white
+                  text, that pairing's contrast (9.51:1) doesn't depend on the
+                  surrounding page theme — same reasoning as ErrorBoundary's "Reload
+                  page" button. */}
               {zones.length > 0 && (
                 <a
-                  href="/"
+                  href={continueHref}
                   className="inline-flex h-10 items-center justify-center gap-2 self-start rounded-md bg-[#0D3F9C] px-4 text-sm font-medium text-white hover:opacity-90 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
                 >
                   Continue to set up meeting invite
