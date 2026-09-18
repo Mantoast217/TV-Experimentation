@@ -530,6 +530,12 @@ export function MeetingScheduler() {
             Terms of Use
           </a>
           <a
+            href="what-time-zone.html"
+            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+          >
+            What time zone
+          </a>
+          <a
             href="https://forms.gle/ouHxxGzu4Sjz2Jdi7"
             target="_blank"
             rel="noopener noreferrer"

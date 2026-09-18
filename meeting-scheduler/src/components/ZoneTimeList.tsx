@@ -17,6 +17,21 @@ interface ZoneTimeListProps {
    * its invite button's colors.
    */
   qualityLabelClassName?: string;
+  /**
+   * Renders each slot as a single instant ("09:00") rather than a start–end range
+   * ("09:00 - 10:00") — for callers with no end time/duration (e.g. the "What time
+   * zone" page), where start and end are always identical and printing them both would
+   * just repeat the same time.
+   */
+  instantOnly?: boolean;
+  /**
+   * Lays slots out as wrapping tiles in a row (each its own bordered box) instead of one
+   * per line — for callers like the "What time zone" page where several short, equally-
+   * weighted entries read better side by side than stacked. Off by default: the vertical
+   * list is deliberately kept elsewhere (see the per-slot comment below) so a long city
+   * name or compound quality label can't force an awkward mid-row wrap.
+   */
+  tileLayout?: boolean;
 }
 
 /** A "+1"/"-1"-style pill marking a time as landing on a different day than the card's displayed date. */
@@ -36,7 +51,14 @@ function dayOffsetAnnouncement(offset: number): string {
   return offset > 0 ? `, ${offset} day${offset === 1 ? "" : "s"} later` : `, ${Math.abs(offset)} day${offset === -1 ? "" : "s"} earlier`;
 }
 
-export function ZoneTimeList({ slots, className, chipClassName, qualityLabelClassName }: ZoneTimeListProps) {
+export function ZoneTimeList({
+  slots,
+  className,
+  chipClassName,
+  qualityLabelClassName,
+  instantOnly,
+  tileLayout,
+}: ZoneTimeListProps) {
   if (slots.length === 0) {
     return <p className={className}>Add a timezone to see local times</p>;
   }
@@ -50,7 +72,11 @@ export function ZoneTimeList({ slots, className, chipClassName, qualityLabelClas
     // range stays frozen once the page has been translated). Opting this high-churn region
     // out of translation keeps it under React's control; the surrounding static copy
     // (headings, labels, footer) still translates normally.
-    <ul role="list" translate="no" className={`m-0 flex list-none flex-col gap-2 p-0 ${className ?? ""}`}>
+    <ul
+      role="list"
+      translate="no"
+      className={`m-0 flex list-none p-0 ${tileLayout ? "flex-row flex-wrap gap-2" : "flex-col gap-2"} ${className ?? ""}`}
+    >
       {slots.map((slot) => {
         const quality = classifyTimeQuality(slot.startHourRaw, slot.endHourRaw);
         const dotStyle =
@@ -62,16 +88,28 @@ export function ZoneTimeList({ slots, className, chipClassName, qualityLabelClas
         // the same "-1" is redundant; reserve the city-line badge for when the start
         // genuinely lands on a *different* day than the end (a long duration pushing only
         // the end further out), which is the one case where two distinct badges carry two
-        // distinct pieces of information.
-        const startNeedsOwnBadge = slot.dayOffset !== 0 && slot.dayOffset !== slot.endDayOffset;
+        // distinct pieces of information. In instantOnly mode there's no separate end to
+        // differ from, so this case can never apply — the single time-line badge below
+        // always carries the fact instead.
+        const startNeedsOwnBadge = !instantOnly && slot.dayOffset !== 0 && slot.dayOffset !== slot.endDayOffset;
 
         return (
-          // City, time range, and time-of-day label each get their own line (rather than
-          // packed onto one row) so a long city name or a compound label like "Afternoon -
-          // Evening" can't force an awkward mid-row wrap on a narrow phone — see
-          // MeetingScheduler.tsx's card-heading fix for the related, but distinct, bug
-          // where the invite button was narrowing this list's available width to begin with.
-          <li key={slot.zone.id} role="listitem" className="flex flex-col gap-0.5">
+          // City, time range, and time-of-day label each get their own line within a
+          // slot (rather than packed onto one row) so a long city name or a compound
+          // label like "Afternoon - Evening" can't force an awkward mid-row wrap on a
+          // narrow phone — see MeetingScheduler.tsx's card-heading fix for the related,
+          // but distinct, bug where the invite button was narrowing this list's
+          // available width to begin with. In tileLayout, each slot additionally gets a
+          // border and its own min-width so tiles wrap as a row instead of stacking.
+          <li
+            key={slot.zone.id}
+            role="listitem"
+            className={
+              tileLayout
+                ? "flex min-w-[140px] flex-1 flex-col gap-0.5 rounded-md border border-white/15 px-3 py-2"
+                : "flex flex-col gap-0.5"
+            }
+          >
             <span className="flex items-center gap-1.5">
               <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={dotStyle} />
               <span>
@@ -82,11 +120,23 @@ export function ZoneTimeList({ slots, className, chipClassName, qualityLabelClas
             </span>
             {/* pl-[14px]: aligns with the city text above (past the 8px dot + 6px gap), not the dot itself. */}
             <span className="flex flex-wrap items-center gap-1.5 pl-[14px]">
-              <span>
-                {slot.startText} - {slot.endText}
-                {slot.endDayOffset !== 0 && <span className="sr-only">{dayOffsetAnnouncement(slot.endDayOffset)}</span>}
-              </span>
-              {slot.endDayOffset !== 0 && <DayOffsetBadge offset={slot.endDayOffset} className={chipClassName} />}
+              {instantOnly ? (
+                <>
+                  <span>
+                    {slot.startText}
+                    {slot.dayOffset !== 0 && <span className="sr-only">{dayOffsetAnnouncement(slot.dayOffset)}</span>}
+                  </span>
+                  {slot.dayOffset !== 0 && <DayOffsetBadge offset={slot.dayOffset} className={chipClassName} />}
+                </>
+              ) : (
+                <>
+                  <span>
+                    {slot.startText} - {slot.endText}
+                    {slot.endDayOffset !== 0 && <span className="sr-only">{dayOffsetAnnouncement(slot.endDayOffset)}</span>}
+                  </span>
+                  {slot.endDayOffset !== 0 && <DayOffsetBadge offset={slot.endDayOffset} className={chipClassName} />}
+                </>
+              )}
             </span>
             <span className={`pl-[14px] ${qualityLabelClassName ?? "text-[var(--secondary-text)]"}`}>{quality.label}</span>
           </li>
