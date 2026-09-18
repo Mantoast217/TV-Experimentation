@@ -811,7 +811,7 @@ export function MeetingScheduler() {
             href="what-time-zone.html"
             className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
           >
-            What time zone
+            Time zone finder
           </a>
           <a
             href="https://forms.gle/ouHxxGzu4Sjz2Jdi7"

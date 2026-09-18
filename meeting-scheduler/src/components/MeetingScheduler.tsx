@@ -43,10 +43,11 @@ function toDateStr(date: CalendarDate): string {
 }
 
 /**
- * Reads the "start"/"zones" query params a WhatTimeZone "Continue to set up meeting
- * invite" link encodes (see WhatTimeZone.tsx's continueHref) — null for either one that's
- * absent, unparseable, or (for zones) matches nothing in the current catalog, so callers
- * fall back to this component's own defaults exactly as if the params weren't there.
+ * Reads the "start"/"zones" query params a WhatTimeZone (Time zone finder) "Continue to
+ * set up a meeting invite" link encodes (see WhatTimeZone.tsx's continueHref) — null for
+ * either one that's absent, unparseable, or (for zones) matches nothing in the current
+ * catalog, so callers fall back to this component's own defaults exactly as if the params
+ * weren't there.
  * Deliberately doesn't read a date: WhatTimeZone has no date picker, and this component
  * already defaults to today on its own, so there's nothing to hand off there.
  */
@@ -616,7 +617,7 @@ export function MeetingScheduler() {
             href="what-time-zone.html"
             className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
           >
-            What time zone
+            Time zone finder
           </a>
           <a
             href="https://forms.gle/ouHxxGzu4Sjz2Jdi7"

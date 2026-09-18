@@ -108,7 +108,7 @@ export function WhatTimeZone() {
             >
               ← Back to Enhanced Meeting Scheduler
             </a>
-            <h1 className="m-0 text-xl font-medium text-foreground">What time zone</h1>
+            <h1 className="m-0 text-xl font-medium text-foreground">Time zone finder</h1>
           </div>
 
           {/* Every function of this page lives in one card — search, the start-time
@@ -160,20 +160,14 @@ export function WhatTimeZone() {
             <Separator />
 
             <div className="flex flex-col gap-3">
-              <h2 className="m-0 text-base font-medium text-foreground">Time</h2>
+              <h2 className="m-0 text-base font-medium text-foreground">Set a time</h2>
               <div className="flex max-w-[220px] flex-col gap-1.5">
-                {/* items-center (not items-baseline): the button is itself a flex
-                    container, and a flex container's baseline is computed from its
-                    align-items-centered content rather than plain text metrics — with
-                    items-baseline that put the button's text a few pixels off from the
-                    label's true text baseline. Centering the row instead lines up both
-                    visually regardless of the button's taller (min-h-6) hit-area box. */}
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs text-[var(--secondary-text)]">Start time</span>
+                {/* No visible "Start time" label — TimePickerField's aria-label below
+                    still names the field for assistive tech; the heading above already
+                    says what this section is for. */}
+                <div className="flex items-center gap-2">
                   {/* min-h-6 (24px, WCAG 2.5.8): matches every other small button in this
-                      app's own floor — see MeetingScheduler.tsx's chip/trigger buttons.
-                      font-normal (not font-medium): matches the "Start time" label's own
-                      weight exactly, so the two read as the same size at a glance. */}
+                      app's own floor — see MeetingScheduler.tsx's chip/trigger buttons. */}
                   <button
                     type="button"
                     onClick={setStartTimeToNow}
@@ -237,7 +231,7 @@ export function WhatTimeZone() {
                   href={continueHref}
                   className="inline-flex h-10 items-center justify-center gap-2 self-start rounded-md bg-[#0D3F9C] px-4 text-sm font-medium text-white hover:opacity-90 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
                 >
-                  Continue to set up meeting invite
+                  Continue to set up a meeting invite
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"

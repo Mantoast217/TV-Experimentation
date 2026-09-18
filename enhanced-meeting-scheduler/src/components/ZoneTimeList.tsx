@@ -31,7 +31,7 @@ interface ZoneTimeListProps {
   instantOnly?: boolean;
   /**
    * Lays slots out as wrapping tiles in a row (each its own bordered box) instead of one
-   * per line — for callers like the "What time zone" page where several short, equally-
+   * per line — for callers like the "Time zone finder" page where several short, equally-
    * weighted entries read better side by side than stacked. Off by default: the vertical
    * list is deliberately kept elsewhere (see the per-slot comment below) so a long
    * participant name or compound quality label can't force an awkward mid-row wrap.
