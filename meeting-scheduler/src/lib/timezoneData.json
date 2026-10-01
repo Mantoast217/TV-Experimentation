@@ -1,8 +1,17 @@
 [
   {
+    "id": "ng-aba-2353151",
+    "city": "Aba",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "timezone": "Africa/Lagos",
+    "population": 1160000,
+    "stdAbbreviation": "WAT"
+  },
+  {
     "id": "ci-abidjan-2293538",
     "city": "Abidjan",
-    "country": "Côte d’Ivoire",
+    "country": "Ivory Coast",
     "countryCode": "CI",
     "timezone": "Africa/Abidjan",
     "population": 6321017,
@@ -11,7 +20,7 @@
   {
     "id": "ci-abobo-2293521",
     "city": "Abobo",
-    "country": "Côte d’Ivoire",
+    "country": "Ivory Coast",
     "countryCode": "CI",
     "timezone": "Africa/Abidjan",
     "population": 1340083,
@@ -23,7 +32,7 @@
     "country": "United Arab Emirates",
     "countryCode": "AE",
     "timezone": "Asia/Dubai",
-    "population": 603492
+    "population": 1807000
   },
   {
     "id": "ng-abuja-2352778",
@@ -31,7 +40,7 @@
     "country": "Nigeria",
     "countryCode": "NG",
     "timezone": "Africa/Lagos",
-    "population": 1235880,
+    "population": 2690000,
     "stdAbbreviation": "WAT"
   },
   {
@@ -55,7 +64,7 @@
   {
     "id": "pn-adamstown-4030723",
     "city": "Adamstown",
-    "country": "Pitcairn Islands",
+    "country": "Pitcairn",
     "countryCode": "PN",
     "timezone": "Pacific/Pitcairn",
     "population": 46
@@ -63,10 +72,10 @@
   {
     "id": "tr-adana-325363",
     "city": "Adana",
-    "country": "Türkiye",
+    "country": "Turkey",
     "countryCode": "TR",
     "timezone": "Europe/Istanbul",
-    "population": 1779463
+    "population": 1816750
   },
   {
     "id": "et-addis-ababa-344979",
@@ -74,7 +83,7 @@
     "country": "Ethiopia",
     "countryCode": "ET",
     "timezone": "Africa/Addis_Ababa",
-    "population": 2757729,
+    "population": 3860000,
     "stdAbbreviation": "EAT"
   },
   {
@@ -83,9 +92,17 @@
     "country": "Australia",
     "countryCode": "AU",
     "timezone": "Australia/Adelaide",
-    "population": 1387290,
+    "population": 1469163,
     "stdAbbreviation": "ACST",
     "dstAbbreviation": "ACDT"
+  },
+  {
+    "id": "ye-aden-415189",
+    "city": "Aden",
+    "country": "Yemen",
+    "countryCode": "YE",
+    "timezone": "Asia/Aden",
+    "population": 1079670
   },
   {
     "id": "in-agra-1279259",
@@ -106,14 +123,6 @@
     "stdAbbreviation": "IST"
   },
   {
-    "id": "iq-al-basrah-al-qadimah-388349",
-    "city": "Al Başrah al Qadīmah",
-    "country": "Iraq",
-    "countryCode": "IQ",
-    "timezone": "Asia/Baghdad",
-    "population": 2015483
-  },
-  {
     "id": "iq-al-mawsil-al-jadidah-99071",
     "city": "Al Mawşil al Jadīdah",
     "country": "Iraq",
@@ -127,7 +136,7 @@
     "country": "Syria",
     "countryCode": "SY",
     "timezone": "Asia/Damascus",
-    "population": 1602264
+    "population": 2098210
   },
   {
     "id": "eg-alexandria-361058",
@@ -145,17 +154,8 @@
     "country": "Algeria",
     "countryCode": "DZ",
     "timezone": "Africa/Algiers",
-    "population": 1977663,
+    "population": 2364230,
     "stdAbbreviation": "CET"
-  },
-  {
-    "id": "in-allahabad-1278994",
-    "city": "Allahābād",
-    "country": "India",
-    "countryCode": "IN",
-    "timezone": "Asia/Kolkata",
-    "population": 1073438,
-    "stdAbbreviation": "IST"
   },
   {
     "id": "kz-almaty-1526384",
@@ -187,13 +187,13 @@
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 1092450,
+    "population": 1159227,
     "stdAbbreviation": "IST"
   },
   {
     "id": "nl-amsterdam-2759794",
     "city": "Amsterdam",
-    "country": "Netherlands",
+    "country": "The Netherlands",
     "countryCode": "NL",
     "timezone": "Europe/Amsterdam",
     "population": 741636,
@@ -229,7 +229,7 @@
   {
     "id": "tr-ankara-323786",
     "city": "Ankara",
-    "country": "Türkiye",
+    "country": "Turkey",
     "countryCode": "TR",
     "timezone": "Europe/Istanbul",
     "population": 3517182
@@ -240,16 +240,16 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 1450000,
+    "population": 3325372,
     "stdAbbreviation": "CST"
   },
   {
     "id": "tr-antalya-323777",
     "city": "Antalya",
-    "country": "Türkiye",
+    "country": "Turkey",
     "countryCode": "TR",
     "timezone": "Europe/Istanbul",
-    "population": 1344000
+    "population": 1335002
   },
   {
     "id": "mg-antananarivo-1070940",
@@ -257,7 +257,7 @@
     "country": "Madagascar",
     "countryCode": "MG",
     "timezone": "Indian/Antananarivo",
-    "population": 1391433,
+    "population": 1349501,
     "stdAbbreviation": "EAT"
   },
   {
@@ -304,7 +304,7 @@
     "country": "Peru",
     "countryCode": "PE",
     "timezone": "America/Lima",
-    "population": 1008290
+    "population": 1195700
   },
   {
     "id": "tm-ashgabat-162183",
@@ -312,7 +312,7 @@
     "country": "Turkmenistan",
     "countryCode": "TM",
     "timezone": "Asia/Ashgabat",
-    "population": 727700
+    "population": 1030063
   },
   {
     "id": "er-asmara-343300",
@@ -329,7 +329,7 @@
     "country": "Kazakhstan",
     "countryCode": "KZ",
     "timezone": "Asia/Almaty",
-    "population": 345604
+    "population": 1544142
   },
   {
     "id": "ru-astrakhan-zone",
@@ -374,12 +374,12 @@
     "timezone": "Asia/Atyrau"
   },
   {
-    "id": "nz-auckland-notable",
+    "id": "nz-auckland-2193733",
     "city": "Auckland",
     "country": "New Zealand",
     "countryCode": "NZ",
     "timezone": "Pacific/Auckland",
-    "population": 417910,
+    "population": 1547200,
     "stdAbbreviation": "NZST",
     "dstAbbreviation": "NZDT"
   },
@@ -389,7 +389,7 @@
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 1016441,
+    "population": 1175116,
     "stdAbbreviation": "IST"
   },
   {
@@ -429,7 +429,7 @@
     "country": "Azerbaijan",
     "countryCode": "AZ",
     "timezone": "Asia/Baku",
-    "population": 1116513
+    "population": 2351300
   },
   {
     "id": "ml-bamako-2460596",
@@ -437,7 +437,7 @@
     "country": "Mali",
     "countryCode": "ML",
     "timezone": "Africa/Bamako",
-    "population": 1297281,
+    "population": 4227569,
     "stdAbbreviation": "GMT"
   },
   {
@@ -463,7 +463,7 @@
     "country": "Indonesia",
     "countryCode": "ID",
     "timezone": "Asia/Jakarta",
-    "population": 2444160,
+    "population": 2528163,
     "stdAbbreviation": "WIB"
   },
   {
@@ -480,7 +480,7 @@
     "country": "Central African Republic",
     "countryCode": "CF",
     "timezone": "Africa/Bangui",
-    "population": 542393,
+    "population": 812407,
     "stdAbbreviation": "WAT"
   },
   {
@@ -489,8 +489,26 @@
     "country": "Gambia",
     "countryCode": "GM",
     "timezone": "Africa/Banjul",
-    "population": 34589,
+    "population": 37274,
     "stdAbbreviation": "GMT"
+  },
+  {
+    "id": "pk-bannu-1183460",
+    "city": "Bannu",
+    "country": "Pakistan",
+    "countryCode": "PK",
+    "timezone": "Asia/Karachi",
+    "population": 1357890,
+    "stdAbbreviation": "PKT"
+  },
+  {
+    "id": "cn-bao-an-13308620",
+    "city": "Bao'an",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 4476554,
+    "stdAbbreviation": "CST"
   },
   {
     "id": "cn-baoding-1816971",
@@ -511,12 +529,21 @@
     "stdAbbreviation": "CST"
   },
   {
+    "id": "cn-baoshan-1816917",
+    "city": "Baoshan",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 2265900,
+    "stdAbbreviation": "CST"
+  },
+  {
     "id": "cn-baotou-2038432",
     "city": "Baotou",
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 2150000,
+    "population": 2761700,
     "stdAbbreviation": "CST"
   },
   {
@@ -525,7 +552,7 @@
     "country": "Spain",
     "countryCode": "ES",
     "timezone": "Europe/Madrid",
-    "population": 1620343,
+    "population": 1686208,
     "stdAbbreviation": "CET",
     "dstAbbreviation": "CEST"
   },
@@ -572,7 +599,7 @@
   {
     "id": "kn-basseterre-3575551",
     "city": "Basseterre",
-    "country": "St. Kitts & Nevis",
+    "country": "Saint Kitts and Nevis",
     "countryCode": "KN",
     "timezone": "America/St_Kitts",
     "population": 12920,
@@ -584,7 +611,7 @@
     "country": "Indonesia",
     "countryCode": "ID",
     "timezone": "Asia/Jakarta",
-    "population": 1164352,
+    "population": 1296960,
     "stdAbbreviation": "WIB"
   },
   {
@@ -594,6 +621,15 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 1760000,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "cn-bazhong-11995100",
+    "city": "Bazhong",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 2712894,
     "stdAbbreviation": "CST"
   },
   {
@@ -621,7 +657,7 @@
     "country": "Indonesia",
     "countryCode": "ID",
     "timezone": "Asia/Jakarta",
-    "population": 2564940,
+    "population": 2648272,
     "stdAbbreviation": "WIB"
   },
   {
@@ -665,7 +701,7 @@
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 8443675,
+    "population": 8495492,
     "stdAbbreviation": "IST"
   },
   {
@@ -708,12 +744,20 @@
   },
   {
     "id": "in-bhopal-1275841",
-    "city": "Bhopāl",
+    "city": "Bhopal",
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 1599914,
+    "population": 1798218,
     "stdAbbreviation": "IST"
+  },
+  {
+    "id": "vn-bien-hoa-1587923",
+    "city": "Biên Hòa",
+    "country": "Vietnam",
+    "countryCode": "VN",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "population": 1272235
   },
   {
     "id": "cn-bijie-1816373",
@@ -730,7 +774,7 @@
     "country": "United Kingdom",
     "countryCode": "GB",
     "timezone": "Europe/London",
-    "population": 1144919,
+    "population": 1157603,
     "stdAbbreviation": "GMT",
     "dstAbbreviation": "BST"
   },
@@ -748,7 +792,7 @@
     "country": "Guinea-Bissau",
     "countryCode": "GW",
     "timezone": "Africa/Bissau",
-    "population": 388028,
+    "population": 439704,
     "stdAbbreviation": "GMT"
   },
   {
@@ -764,7 +808,7 @@
     "country": "Indonesia",
     "countryCode": "ID",
     "timezone": "Asia/Jakarta",
-    "population": 1099422,
+    "population": 1078351,
     "stdAbbreviation": "WIB"
   },
   {
@@ -831,10 +875,10 @@
   {
     "id": "cg-brazzaville-2260535",
     "city": "Brazzaville",
-    "country": "Congo - Brazzaville",
+    "country": "Republic of the Congo",
     "countryCode": "CG",
     "timezone": "Africa/Brazzaville",
-    "population": 1284609,
+    "population": 1982000,
     "stdAbbreviation": "WAT"
   },
   {
@@ -852,7 +896,7 @@
     "country": "Australia",
     "countryCode": "AU",
     "timezone": "Australia/Brisbane",
-    "population": 2582007,
+    "population": 2780063,
     "stdAbbreviation": "AEST"
   },
   {
@@ -932,27 +976,9 @@
     "population": 2891082
   },
   {
-    "id": "bi-bujumbura-425378",
-    "city": "Bujumbura",
-    "country": "Burundi",
-    "countryCode": "BI",
-    "timezone": "Africa/Bujumbura",
-    "population": 1000000,
-    "stdAbbreviation": "CAT"
-  },
-  {
-    "id": "zw-bulawayo-894701",
-    "city": "Bulawayo",
-    "country": "Zimbabwe",
-    "countryCode": "ZW",
-    "timezone": "Africa/Harare",
-    "population": 1200337,
-    "stdAbbreviation": "CAT"
-  },
-  {
     "id": "tr-bursa-750269",
     "city": "Bursa",
-    "country": "Türkiye",
+    "country": "Turkey",
     "countryCode": "TR",
     "timezone": "Europe/Istanbul",
     "population": 3101833
@@ -963,7 +989,7 @@
     "country": "South Korea",
     "countryCode": "KR",
     "timezone": "Asia/Seoul",
-    "population": 3678555,
+    "population": 3285147,
     "stdAbbreviation": "KST"
   },
   {
@@ -982,9 +1008,8 @@
     "country": "Canada",
     "countryCode": "CA",
     "timezone": "America/Edmonton",
-    "population": 1019942,
-    "stdAbbreviation": "MST",
-    "dstAbbreviation": "MDT"
+    "population": 1306784,
+    "stdAbbreviation": "CST"
   },
   {
     "id": "co-cali-3687925",
@@ -1000,15 +1025,15 @@
     "country": "Peru",
     "countryCode": "PE",
     "timezone": "America/Lima",
-    "population": 1300000
+    "population": 1226200
   },
   {
-    "id": "ph-caloocan-city-1720151",
-    "city": "Caloocan City",
+    "id": "ph-caloocan-1720151",
+    "city": "Caloocan",
     "country": "Philippines",
     "countryCode": "PH",
     "timezone": "Asia/Manila",
-    "population": 1500000,
+    "population": 1712945,
     "stdAbbreviation": "PST"
   },
   {
@@ -1045,6 +1070,14 @@
     "timezone": "America/Campo_Grande"
   },
   {
+    "id": "vn-can-tho-1586203",
+    "city": "Cần Thơ",
+    "country": "Vietnam",
+    "countryCode": "VN",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "population": 1507187
+  },
+  {
     "id": "es-canary-zone",
     "city": "Canary",
     "country": "Spain",
@@ -1077,7 +1110,7 @@
     "country": "South Africa",
     "countryCode": "ZA",
     "timezone": "Africa/Johannesburg",
-    "population": 4710000,
+    "population": 4772846,
     "stdAbbreviation": "SAST"
   },
   {
@@ -1094,7 +1127,7 @@
     "country": "Morocco",
     "countryCode": "MA",
     "timezone": "Africa/Casablanca",
-    "population": 3144909
+    "population": 3665954
   },
   {
     "id": "aq-casey-zone",
@@ -1106,7 +1139,7 @@
   {
     "id": "lc-castries-3576812",
     "city": "Castries",
-    "country": "St. Lucia",
+    "country": "Saint Lucia",
     "countryCode": "LC",
     "timezone": "America/St_Lucia",
     "population": 20000,
@@ -1158,7 +1191,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 4714996,
+    "population": 5691024,
     "stdAbbreviation": "CST"
   },
   {
@@ -1187,6 +1220,15 @@
     "timezone": "Asia/Shanghai",
     "population": 1677050,
     "stdAbbreviation": "CST"
+  },
+  {
+    "id": "kr-changwon-1846326",
+    "city": "Changwon",
+    "country": "South Korea",
+    "countryCode": "KR",
+    "timezone": "Asia/Seoul",
+    "population": 1025702,
+    "stdAbbreviation": "KST"
   },
   {
     "id": "cn-changzhi-1808956",
@@ -1253,7 +1295,16 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 13568357,
+    "population": 20937757,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "cn-chengtangcun-1793036",
+    "city": "Chengtangcun",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1756300,
     "stdAbbreviation": "CST"
   },
   {
@@ -1279,7 +1330,7 @@
     "country": "United States",
     "countryCode": "US",
     "timezone": "America/Chicago",
-    "population": 2696555,
+    "population": 2664452,
     "stdAbbreviation": "CST",
     "dstAbbreviation": "CDT"
   },
@@ -1314,8 +1365,17 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 7457599,
+    "population": 22000000,
     "stdAbbreviation": "CST"
+  },
+  {
+    "id": "gq-ciudad-de-la-paz-12226438",
+    "city": "Ciudad de la Paz",
+    "country": "Equatorial Guinea",
+    "countryCode": "GQ",
+    "timezone": "Africa/Malabo",
+    "population": 2000,
+    "stdAbbreviation": "WAT"
   },
   {
     "id": "mx-ciudad-juarez-4013708",
@@ -1323,7 +1383,7 @@
     "country": "Mexico",
     "countryCode": "MX",
     "timezone": "America/Ciudad_Juarez",
-    "population": 1501551,
+    "population": 1512450,
     "stdAbbreviation": "MST",
     "dstAbbreviation": "MDT"
   },
@@ -1333,7 +1393,7 @@
     "country": "Mexico",
     "countryCode": "MX",
     "timezone": "America/Mexico_City",
-    "population": 1104585,
+    "population": 1077208,
     "stdAbbreviation": "CST"
   },
   {
@@ -1348,7 +1408,7 @@
   {
     "id": "tc-cockburn-town-3576994",
     "city": "Cockburn Town",
-    "country": "Turks & Caicos Islands",
+    "country": "Turks and Caicos Islands",
     "countryCode": "TC",
     "timezone": "America/Grand_Turk",
     "population": 3720,
@@ -1383,20 +1443,12 @@
     "population": 648034
   },
   {
-    "id": "bd-comilla-1185186",
-    "city": "Comilla",
-    "country": "Bangladesh",
-    "countryCode": "BD",
-    "timezone": "Asia/Dhaka",
-    "population": 1030000
-  },
-  {
     "id": "gn-conakry-2422465",
     "city": "Conakry",
     "country": "Guinea",
     "countryCode": "GN",
     "timezone": "Africa/Conakry",
-    "population": 1767200,
+    "population": 1928389,
     "stdAbbreviation": "GMT"
   },
   {
@@ -1415,7 +1467,7 @@
     "country": "Argentina",
     "countryCode": "AR",
     "timezone": "America/Argentina/Cordoba",
-    "population": 1317298
+    "population": 2106734
   },
   {
     "id": "cl-coyhaique-zone",
@@ -1448,12 +1500,20 @@
     "population": 428450
   },
   {
+    "id": "vn-da-nang-1583992",
+    "city": "Da Nang",
+    "country": "Vietnam",
+    "countryCode": "VN",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "population": 1276000
+  },
+  {
     "id": "kr-daegu-1835329",
     "city": "Daegu",
     "country": "South Korea",
     "countryCode": "KR",
     "timezone": "Asia/Seoul",
-    "population": 2566540,
+    "population": 2365523,
     "stdAbbreviation": "KST"
   },
   {
@@ -1462,7 +1522,7 @@
     "country": "South Korea",
     "countryCode": "KR",
     "timezone": "Asia/Seoul",
-    "population": 1469543,
+    "population": 1441203,
     "stdAbbreviation": "KST"
   },
   {
@@ -1471,7 +1531,7 @@
     "country": "Senegal",
     "countryCode": "SN",
     "timezone": "Africa/Dakar",
-    "population": 2476400,
+    "population": 2646503,
     "stdAbbreviation": "GMT"
   },
   {
@@ -1480,7 +1540,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 4913879,
+    "population": 7450785,
     "stdAbbreviation": "CST"
   },
   {
@@ -1489,7 +1549,7 @@
     "country": "United States",
     "countryCode": "US",
     "timezone": "America/Chicago",
-    "population": 1300092,
+    "population": 1326087,
     "stdAbbreviation": "CST",
     "dstAbbreviation": "CDT"
   },
@@ -1549,7 +1609,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 1850000,
+    "population": 3105591,
     "stdAbbreviation": "CST"
   },
   {
@@ -1558,7 +1618,7 @@
     "country": "Philippines",
     "countryCode": "PH",
     "timezone": "Asia/Manila",
-    "population": 1776949,
+    "population": 1848947,
     "stdAbbreviation": "PST"
   },
   {
@@ -1599,7 +1659,7 @@
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 10927986,
+    "population": 11034555,
     "stdAbbreviation": "IST"
   },
   {
@@ -1626,7 +1686,7 @@
     "country": "Indonesia",
     "countryCode": "ID",
     "timezone": "Asia/Jakarta",
-    "population": 2056400,
+    "population": 2163635,
     "stdAbbreviation": "WIB"
   },
   {
@@ -1658,10 +1718,18 @@
   {
     "id": "tl-dili-1645457",
     "city": "Dili",
-    "country": "Timor-Leste",
+    "country": "Timor Leste",
     "countryCode": "TL",
     "timezone": "Asia/Dili",
     "population": 150000
+  },
+  {
+    "id": "tr-diyarbak-r-316541",
+    "city": "Diyarbakır",
+    "country": "Turkey",
+    "countryCode": "TR",
+    "timezone": "Europe/Istanbul",
+    "population": 1833684
   },
   {
     "id": "dj-djibouti-223817",
@@ -1669,7 +1737,7 @@
     "country": "Djibouti",
     "countryCode": "DJ",
     "timezone": "Africa/Djibouti",
-    "population": 623891,
+    "population": 626512,
     "stdAbbreviation": "EAT"
   },
   {
@@ -1678,7 +1746,7 @@
     "country": "Tanzania",
     "countryCode": "TZ",
     "timezone": "Africa/Dar_es_Salaam",
-    "population": 180541,
+    "population": 765179,
     "stdAbbreviation": "EAT"
   },
   {
@@ -1690,12 +1758,12 @@
     "population": 344939
   },
   {
-    "id": "in-dombivli-1272423",
-    "city": "Dombivli",
+    "id": "in-dombivali-1272423",
+    "city": "Dombivali",
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 1193000,
+    "population": 1247327,
     "stdAbbreviation": "IST"
   },
   {
@@ -1732,7 +1800,7 @@
     "country": "United Arab Emirates",
     "countryCode": "AE",
     "timezone": "Asia/Dubai",
-    "population": 3478300
+    "population": 3790000
   },
   {
     "id": "ie-dublin-2964574",
@@ -1750,7 +1818,7 @@
     "country": "South Africa",
     "countryCode": "ZA",
     "timezone": "Africa/Johannesburg",
-    "population": 3120282,
+    "population": 3338026,
     "stdAbbreviation": "SAST"
   },
   {
@@ -1794,8 +1862,7 @@
     "countryCode": "CA",
     "timezone": "America/Edmonton",
     "population": 1010899,
-    "stdAbbreviation": "MST",
-    "dstAbbreviation": "MDT"
+    "stdAbbreviation": "CST"
   },
   {
     "id": "br-eirunepe-zone",
@@ -1832,7 +1899,7 @@
     "country": "Pakistan",
     "countryCode": "PK",
     "timezone": "Asia/Karachi",
-    "population": 2506595,
+    "population": 3800193,
     "stdAbbreviation": "PKT"
   },
   {
@@ -1857,8 +1924,25 @@
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 1220229,
+    "population": 1414050,
     "stdAbbreviation": "IST"
+  },
+  {
+    "id": "cn-fengxiang-13608002",
+    "city": "Fengxiang",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1140872,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "ma-fes-2548885",
+    "city": "Fes",
+    "country": "Morocco",
+    "countryCode": "MA",
+    "timezone": "Africa/Casablanca",
+    "population": 1191905
   },
   {
     "id": "it-florence-notable",
@@ -1876,7 +1960,7 @@
     "country": "Christmas Island",
     "countryCode": "CX",
     "timezone": "Indian/Christmas",
-    "population": 500
+    "population": 1355
   },
   {
     "id": "ca-fort-nelson-zone",
@@ -1885,6 +1969,16 @@
     "countryCode": "CA",
     "timezone": "America/Fort_Nelson",
     "stdAbbreviation": "MST"
+  },
+  {
+    "id": "us-fort-worth-4691930",
+    "city": "Fort Worth",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/Chicago",
+    "population": 1008106,
+    "stdAbbreviation": "CST",
+    "dstAbbreviation": "CDT"
   },
   {
     "id": "mq-fort-de-france-3570675",
@@ -1937,7 +2031,7 @@
     "country": "Japan",
     "countryCode": "JP",
     "timezone": "Asia/Tokyo",
-    "population": 1603543,
+    "population": 1612392,
     "stdAbbreviation": "JST"
   },
   {
@@ -1946,7 +2040,7 @@
     "country": "Tuvalu",
     "countryCode": "TV",
     "timezone": "Pacific/Funafuti",
-    "population": 4492
+    "population": 6320
   },
   {
     "id": "cn-fushun-2037355",
@@ -1981,7 +2075,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 3740000,
+    "population": 4094491,
     "stdAbbreviation": "CST"
   },
   {
@@ -1990,7 +2084,7 @@
     "country": "Botswana",
     "countryCode": "BW",
     "timezone": "Africa/Gaborone",
-    "population": 208411,
+    "population": 246325,
     "stdAbbreviation": "CAT"
   },
   {
@@ -2028,10 +2122,18 @@
   {
     "id": "tr-gaziantep-314830",
     "city": "Gaziantep",
-    "country": "Türkiye",
+    "country": "Turkey",
     "countryCode": "TR",
     "timezone": "Europe/Istanbul",
-    "population": 1808948
+    "population": 2222415
+  },
+  {
+    "id": "bd-gazipur-1200109",
+    "city": "Gazipur",
+    "country": "Bangladesh",
+    "countryCode": "BD",
+    "timezone": "Asia/Dhaka",
+    "population": 2674697
   },
   {
     "id": "ch-geneva-notable",
@@ -2085,7 +2187,7 @@
     "country": "Burundi",
     "countryCode": "BI",
     "timezone": "Africa/Bujumbura",
-    "population": 41000,
+    "population": 64904,
     "stdAbbreviation": "CAT"
   },
   {
@@ -2125,27 +2227,27 @@
     "dstAbbreviation": "ADT"
   },
   {
-    "id": "in-gorakhpur-1270926",
-    "city": "Gorakhpur",
-    "country": "India",
-    "countryCode": "IN",
-    "timezone": "Asia/Kolkata",
-    "population": 1324570,
-    "stdAbbreviation": "IST"
-  },
-  {
     "id": "kr-goyang-si-1842485",
     "city": "Goyang-si",
     "country": "South Korea",
     "countryCode": "KR",
     "timezone": "Asia/Seoul",
-    "population": 1073069,
+    "population": 1061752,
     "stdAbbreviation": "KST"
+  },
+  {
+    "id": "za-gqeberha-964420",
+    "city": "Gqeberha",
+    "country": "South Africa",
+    "countryCode": "ZA",
+    "timezone": "Africa/Johannesburg",
+    "population": 1050078,
+    "stdAbbreviation": "SAST"
   },
   {
     "id": "gs-grytviken-3426466",
     "city": "Grytviken",
-    "country": "South Georgia & South Sandwich Islands",
+    "country": "South Georgia and the South Sandwich Islands",
     "countryCode": "GS",
     "timezone": "Atlantic/South_Georgia",
     "population": 2
@@ -2165,7 +2267,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 16096724,
+    "population": 18676605,
     "stdAbbreviation": "CST"
   },
   {
@@ -2183,7 +2285,7 @@
     "country": "Brazil",
     "countryCode": "BR",
     "timezone": "America/Sao_Paulo",
-    "population": 1169577
+    "population": 1345364
   },
   {
     "id": "gt-guatemala-city-3598132",
@@ -2226,7 +2328,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 3037159,
+    "population": 4506134,
     "stdAbbreviation": "CST"
   },
   {
@@ -2235,13 +2337,13 @@
     "country": "Pakistan",
     "countryCode": "PK",
     "timezone": "Asia/Karachi",
-    "population": 1384471,
+    "population": 2511118,
     "stdAbbreviation": "PKT"
   },
   {
     "id": "bl-gustavia-3579132",
     "city": "Gustavia",
-    "country": "St. Barthélemy",
+    "country": "Saint Barthelemy",
     "countryCode": "BL",
     "timezone": "America/St_Barthelemy",
     "population": 5988,
@@ -2257,12 +2359,21 @@
     "stdAbbreviation": "CST"
   },
   {
+    "id": "in-gwalior-1270583",
+    "city": "Gwalior",
+    "country": "India",
+    "countryCode": "IN",
+    "timezone": "Asia/Kolkata",
+    "population": 1054420,
+    "stdAbbreviation": "IST"
+  },
+  {
     "id": "kr-gwangju-1841811",
     "city": "Gwangju",
     "country": "South Korea",
     "countryCode": "KR",
     "timezone": "Asia/Seoul",
-    "population": 1490092,
+    "population": 1401235,
     "stdAbbreviation": "KST"
   },
   {
@@ -2280,8 +2391,16 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 2873358,
+    "population": 3001600,
     "stdAbbreviation": "CST"
+  },
+  {
+    "id": "vn-haiphong-1581298",
+    "city": "Haiphong",
+    "country": "Vietnam",
+    "countryCode": "VN",
+    "timezone": "Asia/Bangkok",
+    "population": 2625200
   },
   {
     "id": "ca-halifax-zone",
@@ -2298,7 +2417,7 @@
     "country": "Germany",
     "countryCode": "DE",
     "timezone": "Europe/Berlin",
-    "population": 1845229,
+    "population": 1973896,
     "stdAbbreviation": "CET",
     "dstAbbreviation": "CEST"
   },
@@ -2327,7 +2446,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 9236032,
+    "population": 11936010,
     "stdAbbreviation": "CST"
   },
   {
@@ -2348,15 +2467,6 @@
     "stdAbbreviation": "CST"
   },
   {
-    "id": "in-haora-1270396",
-    "city": "Hāora",
-    "country": "India",
-    "countryCode": "IN",
-    "timezone": "Asia/Kolkata",
-    "population": 1027672,
-    "stdAbbreviation": "IST"
-  },
-  {
     "id": "zw-harare-890299",
     "city": "Harare",
     "country": "Zimbabwe",
@@ -2371,7 +2481,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 5242897,
+    "population": 10009854,
     "stdAbbreviation": "CST"
   },
   {
@@ -2399,7 +2509,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 5050000,
+    "population": 9465881,
     "stdAbbreviation": "CST"
   },
   {
@@ -2430,6 +2540,15 @@
     "stdAbbreviation": "MST"
   },
   {
+    "id": "cn-heshan-1808316",
+    "city": "Heshan",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1249807,
+    "stdAbbreviation": "CST"
+  },
+  {
     "id": "cn-heze-1808198",
     "city": "Heze",
     "country": "China",
@@ -2453,7 +2572,7 @@
     "country": "Japan",
     "countryCode": "JP",
     "timezone": "Asia/Tokyo",
-    "population": 1199391,
+    "population": 1200754,
     "stdAbbreviation": "JST"
   },
   {
@@ -2462,7 +2581,7 @@
     "country": "Vietnam",
     "countryCode": "VN",
     "timezone": "Asia/Ho_Chi_Minh",
-    "population": 8993082
+    "population": 14002598
   },
   {
     "id": "au-hobart-zone",
@@ -2479,16 +2598,25 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 2350000,
+    "population": 3446100,
     "stdAbbreviation": "CST"
   },
   {
     "id": "hk-hong-kong-1819729",
     "city": "Hong Kong",
-    "country": "Hong Kong SAR China",
+    "country": "Hong Kong",
     "countryCode": "HK",
     "timezone": "Asia/Hong_Kong",
-    "population": 7482500,
+    "population": 7396076,
+    "stdAbbreviation": "HKT"
+  },
+  {
+    "id": "hk-hong-kong-island-12747064",
+    "city": "Hong Kong Island",
+    "country": "Hong Kong",
+    "countryCode": "HK",
+    "timezone": "Asia/Hong_Kong",
+    "population": 1195529,
     "stdAbbreviation": "HKT"
   },
   {
@@ -2513,7 +2641,7 @@
     "country": "United States",
     "countryCode": "US",
     "timezone": "America/Chicago",
-    "population": 2304580,
+    "population": 2314157,
     "stdAbbreviation": "CST",
     "dstAbbreviation": "CDT"
   },
@@ -2525,12 +2653,21 @@
     "timezone": "Asia/Hovd"
   },
   {
+    "id": "in-howrah-1270396",
+    "city": "Howrah",
+    "country": "India",
+    "countryCode": "IN",
+    "timezone": "Asia/Kolkata",
+    "population": 1027672,
+    "stdAbbreviation": "IST"
+  },
+  {
     "id": "cn-huai-an-1797873",
     "city": "Huai'an",
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 2494013,
+    "population": 4556230,
     "stdAbbreviation": "CST"
   },
   {
@@ -2548,8 +2685,16 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 1666826,
+    "population": 3033528,
     "stdAbbreviation": "CST"
+  },
+  {
+    "id": "vn-hue-1580240",
+    "city": "Huế",
+    "country": "Vietnam",
+    "countryCode": "VN",
+    "timezone": "Asia/Bangkok",
+    "population": 1380000
   },
   {
     "id": "cn-huizhou-1806776",
@@ -2570,22 +2715,22 @@
     "stdAbbreviation": "CST"
   },
   {
+    "id": "in-hyderabad-1269843",
+    "city": "Hyderabad",
+    "country": "India",
+    "countryCode": "IN",
+    "timezone": "Asia/Kolkata",
+    "population": 6993262,
+    "stdAbbreviation": "IST"
+  },
+  {
     "id": "pk-hyderabad-1176734",
     "city": "Hyderabad",
     "country": "Pakistan",
     "countryCode": "PK",
     "timezone": "Asia/Karachi",
-    "population": 1386330,
+    "population": 1921275,
     "stdAbbreviation": "PKT"
-  },
-  {
-    "id": "in-hyderabad-1269843",
-    "city": "Hyderābād",
-    "country": "India",
-    "countryCode": "IN",
-    "timezone": "Asia/Kolkata",
-    "population": 6809970,
-    "stdAbbreviation": "IST"
   },
   {
     "id": "ng-ibadan-2339354",
@@ -2597,12 +2742,21 @@
     "stdAbbreviation": "WAT"
   },
   {
+    "id": "ng-ilorin-2337639",
+    "city": "Ilorin",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "timezone": "Africa/Lagos",
+    "population": 1080000,
+    "stdAbbreviation": "WAT"
+  },
+  {
     "id": "kr-incheon-1843564",
     "city": "Incheon",
     "country": "South Korea",
     "countryCode": "KR",
     "timezone": "Asia/Seoul",
-    "population": 2954955,
+    "population": 3015482,
     "stdAbbreviation": "KST"
   },
   {
@@ -2620,7 +2774,7 @@
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 1837041,
+    "population": 1994397,
     "stdAbbreviation": "IST"
   },
   {
@@ -2668,18 +2822,18 @@
   {
     "id": "tr-istanbul-745044",
     "city": "Istanbul",
-    "country": "Türkiye",
+    "country": "Turkey",
     "countryCode": "TR",
     "timezone": "Europe/Istanbul",
-    "population": 14804116
+    "population": 15701602
   },
   {
     "id": "tr-izmir-311046",
     "city": "İzmir",
-    "country": "Türkiye",
+    "country": "Turkey",
     "countryCode": "TR",
     "timezone": "Europe/Istanbul",
-    "population": 2500603
+    "population": 2938292
   },
   {
     "id": "mx-iztapalapa-3526683",
@@ -2687,7 +2841,7 @@
     "country": "Mexico",
     "countryCode": "MX",
     "timezone": "America/Mexico_City",
-    "population": 1815786,
+    "population": 1835486,
     "stdAbbreviation": "CST"
   },
   {
@@ -2696,8 +2850,18 @@
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 1030168,
+    "population": 1081677,
     "stdAbbreviation": "IST"
+  },
+  {
+    "id": "us-jacksonville-4160021",
+    "city": "Jacksonville",
+    "country": "United States",
+    "countryCode": "US",
+    "timezone": "America/New_York",
+    "population": 1009833,
+    "stdAbbreviation": "EST",
+    "dstAbbreviation": "EDT"
   },
   {
     "id": "in-jaipur-1269515",
@@ -2705,7 +2869,7 @@
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 2711758,
+    "population": 3046163,
     "stdAbbreviation": "IST"
   },
   {
@@ -2720,7 +2884,7 @@
   {
     "id": "sh-jamestown-3370903",
     "city": "Jamestown",
-    "country": "St. Helena",
+    "country": "Saint Helena",
     "countryCode": "SH",
     "timezone": "Atlantic/St_Helena",
     "population": 637,
@@ -2768,6 +2932,15 @@
     "timezone": "Asia/Jerusalem",
     "stdAbbreviation": "IST",
     "dstAbbreviation": "IDT"
+  },
+  {
+    "id": "cn-jiading-1806508",
+    "city": "Jiading",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1886100,
+    "stdAbbreviation": "CST"
   },
   {
     "id": "cn-jiangmen-1806299",
@@ -2820,7 +2993,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 4335989,
+    "population": 8352574,
     "stdAbbreviation": "CST"
   },
   {
@@ -2869,6 +3042,15 @@
     "stdAbbreviation": "CST"
   },
   {
+    "id": "cn-jinzhou-2036427",
+    "city": "Jinzhou",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1524362,
+    "stdAbbreviation": "CST"
+  },
+  {
     "id": "cn-jiujiang-1805179",
     "city": "Jiujiang",
     "country": "China",
@@ -2878,13 +3060,31 @@
     "stdAbbreviation": "CST"
   },
   {
+    "id": "in-jodhpur-1268865",
+    "city": "Jodhpur",
+    "country": "India",
+    "countryCode": "IN",
+    "timezone": "Asia/Kolkata",
+    "population": 1056191,
+    "stdAbbreviation": "IST"
+  },
+  {
     "id": "za-johannesburg-993800",
     "city": "Johannesburg",
     "country": "South Africa",
     "countryCode": "ZA",
     "timezone": "Africa/Johannesburg",
-    "population": 5635127,
+    "population": 9418183,
     "stdAbbreviation": "SAST"
+  },
+  {
+    "id": "ng-jos-2335953",
+    "city": "Jos",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "timezone": "Africa/Lagos",
+    "population": 1040000,
+    "stdAbbreviation": "WAT"
   },
   {
     "id": "ss-juba-373303",
@@ -2925,7 +3125,7 @@
     "country": "Nigeria",
     "countryCode": "NG",
     "timezone": "Africa/Lagos",
-    "population": 1582102,
+    "population": 1850000,
     "stdAbbreviation": "WAT"
   },
   {
@@ -2985,8 +3185,17 @@
     "country": "Uganda",
     "countryCode": "UG",
     "timezone": "Africa/Kampala",
-    "population": 1353189,
+    "population": 1680600,
     "stdAbbreviation": "EAT"
+  },
+  {
+    "id": "cd-kananga-214481",
+    "city": "Kananga",
+    "country": "Democratic Republic of the Congo",
+    "countryCode": "CD",
+    "timezone": "Africa/Lubumbashi",
+    "population": 1271704,
+    "stdAbbreviation": "CAT"
   },
   {
     "id": "ng-kano-2335204",
@@ -2994,7 +3203,7 @@
     "country": "Nigeria",
     "countryCode": "NG",
     "timezone": "Africa/Lagos",
-    "population": 4103000,
+    "population": 4910000,
     "stdAbbreviation": "WAT"
   },
   {
@@ -3019,7 +3228,7 @@
     "country": "Taiwan",
     "countryCode": "TW",
     "timezone": "Asia/Taipei",
-    "population": 1519711,
+    "population": 2737660,
     "stdAbbreviation": "CST"
   },
   {
@@ -3061,16 +3270,16 @@
     "country": "Japan",
     "countryCode": "JP",
     "timezone": "Asia/Tokyo",
-    "population": 1531646,
+    "population": 1538262,
     "stdAbbreviation": "JST"
   },
   {
     "id": "tr-kayseri-308464",
     "city": "Kayseri",
-    "country": "Türkiye",
+    "country": "Turkey",
     "countryCode": "TR",
     "timezone": "Europe/Istanbul",
-    "population": 1204641
+    "population": 1452458
   },
   {
     "id": "ru-kazan-551487",
@@ -3094,7 +3303,7 @@
     "country": "Ukraine",
     "countryCode": "UA",
     "timezone": "Europe/Kyiv",
-    "population": 1433886,
+    "population": 1421125,
     "stdAbbreviation": "EET",
     "dstAbbreviation": "EEST"
   },
@@ -3105,6 +3314,15 @@
     "countryCode": "SD",
     "timezone": "Africa/Khartoum",
     "population": 1974647,
+    "stdAbbreviation": "CAT"
+  },
+  {
+    "id": "sd-khartoum-north-379251",
+    "city": "Khartoum North",
+    "country": "Sudan",
+    "countryCode": "SD",
+    "timezone": "Africa/Khartoum",
+    "population": 1012211,
     "stdAbbreviation": "CAT"
   },
   {
@@ -3144,7 +3362,7 @@
   {
     "id": "vc-kingstown-3577887",
     "city": "Kingstown",
-    "country": "St. Vincent & Grenadines",
+    "country": "Saint Vincent and the Grenadines",
     "countryCode": "VC",
     "timezone": "America/St_Vincent",
     "population": 24518,
@@ -3153,10 +3371,10 @@
   {
     "id": "cd-kinshasa-2314302",
     "city": "Kinshasa",
-    "country": "Congo - Kinshasa",
+    "country": "Democratic Republic of the Congo",
     "countryCode": "CD",
     "timezone": "Africa/Kinshasa",
-    "population": 7785965,
+    "population": 16000000,
     "stdAbbreviation": "WAT"
   },
   {
@@ -3183,6 +3401,15 @@
     "stdAbbreviation": "MSK"
   },
   {
+    "id": "cd-kisangani-212730",
+    "city": "Kisangani",
+    "country": "Democratic Republic of the Congo",
+    "countryCode": "CD",
+    "timezone": "Africa/Lubumbashi",
+    "population": 1602144,
+    "stdAbbreviation": "CAT"
+  },
+  {
     "id": "us-knox-zone",
     "city": "Knox",
     "country": "United States",
@@ -3197,7 +3424,7 @@
     "country": "Japan",
     "countryCode": "JP",
     "timezone": "Asia/Tokyo",
-    "population": 1522188,
+    "population": 1525152,
     "stdAbbreviation": "JST"
   },
   {
@@ -3210,12 +3437,22 @@
     "stdAbbreviation": "IST"
   },
   {
+    "id": "de-koln-2886242",
+    "city": "Köln",
+    "country": "Germany",
+    "countryCode": "DE",
+    "timezone": "Europe/Berlin",
+    "population": 1024621,
+    "stdAbbreviation": "CET",
+    "dstAbbreviation": "CEST"
+  },
+  {
     "id": "tr-konya-306571",
     "city": "Konya",
-    "country": "Türkiye",
+    "country": "Turkey",
     "countryCode": "TR",
     "timezone": "Europe/Istanbul",
-    "population": 1390051
+    "population": 1433861
   },
   {
     "id": "fm-kosrae-zone",
@@ -3225,21 +3462,30 @@
     "timezone": "Pacific/Kosrae"
   },
   {
+    "id": "in-kota-1266049",
+    "city": "Kota",
+    "country": "India",
+    "countryCode": "IN",
+    "timezone": "Asia/Kolkata",
+    "population": 1001694,
+    "stdAbbreviation": "IST"
+  },
+  {
     "id": "hk-kowloon-1819609",
     "city": "Kowloon",
-    "country": "Hong Kong SAR China",
+    "country": "Hong Kong",
     "countryCode": "HK",
     "timezone": "Asia/Hong_Kong",
-    "population": 2303100,
+    "population": 2232339,
     "stdAbbreviation": "HKT"
   },
   {
     "id": "bq-kralendijk-3513563",
     "city": "Kralendijk",
-    "country": "Caribbean Netherlands",
+    "country": "Bonaire, Saint Eustatius and Saba ",
     "countryCode": "BQ",
     "timezone": "America/Kralendijk",
-    "population": 3081,
+    "population": 10620,
     "stdAbbreviation": "AST"
   },
   {
@@ -3271,7 +3517,7 @@
     "country": "Ghana",
     "countryCode": "GH",
     "timezone": "Africa/Accra",
-    "population": 1468609,
+    "population": 2544530,
     "stdAbbreviation": "GMT"
   },
   {
@@ -3280,7 +3526,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 3855346,
+    "population": 5950578,
     "stdAbbreviation": "CST"
   },
   {
@@ -3313,7 +3559,7 @@
     "country": "Ukraine",
     "countryCode": "UA",
     "timezone": "Europe/Kyiv",
-    "population": 2797553,
+    "population": 2952301,
     "stdAbbreviation": "EET",
     "dstAbbreviation": "EEST"
   },
@@ -3356,7 +3602,7 @@
     "country": "Pakistan",
     "countryCode": "PK",
     "timezone": "Asia/Karachi",
-    "population": 6310888,
+    "population": 13004135,
     "stdAbbreviation": "PKT"
   },
   {
@@ -3365,7 +3611,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 3000000,
+    "population": 4359446,
     "stdAbbreviation": "CST"
   },
   {
@@ -3384,7 +3630,16 @@
     "country": "Mexico",
     "countryCode": "MX",
     "timezone": "America/Mexico_City",
-    "population": 1721199,
+    "population": 1579803,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "cn-lianjiang-1804120",
+    "city": "Lianjiang",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1363470,
     "stdAbbreviation": "CST"
   },
   {
@@ -3411,7 +3666,7 @@
     "country": "Gabon",
     "countryCode": "GA",
     "timezone": "Africa/Libreville",
-    "population": 578156,
+    "population": 846090,
     "stdAbbreviation": "WAT"
   },
   {
@@ -3420,7 +3675,7 @@
     "country": "Malawi",
     "countryCode": "MW",
     "timezone": "Africa/Blantyre",
-    "population": 646750,
+    "population": 1115815,
     "stdAbbreviation": "CAT"
   },
   {
@@ -3502,7 +3757,7 @@
     "country": "Togo",
     "countryCode": "TG",
     "timezone": "Africa/Lome",
-    "population": 749700,
+    "population": 2188376,
     "stdAbbreviation": "GMT"
   },
   {
@@ -3527,7 +3782,7 @@
   {
     "id": "sj-longyearbyen-2729907",
     "city": "Longyearbyen",
-    "country": "Svalbard & Jan Mayen",
+    "country": "Svalbard and Jan Mayen",
     "countryCode": "SJ",
     "timezone": "Arctic/Longyearbyen",
     "population": 2368,
@@ -3547,7 +3802,7 @@
     "country": "United States",
     "countryCode": "US",
     "timezone": "America/Los_Angeles",
-    "population": 3898747,
+    "population": 3820914,
     "stdAbbreviation": "PST",
     "dstAbbreviation": "PDT"
   },
@@ -3581,10 +3836,10 @@
   {
     "id": "cd-lubumbashi-922704",
     "city": "Lubumbashi",
-    "country": "Congo - Kinshasa",
+    "country": "Democratic Republic of the Congo",
     "countryCode": "CD",
     "timezone": "Africa/Lubumbashi",
-    "population": 1373770,
+    "population": 2221925,
     "stdAbbreviation": "CAT"
   },
   {
@@ -3598,12 +3853,21 @@
   },
   {
     "id": "in-ludhiana-1264728",
-    "city": "Ludhiāna",
+    "city": "Ludhiana",
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 1545368,
+    "population": 1618879,
     "stdAbbreviation": "IST"
+  },
+  {
+    "id": "cn-luliang-13512505",
+    "city": "Lüliang",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 3346500,
+    "stdAbbreviation": "CST"
   },
   {
     "id": "cn-luohe-1801934",
@@ -3612,6 +3876,15 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 1294974,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "cn-luohu-district-13405906",
+    "city": "Luohu District",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1143801,
     "stdAbbreviation": "CST"
   },
   {
@@ -3629,7 +3902,7 @@
     "country": "Zambia",
     "countryCode": "ZM",
     "timezone": "Africa/Lusaka",
-    "population": 1267440,
+    "population": 2212301,
     "stdAbbreviation": "CAT"
   },
   {
@@ -3645,7 +3918,7 @@
   {
     "id": "mo-macau-1821274",
     "city": "Macau",
-    "country": "Macao SAR China",
+    "country": "Macao",
     "countryCode": "MO",
     "timezone": "Asia/Macau",
     "population": 649335,
@@ -3678,6 +3951,14 @@
     "dstAbbreviation": "WEST"
   },
   {
+    "id": "sa-madinah-109223",
+    "city": "Madinah",
+    "country": "Saudi Arabia",
+    "countryCode": "SA",
+    "timezone": "Asia/Riyadh",
+    "population": 1300000
+  },
+  {
     "id": "es-madrid-3117735",
     "city": "Madrid",
     "country": "Spain",
@@ -3704,6 +3985,15 @@
     "timezone": "Asia/Magadan"
   },
   {
+    "id": "ng-maiduguri-2331447",
+    "city": "Maiduguri",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "timezone": "Africa/Lagos",
+    "population": 1110000,
+    "stdAbbreviation": "WAT"
+  },
+  {
     "id": "mh-majuro-2113779",
     "city": "Majuro",
     "country": "Marshall Islands",
@@ -3717,17 +4007,16 @@
     "country": "Indonesia",
     "countryCode": "ID",
     "timezone": "Asia/Makassar",
-    "population": 1423877,
+    "population": 1474393,
     "stdAbbreviation": "WITA"
   },
   {
-    "id": "gq-malabo-2309527",
-    "city": "Malabo",
-    "country": "Equatorial Guinea",
-    "countryCode": "GQ",
-    "timezone": "Africa/Malabo",
-    "population": 155963,
-    "stdAbbreviation": "WAT"
+    "id": "sa-makkah-104515",
+    "city": "Makkah",
+    "country": "Saudi Arabia",
+    "countryCode": "SA",
+    "timezone": "Asia/Riyadh",
+    "population": 1578722
   },
   {
     "id": "mv-male-1282027",
@@ -3793,7 +4082,7 @@
   {
     "id": "mm-mandalay-1311874",
     "city": "Mandalay",
-    "country": "Myanmar (Burma)",
+    "country": "Myanmar",
     "countryCode": "MM",
     "timezone": "Asia/Yangon",
     "population": 1208099
@@ -3832,7 +4121,7 @@
     "country": "Mozambique",
     "countryCode": "MZ",
     "timezone": "Africa/Maputo",
-    "population": 1191613,
+    "population": 1254837,
     "stdAbbreviation": "CAT"
   },
   {
@@ -3841,15 +4130,7 @@
     "country": "Venezuela",
     "countryCode": "VE",
     "timezone": "America/Caracas",
-    "population": 2225000
-  },
-  {
-    "id": "ve-maracay-3632998",
-    "city": "Maracay",
-    "country": "Venezuela",
-    "countryCode": "VE",
-    "timezone": "America/Caracas",
-    "population": 1754256
+    "population": 1752602
   },
   {
     "id": "us-marengo-zone",
@@ -3863,7 +4144,7 @@
   {
     "id": "ax-mariehamn-3041732",
     "city": "Mariehamn",
-    "country": "Åland Islands",
+    "country": "Aland Islands",
     "countryCode": "AX",
     "timezone": "Europe/Mariehamn",
     "population": 10682,
@@ -3873,7 +4154,7 @@
   {
     "id": "mf-marigot-3578851",
     "city": "Marigot",
-    "country": "St. Martin",
+    "country": "Saint Martin",
     "countryCode": "MF",
     "timezone": "America/Marigot",
     "population": 5700,
@@ -3910,7 +4191,7 @@
     "country": "Lesotho",
     "countryCode": "LS",
     "timezone": "Africa/Maseru",
-    "population": 118355,
+    "population": 359753,
     "stdAbbreviation": "SAST"
   },
   {
@@ -3924,7 +4205,7 @@
   {
     "id": "wf-mata-utu-4034821",
     "city": "Mata-Utu",
-    "country": "Wallis & Futuna",
+    "country": "Wallis and Futuna",
     "countryCode": "WF",
     "timezone": "Pacific/Wallis",
     "population": 1200
@@ -3944,7 +4225,7 @@
     "country": "Mozambique",
     "countryCode": "MZ",
     "timezone": "Africa/Maputo",
-    "population": 1032197,
+    "population": 1198988,
     "stdAbbreviation": "CAT"
   },
   {
@@ -3972,12 +4253,13 @@
     "stdAbbreviation": "SAST"
   },
   {
-    "id": "sa-mecca-104515",
-    "city": "Mecca",
-    "country": "Saudi Arabia",
-    "countryCode": "SA",
-    "timezone": "Asia/Riyadh",
-    "population": 1578722
+    "id": "cd-mbuji-mayi-209228",
+    "city": "Mbuji-Mayi",
+    "country": "Democratic Republic of the Congo",
+    "countryCode": "CD",
+    "timezone": "Africa/Lubumbashi",
+    "population": 2101332,
+    "stdAbbreviation": "CAT"
   },
   {
     "id": "id-medan-1214520",
@@ -3985,7 +4267,7 @@
     "country": "Indonesia",
     "countryCode": "ID",
     "timezone": "Asia/Jakarta",
-    "population": 2435252,
+    "population": 2486283,
     "stdAbbreviation": "WIB"
   },
   {
@@ -3995,14 +4277,6 @@
     "countryCode": "CO",
     "timezone": "America/Bogota",
     "population": 1999979
-  },
-  {
-    "id": "sa-medina-109223",
-    "city": "Medina",
-    "country": "Saudi Arabia",
-    "countryCode": "SA",
-    "timezone": "Asia/Riyadh",
-    "population": 1300000
   },
   {
     "id": "in-meerut-1263214",
@@ -4028,7 +4302,7 @@
     "country": "Australia",
     "countryCode": "AU",
     "timezone": "Australia/Melbourne",
-    "population": 4917750,
+    "population": 5435590,
     "stdAbbreviation": "AEST",
     "dstAbbreviation": "AEDT"
   },
@@ -4115,6 +4389,15 @@
     "dstAbbreviation": "CEST"
   },
   {
+    "id": "cn-minhang-1800480",
+    "city": "Minhang",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 2716600,
+    "stdAbbreviation": "CST"
+  },
+  {
     "id": "by-minsk-625144",
     "city": "Minsk",
     "country": "Belarus",
@@ -4165,7 +4448,7 @@
     "country": "Liberia",
     "countryCode": "LR",
     "timezone": "Africa/Monrovia",
-    "population": 939524,
+    "population": 1542549,
     "stdAbbreviation": "GMT"
   },
   {
@@ -4210,7 +4493,7 @@
     "country": "Comoros",
     "countryCode": "KM",
     "timezone": "Indian/Comoro",
-    "population": 42872,
+    "population": 74749,
     "stdAbbreviation": "EAT"
   },
   {
@@ -4236,7 +4519,7 @@
     "country": "Pakistan",
     "countryCode": "PK",
     "timezone": "Asia/Karachi",
-    "population": 1437230,
+    "population": 2169915,
     "stdAbbreviation": "PKT"
   },
   {
@@ -4254,7 +4537,7 @@
     "country": "Germany",
     "countryCode": "DE",
     "timezone": "Europe/Berlin",
-    "population": 1260391,
+    "population": 1505005,
     "stdAbbreviation": "CET",
     "dstAbbreviation": "CEST"
   },
@@ -4267,12 +4550,21 @@
     "population": 797000
   },
   {
+    "id": "tz-mwanza-152224",
+    "city": "Mwanza",
+    "country": "Tanzania",
+    "countryCode": "TZ",
+    "timezone": "Africa/Dar_es_Salaam",
+    "population": 1104521,
+    "stdAbbreviation": "EAT"
+  },
+  {
     "id": "td-n-djamena-2427123",
     "city": "N'Djamena",
     "country": "Chad",
     "countryCode": "TD",
     "timezone": "Africa/Ndjamena",
-    "population": 721081,
+    "population": 1359526,
     "stdAbbreviation": "WAT"
   },
   {
@@ -4281,7 +4573,7 @@
     "country": "Japan",
     "countryCode": "JP",
     "timezone": "Asia/Tokyo",
-    "population": 2191279,
+    "population": 2332176,
     "stdAbbreviation": "JST"
   },
   {
@@ -4290,7 +4582,7 @@
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 2228018,
+    "population": 2405665,
     "stdAbbreviation": "IST"
   },
   {
@@ -4299,7 +4591,7 @@
     "country": "Kenya",
     "countryCode": "KE",
     "timezone": "Africa/Nairobi",
-    "population": 2750547,
+    "population": 4397073,
     "stdAbbreviation": "EAT"
   },
   {
@@ -4310,14 +4602,6 @@
     "timezone": "Asia/Kolkata",
     "population": 1365000,
     "stdAbbreviation": "IST"
-  },
-  {
-    "id": "uz-namangan-1513157",
-    "city": "Namangan",
-    "country": "Uzbekistan",
-    "countryCode": "UZ",
-    "timezone": "Asia/Tashkent",
-    "population": 1010000
   },
   {
     "id": "cn-nanchang-1800163",
@@ -4338,6 +4622,15 @@
     "stdAbbreviation": "CST"
   },
   {
+    "id": "cn-nanhai-1912214",
+    "city": "Nanhai",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 3667247,
+    "stdAbbreviation": "CST"
+  },
+  {
     "id": "cn-nanjing-1799962",
     "city": "Nanjing",
     "country": "China",
@@ -4352,7 +4645,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 3839800,
+    "population": 5977185,
     "stdAbbreviation": "CST"
   },
   {
@@ -4389,7 +4682,7 @@
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 1289497,
+    "population": 1486053,
     "stdAbbreviation": "IST"
   },
   {
@@ -4424,7 +4717,7 @@
   {
     "id": "mm-nay-pyi-taw-6611854",
     "city": "Nay Pyi Taw",
-    "country": "Myanmar (Burma)",
+    "country": "Myanmar",
     "countryCode": "MM",
     "timezone": "Asia/Yangon",
     "population": 925000
@@ -4467,6 +4760,24 @@
     "dstAbbreviation": "CDT"
   },
   {
+    "id": "tw-new-taipei-city-12908892",
+    "city": "New Taipei City",
+    "country": "Taiwan",
+    "countryCode": "TW",
+    "timezone": "Asia/Taipei",
+    "population": 4004367,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "hk-new-territories-12747063",
+    "city": "New Territories",
+    "country": "Hong Kong",
+    "countryCode": "HK",
+    "timezone": "Asia/Hong_Kong",
+    "population": 3984077,
+    "stdAbbreviation": "HKT"
+  },
+  {
     "id": "us-new-york-city-5128581",
     "city": "New York City",
     "country": "United States",
@@ -4490,7 +4801,7 @@
     "country": "Niger",
     "countryCode": "NE",
     "timezone": "Africa/Niamey",
-    "population": 774235,
+    "population": 1323691,
     "stdAbbreviation": "WAT"
   },
   {
@@ -4553,7 +4864,7 @@
     "country": "Mauritania",
     "countryCode": "MR",
     "timezone": "Africa/Nouakchott",
-    "population": 661400,
+    "population": 1184530,
     "stdAbbreviation": "GMT"
   },
   {
@@ -4610,7 +4921,7 @@
     "country": "Ukraine",
     "countryCode": "UA",
     "timezone": "Europe/Kyiv",
-    "population": 1015826,
+    "population": 1010537,
     "stdAbbreviation": "EET",
     "dstAbbreviation": "EEST"
   },
@@ -4629,7 +4940,7 @@
     "country": "Sudan",
     "countryCode": "SD",
     "timezone": "Africa/Khartoum",
-    "population": 1200000,
+    "population": 1849659,
     "stdAbbreviation": "CAT"
   },
   {
@@ -4671,7 +4982,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 1940653,
+    "population": 2153638,
     "stdAbbreviation": "CST"
   },
   {
@@ -4699,7 +5010,7 @@
     "country": "Norway",
     "countryCode": "NO",
     "timezone": "Europe/Oslo",
-    "population": 580000,
+    "population": 1082575,
     "stdAbbreviation": "CET",
     "dstAbbreviation": "CEST"
   },
@@ -4709,7 +5020,7 @@
     "country": "Canada",
     "countryCode": "CA",
     "timezone": "America/Toronto",
-    "population": 812129,
+    "population": 1017449,
     "stdAbbreviation": "EST",
     "dstAbbreviation": "EDT"
   },
@@ -4719,7 +5030,7 @@
     "country": "Burkina Faso",
     "countryCode": "BF",
     "timezone": "Africa/Ouagadougou",
-    "population": 1086505,
+    "population": 2415266,
     "stdAbbreviation": "GMT"
   },
   {
@@ -4737,16 +5048,16 @@
     "country": "Indonesia",
     "countryCode": "ID",
     "timezone": "Asia/Jakarta",
-    "population": 1668848,
+    "population": 1801367,
     "stdAbbreviation": "WIB"
   },
   {
-    "id": "fm-palikir-national-government-center-2081986",
-    "city": "Palikir - National Government Center",
+    "id": "fm-palikir-2081986",
+    "city": "Palikir",
     "country": "Micronesia",
     "countryCode": "FM",
     "timezone": "Pacific/Pohnpei",
-    "population": 0
+    "population": 6942
   },
   {
     "id": "aq-palmer-zone",
@@ -4756,13 +5067,22 @@
     "timezone": "Antarctica/Palmer"
   },
   {
-    "id": "pa-panama-3703443",
-    "city": "Panamá",
+    "id": "pa-panama-city-3703443",
+    "city": "Panama City",
     "country": "Panama",
     "countryCode": "PA",
     "timezone": "America/Panama",
     "population": 408168,
     "stdAbbreviation": "EST"
+  },
+  {
+    "id": "cn-panjin-10794003",
+    "city": "Panjin",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1166481,
+    "stdAbbreviation": "CST"
   },
   {
     "id": "pf-papeete-4033936",
@@ -4796,7 +5116,7 @@
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 1599920,
+    "population": 1684297,
     "stdAbbreviation": "IST"
   },
   {
@@ -4805,7 +5125,7 @@
     "country": "Indonesia",
     "countryCode": "ID",
     "timezone": "Asia/Jakarta",
-    "population": 1085000,
+    "population": 1167599,
     "stdAbbreviation": "WIB"
   },
   {
@@ -4814,7 +5134,7 @@
     "country": "Australia",
     "countryCode": "AU",
     "timezone": "Australia/Perth",
-    "population": 2192229,
+    "population": 2384371,
     "stdAbbreviation": "AWST"
   },
   {
@@ -4823,8 +5143,18 @@
     "country": "Pakistan",
     "countryCode": "PK",
     "timezone": "Asia/Karachi",
-    "population": 1218773,
+    "population": 4758762,
     "stdAbbreviation": "PKT"
+  },
+  {
+    "id": "hu-pest-3046446",
+    "city": "Pest",
+    "country": "Hungary",
+    "countryCode": "HU",
+    "timezone": "Europe/Budapest",
+    "population": 1001748,
+    "stdAbbreviation": "CET",
+    "dstAbbreviation": "CEST"
   },
   {
     "id": "us-petersburg-zone",
@@ -4841,7 +5171,7 @@
     "country": "United States",
     "countryCode": "US",
     "timezone": "America/New_York",
-    "population": 1576251,
+    "population": 1573916,
     "stdAbbreviation": "EST",
     "dstAbbreviation": "EDT"
   },
@@ -4868,7 +5198,7 @@
     "country": "United States",
     "countryCode": "US",
     "timezone": "America/Phoenix",
-    "population": 1608139,
+    "population": 1650070,
     "stdAbbreviation": "MST"
   },
   {
@@ -4880,12 +5210,30 @@
     "population": 79308
   },
   {
+    "id": "sn-pikine-2246678",
+    "city": "Pikine",
+    "country": "Senegal",
+    "countryCode": "SN",
+    "timezone": "Africa/Dakar",
+    "population": 1170791,
+    "stdAbbreviation": "GMT"
+  },
+  {
     "id": "in-pimpri-1259652",
     "city": "Pimpri",
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
     "population": 1284606,
+    "stdAbbreviation": "IST"
+  },
+  {
+    "id": "in-pimpri-chinchwad-7626690",
+    "city": "Pimpri-Chinchwad",
+    "country": "India",
+    "countryCode": "IN",
+    "timezone": "Asia/Kolkata",
+    "population": 1727692,
     "stdAbbreviation": "IST"
   },
   {
@@ -4908,6 +5256,15 @@
     "dstAbbreviation": "CEST"
   },
   {
+    "id": "cg-pointe-noire-2255414",
+    "city": "Pointe-Noire",
+    "country": "Republic of the Congo",
+    "countryCode": "CG",
+    "timezone": "Africa/Brazzaville",
+    "population": 1032000,
+    "stdAbbreviation": "WAT"
+  },
+  {
     "id": "id-pontianak-zone",
     "city": "Pontianak",
     "country": "Indonesia",
@@ -4921,7 +5278,7 @@
     "country": "Nigeria",
     "countryCode": "NG",
     "timezone": "Africa/Lagos",
-    "population": 1865000,
+    "population": 2120000,
     "stdAbbreviation": "WAT"
   },
   {
@@ -4943,7 +5300,7 @@
   {
     "id": "tt-port-of-spain-3573890",
     "city": "Port of Spain",
-    "country": "Trinidad & Tobago",
+    "country": "Trinidad and Tobago",
     "countryCode": "TT",
     "timezone": "America/Port_of_Spain",
     "population": 49031,
@@ -5003,7 +5360,7 @@
     "country": "Benin",
     "countryCode": "BJ",
     "timezone": "Africa/Porto-Novo",
-    "population": 234168,
+    "population": 264320,
     "stdAbbreviation": "WAT"
   },
   {
@@ -5019,10 +5376,19 @@
   {
     "id": "cv-praia-3374333",
     "city": "Praia",
-    "country": "Cape Verde",
+    "country": "Cabo Verde",
     "countryCode": "CV",
     "timezone": "Atlantic/Cape_Verde",
-    "population": 113364
+    "population": 137868
+  },
+  {
+    "id": "in-prayagraj-1278994",
+    "city": "Prayagraj",
+    "country": "India",
+    "countryCode": "IN",
+    "timezone": "Asia/Kolkata",
+    "population": 1073438,
+    "stdAbbreviation": "IST"
   },
   {
     "id": "za-pretoria-964137",
@@ -5030,7 +5396,7 @@
     "country": "South Africa",
     "countryCode": "ZA",
     "timezone": "Africa/Johannesburg",
-    "population": 1619438,
+    "population": 2112693,
     "stdAbbreviation": "SAST"
   },
   {
@@ -5042,6 +5408,15 @@
     "population": 550000,
     "stdAbbreviation": "CET",
     "dstAbbreviation": "CEST"
+  },
+  {
+    "id": "cn-pudong-1798524",
+    "city": "Pudong",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 5681512,
+    "stdAbbreviation": "CST"
   },
   {
     "id": "mx-puebla-3521081",
@@ -5062,6 +5437,15 @@
     "stdAbbreviation": "IST"
   },
   {
+    "id": "cn-puning-1802940",
+    "city": "Puning",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1998619,
+    "stdAbbreviation": "CST"
+  },
+  {
     "id": "cl-punta-arenas-zone",
     "city": "Punta Arenas",
     "country": "Chile",
@@ -5075,6 +5459,24 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 1539389,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "cn-putuo-1798439",
+    "city": "Putuo",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1239100,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "cn-puxi-11072148",
+    "city": "Puxi",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 6683712,
     "stdAbbreviation": "CST"
   },
   {
@@ -5102,6 +5504,24 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 7172451,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "cn-qingpu-1797798",
+    "city": "Qingpu",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1271424,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "cn-qingyang-12359313",
+    "city": "Qingyang",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 2125400,
     "stdAbbreviation": "CST"
   },
   {
@@ -5144,9 +5564,18 @@
     "country": "United States",
     "countryCode": "US",
     "timezone": "America/New_York",
-    "population": 2272771,
+    "population": 2316841,
     "stdAbbreviation": "EST",
     "dstAbbreviation": "EDT"
+  },
+  {
+    "id": "pk-quetta-1167528",
+    "city": "Quetta",
+    "country": "Pakistan",
+    "countryCode": "PK",
+    "timezone": "Asia/Karachi",
+    "population": 1565546,
+    "stdAbbreviation": "PKT"
   },
   {
     "id": "ph-quezon-city-1692192",
@@ -5154,7 +5583,7 @@
     "country": "Philippines",
     "countryCode": "PH",
     "timezone": "Asia/Manila",
-    "population": 2761720,
+    "population": 3084270,
     "stdAbbreviation": "PST"
   },
   {
@@ -5200,6 +5629,15 @@
     "population": 1655753
   },
   {
+    "id": "in-raipur-1258980",
+    "city": "Raipur",
+    "country": "India",
+    "countryCode": "IN",
+    "timezone": "Asia/Kolkata",
+    "population": 1027264,
+    "stdAbbreviation": "IST"
+  },
+  {
     "id": "in-rajkot-1258847",
     "city": "Rājkot",
     "country": "India",
@@ -5235,12 +5673,21 @@
     "dstAbbreviation": "CDT"
   },
   {
+    "id": "in-rasapudipalem-1258393",
+    "city": "Rasapūdipalem",
+    "country": "India",
+    "countryCode": "IN",
+    "timezone": "Asia/Kolkata",
+    "population": 1728128,
+    "stdAbbreviation": "IST"
+  },
+  {
     "id": "pk-rawalpindi-1166993",
     "city": "Rawalpindi",
     "country": "Pakistan",
     "countryCode": "PK",
     "timezone": "Asia/Karachi",
-    "population": 1743101,
+    "population": 3357612,
     "stdAbbreviation": "PKT"
   },
   {
@@ -5346,8 +5793,8 @@
     "stdAbbreviation": "AST"
   },
   {
-    "id": "ru-rostov-na-donu-501175",
-    "city": "Rostov-na-Donu",
+    "id": "ru-rostov-on-don-501175",
+    "city": "Rostov-on-Don",
     "country": "Russia",
     "countryCode": "RU",
     "timezone": "Europe/Moscow",
@@ -5364,12 +5811,29 @@
   {
     "id": "nl-rotterdam-notable",
     "city": "Rotterdam",
-    "country": "Netherlands",
+    "country": "The Netherlands",
     "countryCode": "NL",
     "timezone": "Europe/Amsterdam",
     "population": 598199,
     "stdAbbreviation": "CET",
     "dstAbbreviation": "CEST"
+  },
+  {
+    "id": "cn-rui-an-1797063",
+    "city": "Rui’an",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1125000,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "iq-sadr-city-7802746",
+    "city": "Sadr City",
+    "country": "Iraq",
+    "countryCode": "IQ",
+    "timezone": "Asia/Baghdad",
+    "population": 1211849
   },
   {
     "id": "gd-saint-george-s-3579925",
@@ -5393,10 +5857,10 @@
   {
     "id": "ag-saint-john-s-3576022",
     "city": "Saint John’s",
-    "country": "Antigua & Barbuda",
+    "country": "Antigua and Barbuda",
     "countryCode": "AG",
     "timezone": "America/Antigua",
-    "population": 24226,
+    "population": 51737,
     "stdAbbreviation": "AST"
   },
   {
@@ -5421,15 +5885,15 @@
   {
     "id": "re-saint-denis-935264",
     "city": "Saint-Denis",
-    "country": "Réunion",
+    "country": "Reunion",
     "countryCode": "RE",
     "timezone": "Indian/Reunion",
-    "population": 137195
+    "population": 154765
   },
   {
     "id": "pm-saint-pierre-3424934",
     "city": "Saint-Pierre",
-    "country": "St. Pierre & Miquelon",
+    "country": "Saint Pierre and Miquelon",
     "countryCode": "PM",
     "timezone": "America/Miquelon",
     "population": 6200
@@ -5505,7 +5969,7 @@
     "country": "United States",
     "countryCode": "US",
     "timezone": "America/Chicago",
-    "population": 1434625,
+    "population": 1526656,
     "stdAbbreviation": "CST",
     "dstAbbreviation": "CDT"
   },
@@ -5515,7 +5979,7 @@
     "country": "United States",
     "countryCode": "US",
     "timezone": "America/Los_Angeles",
-    "population": 1394928,
+    "population": 1404452,
     "stdAbbreviation": "PST",
     "dstAbbreviation": "PDT"
   },
@@ -5526,16 +5990,6 @@
     "countryCode": "US",
     "timezone": "America/Los_Angeles",
     "population": 864816,
-    "stdAbbreviation": "PST",
-    "dstAbbreviation": "PDT"
-  },
-  {
-    "id": "us-san-jose-5392171",
-    "city": "San Jose",
-    "country": "United States",
-    "countryCode": "US",
-    "timezone": "America/Los_Angeles",
-    "population": 1026908,
     "stdAbbreviation": "PST",
     "dstAbbreviation": "PDT"
   },
@@ -5668,7 +6122,7 @@
   {
     "id": "st-sao-tome-2410763",
     "city": "São Tomé",
-    "country": "São Tomé & Príncipe",
+    "country": "Sao Tome and Principe",
     "countryCode": "ST",
     "timezone": "Africa/Sao_Tome",
     "population": 53300,
@@ -5686,7 +6140,7 @@
   {
     "id": "ba-sarajevo-3191281",
     "city": "Sarajevo",
-    "country": "Bosnia & Herzegovina",
+    "country": "Bosnia and Herzegovina",
     "countryCode": "BA",
     "timezone": "Europe/Sarajevo",
     "population": 696731,
@@ -5723,7 +6177,7 @@
     "country": "Indonesia",
     "countryCode": "ID",
     "timezone": "Asia/Jakarta",
-    "population": 1653524,
+    "population": 1694740,
     "stdAbbreviation": "WIB"
   },
   {
@@ -5734,15 +6188,6 @@
     "timezone": "Asia/Tokyo",
     "population": 1096704,
     "stdAbbreviation": "JST"
-  },
-  {
-    "id": "kr-seongnam-si-1897000",
-    "city": "Seongnam-si",
-    "country": "South Korea",
-    "countryCode": "KR",
-    "timezone": "Asia/Seoul",
-    "population": 1031935,
-    "stdAbbreviation": "KST"
   },
   {
     "id": "kr-seoul-1835848",
@@ -5759,16 +6204,16 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 22315474,
+    "population": 24874500,
     "stdAbbreviation": "CST"
   },
   {
-    "id": "cn-shangqiu-1783934",
+    "id": "cn-shangqiu-1796134",
     "city": "Shangqiu",
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 1536392,
+    "population": 1859723,
     "stdAbbreviation": "CST"
   },
   {
@@ -5813,7 +6258,7 @@
     "country": "United Arab Emirates",
     "countryCode": "AE",
     "timezone": "Asia/Dubai",
-    "population": 1274749
+    "population": 1800000
   },
   {
     "id": "cn-shenyang-2034937",
@@ -5821,7 +6266,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 7050000,
+    "population": 9070093,
     "stdAbbreviation": "CST"
   },
   {
@@ -5839,7 +6284,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 3938513,
+    "population": 5758403,
     "stdAbbreviation": "CST"
   },
   {
@@ -5940,12 +6385,30 @@
     "dstAbbreviation": "EEST"
   },
   {
+    "id": "ng-sokoto-2322911",
+    "city": "Sokoto",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "timezone": "Africa/Lagos",
+    "population": 1040000,
+    "stdAbbreviation": "WAT"
+  },
+  {
+    "id": "cn-songjiang-1794035",
+    "city": "Songjiang",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1973500,
+    "stdAbbreviation": "CST"
+  },
+  {
     "id": "id-south-tangerang-8581443",
     "city": "South Tangerang",
     "country": "Indonesia",
     "countryCode": "ID",
     "timezone": "Asia/Jakarta",
-    "population": 1365688,
+    "population": 1429529,
     "stdAbbreviation": "WIB"
   },
   {
@@ -5963,6 +6426,15 @@
     "country": "Russia",
     "countryCode": "RU",
     "timezone": "Asia/Srednekolymsk"
+  },
+  {
+    "id": "in-srinagar-1255634",
+    "city": "Srinagar",
+    "country": "India",
+    "countryCode": "IN",
+    "timezone": "Asia/Kolkata",
+    "population": 1206419,
+    "stdAbbreviation": "IST"
   },
   {
     "id": "ca-st-johns-zone",
@@ -6014,7 +6486,7 @@
     "country": "Indonesia",
     "countryCode": "ID",
     "timezone": "Asia/Jakarta",
-    "population": 2874314,
+    "population": 3018022,
     "stdAbbreviation": "WIB"
   },
   {
@@ -6040,7 +6512,7 @@
     "country": "South Korea",
     "countryCode": "KR",
     "timezone": "Asia/Seoul",
-    "population": 1241311,
+    "population": 1234582,
     "stdAbbreviation": "KST"
   },
   {
@@ -6075,7 +6547,7 @@
     "country": "Australia",
     "countryCode": "AU",
     "timezone": "Australia/Sydney",
-    "population": 5231147,
+    "population": 5638830,
     "stdAbbreviation": "AEST",
     "dstAbbreviation": "AEDT"
   },
@@ -6086,6 +6558,15 @@
     "countryCode": "IR",
     "timezone": "Asia/Tehran",
     "population": 1424641
+  },
+  {
+    "id": "ph-taguig-1684308",
+    "city": "Taguig",
+    "country": "Philippines",
+    "countryCode": "PH",
+    "timezone": "Asia/Manila",
+    "population": 1308085,
+    "stdAbbreviation": "PST"
   },
   {
     "id": "cn-tai-an-1793724",
@@ -6102,7 +6583,16 @@
     "country": "Taiwan",
     "countryCode": "TW",
     "timezone": "Asia/Taipei",
-    "population": 1040725,
+    "population": 2850285,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "tw-tainan-1668355",
+    "city": "Tainan",
+    "country": "Taiwan",
+    "countryCode": "TW",
+    "timezone": "Asia/Taipei",
+    "population": 1856642,
     "stdAbbreviation": "CST"
   },
   {
@@ -6120,7 +6610,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 4303673,
+    "population": 5305061,
     "stdAbbreviation": "CST"
   },
   {
@@ -6157,8 +6647,16 @@
     "country": "Indonesia",
     "countryCode": "ID",
     "timezone": "Asia/Jakarta",
-    "population": 1911914,
+    "population": 1927815,
     "stdAbbreviation": "WIB"
+  },
+  {
+    "id": "ma-tangier-2530335",
+    "city": "Tangier",
+    "country": "Morocco",
+    "countryCode": "MA",
+    "timezone": "Africa/Casablanca",
+    "population": 1035141
   },
   {
     "id": "cn-tangshan-1793346",
@@ -6234,7 +6732,7 @@
     "country": "India",
     "countryCode": "IN",
     "timezone": "Asia/Kolkata",
-    "population": 1261517,
+    "population": 1841488,
     "stdAbbreviation": "IST"
   },
   {
@@ -6279,7 +6777,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 11090314,
+    "population": 13866009,
     "stdAbbreviation": "CST"
   },
   {
@@ -6335,7 +6833,7 @@
     "country": "Japan",
     "countryCode": "JP",
     "timezone": "Asia/Tokyo",
-    "population": 8336599,
+    "population": 9733276,
     "stdAbbreviation": "JST"
   },
   {
@@ -6351,7 +6849,7 @@
     "country": "Canada",
     "countryCode": "CA",
     "timezone": "America/Toronto",
-    "population": 2600000,
+    "population": 2794356,
     "stdAbbreviation": "EST",
     "dstAbbreviation": "EDT"
   },
@@ -6366,12 +6864,21 @@
     "dstAbbreviation": "WEST"
   },
   {
+    "id": "sn-touba-2244322",
+    "city": "Touba",
+    "country": "Senegal",
+    "countryCode": "SN",
+    "timezone": "Africa/Dakar",
+    "population": 1120824,
+    "stdAbbreviation": "GMT"
+  },
+  {
     "id": "ly-tripoli-2210247",
     "city": "Tripoli",
     "country": "Libya",
     "countryCode": "LY",
     "timezone": "Africa/Tripoli",
-    "population": 1150989,
+    "population": 1302947,
     "stdAbbreviation": "EET"
   },
   {
@@ -6380,6 +6887,14 @@
     "country": "Antarctica",
     "countryCode": "AQ",
     "timezone": "Antarctica/Troll"
+  },
+  {
+    "id": "pe-trujillo-3691175",
+    "city": "Trujillo",
+    "country": "Peru",
+    "countryCode": "PE",
+    "timezone": "America/Lima",
+    "population": 1067700
   },
   {
     "id": "ar-tucuman-zone",
@@ -6424,6 +6939,15 @@
     "population": 844818
   },
   {
+    "id": "kr-ulsan-1833747",
+    "city": "Ulsan",
+    "country": "South Korea",
+    "countryCode": "KR",
+    "timezone": "Asia/Seoul",
+    "population": 1098421,
+    "stdAbbreviation": "KST"
+  },
+  {
     "id": "ru-ulyanovsk-zone",
     "city": "Ulyanovsk",
     "country": "Russia",
@@ -6436,7 +6960,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Urumqi",
-    "population": 3029372
+    "population": 4054000
   },
   {
     "id": "ar-ushuaia-zone",
@@ -6495,8 +7019,7 @@
     "country": "Canada",
     "countryCode": "CA",
     "timezone": "America/Vancouver",
-    "stdAbbreviation": "PST",
-    "dstAbbreviation": "PDT"
+    "stdAbbreviation": "MST"
   },
   {
     "id": "in-varanasi-1253405",
@@ -6510,7 +7033,7 @@
   {
     "id": "va-vatican-city-6691831",
     "city": "Vatican City",
-    "country": "Vatican City",
+    "country": "Vatican",
     "countryCode": "VA",
     "timezone": "Europe/Vatican",
     "population": 829,
@@ -6560,7 +7083,16 @@
     "country": "Laos",
     "countryCode": "LA",
     "timezone": "Asia/Vientiane",
-    "population": 196731
+    "population": 840940
+  },
+  {
+    "id": "in-vijayawada-1253184",
+    "city": "Vijayawada",
+    "country": "India",
+    "countryCode": "IN",
+    "timezone": "Asia/Kolkata",
+    "population": 1143232,
+    "stdAbbreviation": "IST"
   },
   {
     "id": "lt-vilnius-593116",
@@ -6580,6 +7112,15 @@
     "timezone": "America/Indiana/Vincennes",
     "stdAbbreviation": "EST",
     "dstAbbreviation": "EDT"
+  },
+  {
+    "id": "in-virar-1253133",
+    "city": "Virār",
+    "country": "India",
+    "countryCode": "IN",
+    "timezone": "Asia/Kolkata",
+    "population": 1222390,
+    "stdAbbreviation": "IST"
   },
   {
     "id": "in-visakhapatnam-1253102",
@@ -6623,6 +7164,15 @@
     "timezone": "Antarctica/Vostok"
   },
   {
+    "id": "cn-wanzhou-12358576",
+    "city": "Wanzhou",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1545900,
+    "stdAbbreviation": "CST"
+  },
+  {
     "id": "pl-warsaw-756135",
     "city": "Warsaw",
     "country": "Poland",
@@ -6648,7 +7198,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 2044028,
+    "population": 9386705,
     "stdAbbreviation": "CST"
   },
   {
@@ -6682,7 +7232,7 @@
   {
     "id": "cc-west-island-7304591",
     "city": "West Island",
-    "country": "Cocos (Keeling) Islands",
+    "country": "Cocos Islands",
     "countryCode": "CC",
     "timezone": "Indian/Cocos",
     "population": 120
@@ -6698,7 +7248,7 @@
   {
     "id": "cw-willemstad-3513090",
     "city": "Willemstad",
-    "country": "Curaçao",
+    "country": "Curacao",
     "countryCode": "CW",
     "timezone": "America/Curacao",
     "population": 125000,
@@ -6719,7 +7269,7 @@
     "country": "Namibia",
     "countryCode": "NA",
     "timezone": "Africa/Windhoek",
-    "population": 268132,
+    "population": 386219,
     "stdAbbreviation": "CAT"
   },
   {
@@ -6732,12 +7282,21 @@
     "dstAbbreviation": "CDT"
   },
   {
+    "id": "cn-wuchang-1791351",
+    "city": "Wuchang",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1102188,
+    "stdAbbreviation": "CST"
+  },
+  {
     "id": "cn-wuhan-1791247",
     "city": "Wuhan",
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 10392693,
+    "population": 13739000,
     "stdAbbreviation": "CST"
   },
   {
@@ -6768,12 +7327,21 @@
     "stdAbbreviation": "CST"
   },
   {
+    "id": "cn-wuzhong-1790842",
+    "city": "Wuzhong",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 7202654,
+    "stdAbbreviation": "CST"
+  },
+  {
     "id": "cn-xi-an-1790630",
     "city": "Xi’an",
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 9600000,
+    "population": 12952907,
     "stdAbbreviation": "CST"
   },
   {
@@ -6809,7 +7377,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 1677177,
+    "population": 2467965,
     "stdAbbreviation": "CST"
   },
   {
@@ -6827,7 +7395,16 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 1230042,
+    "population": 1416800,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "cn-xinyi-1812057",
+    "city": "Xinyi",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1014577,
     "stdAbbreviation": "CST"
   },
   {
@@ -6837,6 +7414,15 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 1265536,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "cn-xuhui-1787957",
+    "city": "Xuhui",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1109800,
     "stdAbbreviation": "CST"
   },
   {
@@ -6867,10 +7453,10 @@
   {
     "id": "ci-yamoussoukro-2279755",
     "city": "Yamoussoukro",
-    "country": "Côte d’Ivoire",
+    "country": "Ivory Coast",
     "countryCode": "CI",
     "timezone": "Africa/Abidjan",
-    "population": 194530,
+    "population": 275686,
     "stdAbbreviation": "GMT"
   },
   {
@@ -6894,10 +7480,19 @@
   {
     "id": "mm-yangon-1298824",
     "city": "Yangon",
-    "country": "Myanmar (Burma)",
+    "country": "Myanmar",
     "countryCode": "MM",
     "timezone": "Asia/Yangon",
     "population": 4477638
+  },
+  {
+    "id": "cn-yangpu-1787375",
+    "city": "Yangpu",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1210800,
+    "stdAbbreviation": "CST"
   },
   {
     "id": "cn-yangzhou-1787227",
@@ -6905,7 +7500,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 1584237,
+    "population": 4559797,
     "stdAbbreviation": "CST"
   },
   {
@@ -6914,7 +7509,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 2227733,
+    "population": 7102100,
     "stdAbbreviation": "CST"
   },
   {
@@ -6948,7 +7543,7 @@
     "country": "Armenia",
     "countryCode": "AM",
     "timezone": "Asia/Yerevan",
-    "population": 1093485
+    "population": 1144700
   },
   {
     "id": "cn-yichang-1786764",
@@ -6974,7 +7569,16 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 1487579,
+    "population": 2859074,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "cn-yishui-1786455",
+    "city": "Yishui",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1007100,
     "stdAbbreviation": "CST"
   },
   {
@@ -6996,21 +7600,12 @@
     "stdAbbreviation": "CST"
   },
   {
-    "id": "cn-yiyang-1808316",
-    "city": "Yiyang",
-    "country": "China",
-    "countryCode": "CN",
-    "timezone": "Asia/Shanghai",
-    "population": 1249807,
-    "stdAbbreviation": "CST"
-  },
-  {
     "id": "jp-yokohama-1848354",
     "city": "Yokohama",
     "country": "Japan",
     "countryCode": "JP",
     "timezone": "Asia/Tokyo",
-    "population": 3761630,
+    "population": 3777491,
     "stdAbbreviation": "JST"
   },
   {
@@ -7046,9 +7641,18 @@
     "country": "Croatia",
     "countryCode": "HR",
     "timezone": "Europe/Zagreb",
-    "population": 698966,
+    "population": 663592,
     "stdAbbreviation": "CET",
     "dstAbbreviation": "CEST"
+  },
+  {
+    "id": "ph-zamboanga-1679432",
+    "city": "Zamboanga",
+    "country": "Philippines",
+    "countryCode": "PH",
+    "timezone": "Asia/Manila",
+    "population": 1018849,
+    "stdAbbreviation": "PST"
   },
   {
     "id": "tz-zanzibar-city-notable",
@@ -7058,6 +7662,15 @@
     "timezone": "Africa/Dar_es_Salaam",
     "population": 403658,
     "stdAbbreviation": "EAT"
+  },
+  {
+    "id": "cn-zaozhuang-1785453",
+    "city": "Zaozhuang",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 3855601,
+    "stdAbbreviation": "CST"
   },
   {
     "id": "mx-zapopan-3979770",
@@ -7101,7 +7714,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 4253913,
+    "population": 6650532,
     "stdAbbreviation": "CST"
   },
   {
@@ -7111,6 +7724,15 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 3841873,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "cn-zhongwei-1784285",
+    "city": "Zhongwei",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1174600,
     "stdAbbreviation": "CST"
   },
   {
@@ -7146,7 +7768,7 @@
     "country": "China",
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
-    "population": 3129228,
+    "population": 4704138,
     "stdAbbreviation": "CST"
   },
   {
@@ -7156,6 +7778,15 @@
     "countryCode": "CN",
     "timezone": "Asia/Shanghai",
     "population": 1262064,
+    "stdAbbreviation": "CST"
+  },
+  {
+    "id": "cn-zoucheng-1783633",
+    "city": "Zoucheng",
+    "country": "China",
+    "countryCode": "CN",
+    "timezone": "Asia/Shanghai",
+    "population": 1116692,
     "stdAbbreviation": "CST"
   },
   {
