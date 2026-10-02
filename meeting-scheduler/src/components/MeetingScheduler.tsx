@@ -489,7 +489,10 @@ export function MeetingScheduler() {
             </p>
           </div>
 
-          <h2 className="m-0 text-base font-medium text-foreground">Selected time</h2>
+          <div className="flex flex-col gap-1">
+            <h2 className="m-0 text-base font-medium text-foreground">Selected time</h2>
+            <p className="m-0 text-xs text-[var(--secondary-text)]">Based on the time and date you chose</p>
+          </div>
           <Card.Root variant="default" className="flex-col gap-3 bg-zinc-800 p-0 text-zinc-50">
             <Card.Content className="flex flex-col gap-1 p-4 px-5 text-sm">
               {/* Heading and invite button share a row (rather than the button being
@@ -534,7 +537,12 @@ export function MeetingScheduler() {
             </Card.Content>
           </Card.Root>
 
-          <h2 className="m-0 text-base font-medium text-foreground">Best time for everyone</h2>
+          <div className="flex flex-col gap-1">
+            <h2 className="m-0 text-base font-medium text-foreground">Best time for everyone</h2>
+            <p className="m-0 text-xs text-[var(--secondary-text)]">
+              A time that fits within everyone's daytime, as closely as possible
+            </p>
+          </div>
           <div role="status" aria-live="polite" className="sr-only">
             {isManuallyAdjusted ? `Best time adjusted to ${adjustedOptimalSlots[0]?.startText ?? ""}` : ""}
           </div>

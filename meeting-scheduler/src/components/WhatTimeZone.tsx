@@ -198,7 +198,10 @@ export function WhatTimeZone() {
             <Separator />
 
             <div className="flex flex-col gap-3">
-              <h2 className="m-0 text-base font-medium text-foreground">Selected time</h2>
+              <div className="flex flex-col gap-1">
+                <h2 className="m-0 text-base font-medium text-foreground">Selected time</h2>
+                <p className="m-0 text-xs text-[var(--secondary-text)]">Based on the time and date you chose</p>
+              </div>
               {/* Nested panel: keeps the fixed-dark, AAA-verified readout treatment
                   MeetingScheduler's own "Selected time" card uses. */}
               <div className="flex flex-col gap-1 rounded-lg bg-zinc-800 p-4 text-zinc-50">
