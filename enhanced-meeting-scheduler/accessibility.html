@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- See index.html for why this runs inline, before first paint, and why it checks
+         localStorage — the footer toggle on the main page writes an explicit choice there
+         that this page respects too. -->
+    <script>
+      (function () {
+        var mq = window.matchMedia("(prefers-color-scheme: dark)");
+        function apply() {
+          var stored = localStorage.getItem("theme");
+          document.documentElement.dataset.theme = stored === "light" || stored === "dark" ? stored : mq.matches ? "dark" : "light";
+        }
+        apply();
+        mq.addEventListener("change", apply);
+      })();
+    </script>
+    <!-- %BASE_URL%: see index.html — this app is deployed under a subpath, and public/
+         files need it since Vite doesn't rewrite them automatically. -->
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#060607" media="(prefers-color-scheme: dark)" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Accessibility statement — Enhanced Meeting Scheduler</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      [data-theme="dark"] {
+        color-scheme: dark;
+      }
+      body {
+        margin: 0;
+        min-height: 100%;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        background: #f5f5f5;
+        color: #18181b;
+      }
+      [data-theme="dark"] body {
+        background: #060607;
+        color: #e4e4e7;
+      }
+      main {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 4rem;
+      }
+      a {
+        color: #0d3f9c;
+      }
+      [data-theme="dark"] a {
+        color: #5c9cff;
+      }
+      h1 {
+        font-size: 1.25rem;
+        font-weight: 500;
+        margin: 0 0 0.5rem;
+      }
+      h2 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 2rem 0 0.5rem;
+      }
+      p,
+      li {
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        color: #27272a;
+      }
+      [data-theme="dark"] p,
+      [data-theme="dark"] li {
+        color: #e4e4e7;
+      }
+      .updated {
+        font-size: 0.8125rem;
+        color: #515158;
+        margin: 0 0 2rem;
+      }
+      [data-theme="dark"] .updated {
+        color: #a0a0aa;
+      }
+      .back {
+        display: inline-block;
+        font-size: 0.875rem;
+        margin-bottom: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back" href="./">← Back to Enhanced Meeting Scheduler</a>
+
+      <h1>Accessibility statement</h1>
+      <p class="updated">Last updated: October 2026</p>
+
+      <p>
+        This statement applies to Enhanced Meeting Scheduler, including its Time zone finder page. We want as many people as
+        possible to be able to use it. For example, you should be able to:
+      </p>
+      <ul>
+        <li>use every part of it with only a keyboard</li>
+        <li>zoom in up to 400% without text spilling off the screen or needing to scroll sideways</li>
+        <li>switch between light and dark mode</li>
+        <li>read all text with enhanced colour contrast (WCAG level AAA)</li>
+      </ul>
+
+      <h2>How accessible this site is</h2>
+      <p>
+        We aim to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA. We're not aware of any
+        parts of the site that fail to meet it.
+      </p>
+      <p>
+        We have not yet tested the site with people who use screen readers or other assistive technology. Until we
+        do, there may be problems we haven't found.
+      </p>
+
+      <h2>Reporting problems</h2>
+      <p>
+        If you find a problem or need information in a different format, tell us using the
+        <a href="https://forms.gle/ouHxxGzu4Sjz2Jdi7" target="_blank" rel="noopener noreferrer">feedback form (opens in new tab)</a>.
+      </p>
+
+      <h2>How we tested this site</h2>
+      <p>The site was last tested on 8 October 2026. We tested every page, in both light and dark mode, using:</p>
+      <ul>
+        <li>automated checks with axe-core 4.14 against WCAG 2.2 level A, AA and AAA rules</li>
+        <li>keyboard-only navigation, checking that every control can be reached and shows a visible focus indicator</li>
+        <li>a 320 pixel wide screen, which is equivalent to 400% zoom</li>
+      </ul>
+    </main>
+  </body>
+</html>

@@ -11,6 +11,7 @@ import {
 } from "../lib/timezones";
 import { TimePickerField } from "./TimePickerField";
 import { TimezoneChipList } from "./TimezoneChipList";
+import { DataCredit } from "./DataCredit";
 import { ZoneTimeList } from "./ZoneTimeList";
 
 function matchesQuery(zone: TimeZoneCatalogEntry, query: string): boolean {
@@ -254,6 +255,11 @@ export function WhatTimeZone() {
           </div>
         </div>
       </main>
+      <footer className="flex justify-center px-6 pb-8">
+        <div className="w-full max-w-[640px] text-xs text-[var(--secondary-text)]">
+          <DataCredit />
+        </div>
+      </footer>
     </div>
   );
 }

@@ -15,6 +15,7 @@ export default defineConfig({
         privacy: resolve(__dirname, 'privacy.html'),
         terms: resolve(__dirname, 'terms.html'),
         whatTimeZone: resolve(__dirname, 'what-time-zone.html'),
+        accessibility: resolve(__dirname, 'accessibility.html'),
       },
     },
   },

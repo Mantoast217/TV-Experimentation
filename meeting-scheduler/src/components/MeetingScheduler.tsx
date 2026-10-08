@@ -19,6 +19,7 @@ import { SendInviteMenu } from "./SendInviteMenu";
 import { TimePickerField } from "./TimePickerField";
 import { TimezoneChipList } from "./TimezoneChipList";
 import { ZoneTimeList } from "./ZoneTimeList";
+import { DataCredit } from "./DataCredit";
 import {
   buildEndTimeOptions,
   computeDurationHours,
@@ -608,7 +609,8 @@ export function MeetingScheduler() {
         </div>
       </main>
       <footer className="flex justify-center px-6 pb-8">
-        <div className="flex w-full max-w-[640px] flex-wrap gap-x-4 gap-y-1 text-xs text-[var(--secondary-text)]">
+        <div className="flex w-full max-w-[640px] flex-col gap-3 text-xs text-[var(--secondary-text)]">
+        <div className="flex flex-wrap gap-x-4 gap-y-1">
           <a
             href="privacy.html"
             className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
@@ -622,6 +624,12 @@ export function MeetingScheduler() {
             Terms of Use
           </a>
           <a
+            href="accessibility.html"
+            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+          >
+            Accessibility
+          </a>
+          <a
             href="what-time-zone.html"
             className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
           >
@@ -633,7 +641,7 @@ export function MeetingScheduler() {
             rel="noopener noreferrer"
             className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
           >
-            Feedback
+            Feedback (opens in new tab)
           </a>
           {/* Absolute, unlike the privacy/terms links above: this points at a sibling app
               served from its own subpath (see enhanced-meeting-scheduler/vite.config.ts's
@@ -644,6 +652,8 @@ export function MeetingScheduler() {
           >
             Enhanced Meeting Scheduler
           </a>
+        </div>
+        <DataCredit />
         </div>
       </footer>
     </div>

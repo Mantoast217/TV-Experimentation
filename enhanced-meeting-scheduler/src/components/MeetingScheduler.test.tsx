@@ -491,9 +491,23 @@ describe("MeetingScheduler — footer", () => {
     expect(screen.getByRole("link", { name: "Terms of Use" })).toHaveAttribute("href", "terms.html");
   });
 
+  it("links to the accessibility statement", () => {
+    render(<MeetingScheduler />);
+    expect(screen.getByRole("link", { name: "Accessibility" })).toHaveAttribute("href", "accessibility.html");
+  });
+
+  it("credits GeoNames and links its CC BY 4.0 licence", () => {
+    render(<MeetingScheduler />);
+    expect(screen.getByRole("link", { name: "GeoNames" })).toHaveAttribute("href", "https://www.geonames.org/");
+    expect(screen.getByRole("link", { name: "CC BY 4.0" })).toHaveAttribute(
+      "href",
+      "https://creativecommons.org/licenses/by/4.0/",
+    );
+  });
+
   it("links Feedback to the feedback form, opened in a new tab", () => {
     render(<MeetingScheduler />);
-    const feedback = screen.getByRole("link", { name: "Feedback" });
+    const feedback = screen.getByRole("link", { name: "Feedback (opens in new tab)" });
     expect(feedback).toHaveAttribute("href", "https://forms.gle/ouHxxGzu4Sjz2Jdi7");
     expect(feedback).toHaveAttribute("target", "_blank");
     expect(feedback).toHaveAttribute("rel", "noopener noreferrer");
