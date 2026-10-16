@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && node scripts/build-ems.mjs",
+    "build": "tsc -b && vite build && node scripts/build-subapps.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
