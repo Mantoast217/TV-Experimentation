@@ -7,12 +7,14 @@
   --brand-blue: #0d3f9c;
   --secondary-text: #4a4a51;
   --danger-text: #991b1b;
+  --control-border: #767676;
 }
 
 [data-theme="dark"] {
   --brand-blue: #5c9cff;
   --secondary-text: #a0a0aa;
   --danger-text: #ff8a8a;
+  --control-border: #767676;
 }
 
 html,
@@ -30,3 +32,4 @@ body {
 #root {
   min-height: 100svh;
 }
+

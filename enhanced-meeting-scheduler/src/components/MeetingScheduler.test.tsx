@@ -491,6 +491,11 @@ describe("MeetingScheduler — footer", () => {
     expect(screen.getByRole("link", { name: "Terms of Use" })).toHaveAttribute("href", "terms.html");
   });
 
+  it("links to the team dashboard", () => {
+    render(<MeetingScheduler />);
+    expect(screen.getByRole("link", { name: "Team dashboard" })).toHaveAttribute("href", "/team-dashboard/");
+  });
+
   it("links to the accessibility statement", () => {
     render(<MeetingScheduler />);
     expect(screen.getByRole("link", { name: "Accessibility" })).toHaveAttribute("href", "accessibility.html");

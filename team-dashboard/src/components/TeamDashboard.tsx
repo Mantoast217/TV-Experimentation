@@ -1,0 +1,201 @@
+import { Button, Input } from "@heroui/react";
+import { useMemo, useRef, useState } from "react";
+import {
+  arrange,
+  describePeople,
+  STATUS_ORDER,
+  type SortDirection,
+  type SortKey,
+  type StatusFilter,
+} from "../lib/team/arrange";
+import { asOfText, emptyStateText, resultsText, sortAnnouncement, STATUS_LABEL, STATUS_MARKER, summaryItem } from "../lib/team/copy";
+import { countByStatus, type Person } from "../lib/time";
+import { PeopleCards } from "./PeopleCards";
+import { PeopleTable } from "./PeopleTable";
+import { focusRing, secondaryText, selectClass } from "./styles";
+
+interface Sort {
+  key: SortKey;
+  direction: SortDirection;
+}
+
+const SORT_OPTIONS: { value: string; label: string }[] = [
+  { value: "timeZone:ascending", label: "Time zone, west to east" },
+  { value: "timeZone:descending", label: "Time zone, east to west" },
+  { value: "localTime:ascending", label: "Local time, earliest first" },
+  { value: "localTime:descending", label: "Local time, latest first" },
+  { value: "name:ascending", label: "Name, A to Z" },
+  { value: "name:descending", label: "Name, Z to A" },
+];
+
+interface TeamDashboardProps {
+  people: readonly Person[];
+  /** Read once by the caller. The page never updates by itself. */
+  now: Date;
+  viewerZone: string;
+}
+
+export function TeamDashboard({ people, now, viewerZone }: TeamDashboardProps) {
+  const views = useMemo(() => describePeople(people, now, viewerZone), [people, now, viewerZone]);
+  const counts = useMemo(() => countByStatus(people, now), [people, now]);
+
+  const [query, setQuery] = useState("");
+  const [status, setStatus] = useState<StatusFilter>("all");
+  const [sort, setSort] = useState<Sort>({ key: "timeZone", direction: "ascending" });
+  const [sortMessage, setSortMessage] = useState("");
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  const { groups, shown } = arrange(views, { query, status, sortKey: sort.key, direction: sort.direction });
+
+  const changeSort = (next: Sort) => {
+    setSort(next);
+    setSortMessage(sortAnnouncement(next.key, next.direction));
+  };
+
+  const sortByColumn = (key: SortKey) =>
+    changeSort({
+      key,
+      direction: sort.key === key && sort.direction === "ascending" ? "descending" : "ascending",
+    });
+
+  // The button that called this disappears once results return, so focus goes back to the search box.
+  const clearSearchAndFilters = () => {
+    setQuery("");
+    setStatus("all");
+    searchRef.current?.focus();
+  };
+
+  return (
+    <div className="flex min-h-dvh flex-col">
+      <a
+        href="#main"
+        className={`sr-only rounded-md bg-[var(--background)] px-4 py-3 font-medium focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 ${focusRing}`}
+      >
+        Skip to main content
+      </a>
+      <header className="flex justify-center px-6 pt-8">
+        <div className="w-full max-w-[1040px]">
+          <a href="/enhanced-meeting-scheduler/" className={`inline-flex min-h-6 items-center text-sm ${secondaryText} hover:underline ${focusRing}`}>
+            ← Back to Enhanced Meeting Scheduler
+          </a>
+        </div>
+      </header>
+
+      <main id="main" tabIndex={-1} className="flex flex-1 justify-center px-6 pt-6 pb-12 outline-none">
+        <div className="flex w-full max-w-[1040px] flex-col gap-8">
+          <div className="flex flex-col gap-2">
+            <h1 className="m-0 text-xl font-medium">Team dashboard</h1>
+            <p className={`m-0 text-sm ${secondaryText}`}>
+              {asOfText(now, viewerZone)} Reload the page to update them.
+            </p>
+          </div>
+
+          <section aria-labelledby="summary-heading" className="flex flex-col gap-3">
+            <h2 id="summary-heading" className="m-0 text-base font-medium">
+              Summary
+            </h2>
+            <ul className="m-0 flex list-none flex-wrap gap-3 p-0 text-sm">
+              {STATUS_ORDER.map((s) => (
+                <li key={s} className="flex items-center gap-2 rounded-lg border border-[var(--control-border)] px-4 py-3">
+                  <span aria-hidden="true">{STATUS_MARKER[s]}</span>
+                  {summaryItem(s, counts[s])}
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section aria-labelledby="team-heading" className="flex flex-col gap-4">
+            <h2 id="team-heading" className="m-0 text-base font-medium">
+              Kestrel Global team
+            </h2>
+
+            <form role="search" aria-label="Filter and sort the team" onSubmit={(e) => e.preventDefault()} className="grid gap-4 sm:grid-cols-3">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="team-search" className="text-sm font-medium">
+                  Search by name, role or city
+                </label>
+                <Input
+                  ref={searchRef}
+                  id="team-search"
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  className="min-h-11 border border-[var(--control-border)]"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="team-status" className="text-sm font-medium">
+                  Status
+                </label>
+                <select
+                  id="team-status"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value as StatusFilter)}
+                  className={selectClass}
+                >
+                  <option value="all">All statuses</option>
+                  {STATUS_ORDER.map((s) => (
+                    <option key={s} value={s}>
+                      {STATUS_LABEL[s]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="team-sort" className="text-sm font-medium">
+                  Sort by
+                </label>
+                <select
+                  id="team-sort"
+                  value={`${sort.key}:${sort.direction}`}
+                  onChange={(e) => {
+                    const [key, direction] = e.target.value.split(":") as [SortKey, SortDirection];
+                    changeSort({ key, direction });
+                  }}
+                  className={selectClass}
+                >
+                  {SORT_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </form>
+
+            <p role="status" className={`m-0 text-sm ${secondaryText}`}>
+              {resultsText(shown, people.length)}
+            </p>
+            <p role="status" className="sr-only">
+              {sortMessage}
+            </p>
+
+            {shown === 0 ? (
+              <div className="flex flex-col items-start gap-3 rounded-lg border border-[var(--control-border)] p-6">
+                <p className="m-0">{emptyStateText(query)}</p>
+                <Button variant="outline" className="min-h-11 border-[var(--control-border)]" onPress={clearSearchAndFilters}>
+                  Clear search and filters
+                </Button>
+              </div>
+            ) : (
+              <>
+                <div className="max-[760px]:hidden">
+                  <PeopleTable groups={groups} sort={sort} onSort={sortByColumn} />
+                </div>
+                <div className="min-[761px]:hidden">
+                  <PeopleCards groups={groups} />
+                </div>
+              </>
+            )}
+          </section>
+        </div>
+      </main>
+
+      <footer className="flex justify-center px-6 pb-8">
+        <p className={`m-0 w-full max-w-[1040px] text-xs ${secondaryText}`}>
+          Kestrel Global is a fictional company. Everyone shown here is sample data.
+        </p>
+      </footer>
+    </div>
+  );
+}

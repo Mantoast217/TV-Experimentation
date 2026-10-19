@@ -1,3 +1,4 @@
+import { describe, it } from "vitest";
 import fc from "fast-check";
 import { instant, NUM_RUNS, person, scaledTimeout, timeZone } from "../../test/arbitraries";
 import { DAY_MINUTES, hourlyOverlap, positionInDay, statusAt, timelineSegments, viewerDay } from ".";

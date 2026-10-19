@@ -829,6 +829,13 @@ export function MeetingScheduler() {
           >
             Time zone finder
           </a>
+          {/* Absolute: the dashboard is a separate app served from its own subpath. */}
+          <a
+            href="/team-dashboard/"
+            className="hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-blue)]"
+          >
+            Team dashboard
+          </a>
           <a
             href="https://forms.gle/ouHxxGzu4Sjz2Jdi7"
             target="_blank"

@@ -1,9 +1,18 @@
-function App() {
-  return (
-    <main className="mx-auto flex max-w-[1040px] flex-col gap-4 px-6 pt-12 pb-6">
-      <h1 className="m-0 text-xl font-medium text-foreground">Team dashboard</h1>
-    </main>
-  );
+import { useState } from "react";
+import { TeamDashboard } from "./components/TeamDashboard";
+import { KESTREL_GLOBAL } from "./data/kestrelGlobal";
+import { browserTimeZone } from "./lib/time";
+
+interface AppProps {
+  /** Overrides the browser's own time zone. */
+  viewerZone?: string;
+}
+
+function App({ viewerZone }: AppProps) {
+  // Read the clock once, on load. Nothing on the page updates by itself.
+  const [now] = useState(() => new Date());
+  const [zone] = useState(() => viewerZone ?? browserTimeZone());
+  return <TeamDashboard people={KESTREL_GLOBAL} now={now} viewerZone={zone} />;
 }
 
 export default App;
