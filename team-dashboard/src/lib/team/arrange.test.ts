@@ -1,7 +1,18 @@
 import { describe, expect, it } from "vitest";
 import { KESTREL_GLOBAL } from "../../data/kestrelGlobal";
 import { arrange, describePeople, fullName, matchesSearch, type ArrangeOptions } from "./arrange";
-import { backOnText, dayOffsetText, emptyStateText, resultsText, sortAnnouncement, summaryItem, viewerHoursText } from "./copy";
+import {
+  backOnText,
+  bestHoursText,
+  dayOffsetText,
+  emptyStateText,
+  hourRange,
+  resultsText,
+  sortAnnouncement,
+  summaryItem,
+  viewerHoursText,
+  workingHoursSentence,
+} from "./copy";
 
 const NOW = new Date("2026-10-16T13:00:00Z");
 const views = describePeople(KESTREL_GLOBAL, NOW, "Europe/London");
@@ -68,5 +79,21 @@ describe("copy", () => {
     expect(fullName(KESTREL_GLOBAL[0])).toBe("Amara Okafor");
     expect(view("priya-nair").utcOffsetLabel).toBe("UTC+5:30");
     expect(view("noah-bergman").utcOffsetLabel).toBe("UTC-7");
+  });
+
+  it("describes working hours and the best hours for the timeline", () => {
+    expect(workingHoursSentence(view("hana-kobayashi"))).toBe("Working hours: 09:00–18:00 local, 01:00–10:00 your time");
+    expect(workingHoursSentence(view("noah-bergman"))).toBe(
+      "Working hours: 08:00–17:00 local, 16:00–01:00 your time, ends next day",
+    );
+    expect(hourRange(23)).toBe("23:00–00:00");
+    expect(bestHoursText({ hours: [9, 14, 16], count: 5 }, 10)).toBe(
+      "The best hours to meet are 09:00–10:00, 14:00–15:00 and 16:00–17:00 your time, when 5 of 10 available people are working.",
+    );
+    expect(bestHoursText({ hours: [9], count: 1 }, 1)).toBe(
+      "The best hour to meet is 09:00–10:00 your time, when 1 of 1 available person is working.",
+    );
+    expect(bestHoursText({ hours: [], count: 0 }, 3)).toBe("No one shown is working for a whole hour today.");
+    expect(bestHoursText({ hours: [], count: 0 }, 0)).toBe("No one shown is available today.");
   });
 });

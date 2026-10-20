@@ -70,3 +70,31 @@ export function asOfText(now: Date, viewerZone: string): string {
   const at = DateTime.fromJSDate(now, { zone: viewerZone }).setLocale("en-GB");
   return `Times are for ${at.toFormat("HH:mm")} on ${at.toFormat("cccc d LLLL yyyy")} in your time zone (${viewerZone}).`;
 }
+
+/** e.g. "Working hours: 09:00–18:00 local, 01:00–10:00 your time". */
+export function workingHoursSentence(view: PersonView): string {
+  return `Working hours: ${localHoursText(view)}, ${viewerHoursText(view)}`;
+}
+
+function clock(hour: number): string {
+  return `${String(hour % 24).padStart(2, "0")}:00`;
+}
+
+/** e.g. "09:00–10:00". */
+export function hourRange(hour: number): string {
+  return `${clock(hour)}–${clock(hour + 1)}`;
+}
+
+function listText(items: string[]): string {
+  return items.length <= 1 ? (items[0] ?? "") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+}
+
+/** The sentence that names the best hours, so the overlap row never has to be read as a graphic. */
+export function bestHoursText(best: { hours: number[]; count: number }, available: number): string {
+  if (available === 0) return "No one shown is available today.";
+  if (best.hours.length === 0) return "No one shown is working for a whole hour today.";
+  const hours = best.hours.length === 1 ? "hour" : "hours";
+  const verb = best.hours.length === 1 ? "is" : "are";
+  const people = available === 1 ? "person is" : "people are";
+  return `The best ${hours} to meet ${verb} ${listText(best.hours.map(hourRange))} your time, when ${best.count} of ${available} available ${people} working.`;
+}

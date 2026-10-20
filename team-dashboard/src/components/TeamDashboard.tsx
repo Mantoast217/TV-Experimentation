@@ -12,7 +12,15 @@ import { asOfText, emptyStateText, resultsText, sortAnnouncement, STATUS_LABEL, 
 import { countByStatus, type Person } from "../lib/time";
 import { PeopleCards } from "./PeopleCards";
 import { PeopleTable } from "./PeopleTable";
+import { TimelineView } from "./TimelineView";
 import { focusRing, secondaryText, selectClass } from "./styles";
+
+type View = "list" | "timeline";
+
+const VIEW_OPTIONS: { value: View; label: string }[] = [
+  { value: "list", label: "List" },
+  { value: "timeline", label: "Timeline" },
+];
 
 interface Sort {
   key: SortKey;
@@ -43,6 +51,7 @@ export function TeamDashboard({ people, now, viewerZone }: TeamDashboardProps) {
   const [status, setStatus] = useState<StatusFilter>("all");
   const [sort, setSort] = useState<Sort>({ key: "timeZone", direction: "ascending" });
   const [sortMessage, setSortMessage] = useState("");
+  const [view, setView] = useState<View>("list");
   const searchRef = useRef<HTMLInputElement>(null);
 
   const { groups, shown } = arrange(views, { query, status, sortKey: sort.key, direction: sort.direction });
@@ -163,6 +172,26 @@ export function TeamDashboard({ people, now, viewerZone }: TeamDashboardProps) {
               </div>
             </form>
 
+            <fieldset className="m-0 flex flex-wrap items-center gap-3 border-0 p-0">
+              <legend className="mb-1.5 p-0 text-sm font-medium">View</legend>
+              {VIEW_OPTIONS.map((option) => (
+                <label
+                  key={option.value}
+                  className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-[var(--control-border)] px-4 text-sm has-[:checked]:font-medium has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--brand-blue)] has-[:focus-visible]:outline-solid"
+                >
+                  <input
+                    type="radio"
+                    name="team-view"
+                    value={option.value}
+                    checked={view === option.value}
+                    onChange={() => setView(option.value)}
+                    className="h-4 w-4 accent-[var(--brand-blue)] outline-none"
+                  />
+                  {option.label}
+                </label>
+              ))}
+            </fieldset>
+
             <p role="status" className={`m-0 text-sm ${secondaryText}`}>
               {resultsText(shown, people.length)}
             </p>
@@ -177,6 +206,8 @@ export function TeamDashboard({ people, now, viewerZone }: TeamDashboardProps) {
                   Clear search and filters
                 </Button>
               </div>
+            ) : view === "timeline" ? (
+              <TimelineView groups={groups} now={now} viewerZone={viewerZone} />
             ) : (
               <>
                 <div className="max-[760px]:hidden">

@@ -8,6 +8,10 @@
   --secondary-text: #4a4a51;
   --danger-text: #991b1b;
   --control-border: #767676;
+  /* Timeline bars: a heavy outline that meets 3:1 on its own, and a light fill that carries no meaning. */
+  --timeline-bar-outline: var(--brand-blue);
+  --timeline-bar-fill: color-mix(in srgb, var(--brand-blue) 18%, transparent);
+  --timeline-now: var(--foreground);
 }
 
 [data-theme="dark"] {

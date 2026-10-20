@@ -130,3 +130,54 @@ describe("TeamDashboard empty state", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("TeamDashboard timeline view", () => {
+  async function renderTimeline() {
+    const user = userEvent.setup();
+    const result = renderDashboard();
+    await user.click(screen.getByRole("radio", { name: "Timeline" }));
+    return { user, ...result };
+  }
+
+  it("switches views with radio buttons in a fieldset with a legend", async () => {
+    await renderTimeline();
+    expect(screen.getByRole("group", { name: "View" })).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "Timeline" })).toBeChecked();
+    expect(screen.queryByRole("table")).not.toBeInTheDocument();
+    expect(screen.getByRole("region", { name: /^Timeline/ })).toHaveAttribute("tabindex", "0");
+  });
+
+  it("names the best hours in a sentence", async () => {
+    await renderTimeline();
+    expect(
+      screen.getByText(
+        "The best hours to meet are 09:00–10:00, 14:00–15:00 and 16:00–17:00 your time, when 5 of 10 available people are working.",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("prints each person's working hours as text and hides the chart from screen readers", async () => {
+    await renderTimeline();
+    const timeline = screen.getByRole("region", { name: /^Timeline/ });
+    const hana = within(timeline).getByRole("heading", { level: 4, name: "Hana Kobayashi" }).closest("li")!;
+    expect(hana).toHaveTextContent("Working hours: 09:00–18:00 local, 01:00–10:00 your time");
+    expect(hana).toHaveTextContent("Outside working hours");
+    // Everything in the row apart from the text column is the chart.
+    const [, chart] = [...hana.children];
+    expect(chart).toHaveAttribute("aria-hidden", "true");
+    expect(within(timeline).getAllByRole("heading", { level: 4 })).toHaveLength(11);
+  });
+
+  it("applies the same search, filter and sort, and recounts the overlap for the people shown", async () => {
+    const { user } = await renderTimeline();
+    await user.selectOptions(screen.getByRole("combobox", { name: "Status" }), "holiday");
+    const timeline = screen.getByRole("region", { name: /^Timeline/ });
+    expect(within(timeline).getAllByRole("heading", { level: 4 }).map((h) => h.textContent)).toEqual(["Liam Sinclair"]);
+    expect(screen.getByText("No one shown is available today.")).toBeInTheDocument();
+  });
+
+  it("has no axe violations", async () => {
+    const { container } = await renderTimeline();
+    expect(await axe(container)).toHaveNoViolations();
+  });
+});
