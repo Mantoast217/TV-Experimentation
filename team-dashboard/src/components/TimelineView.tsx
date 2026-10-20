@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import type { Group } from "../lib/team/arrange";
-import { fullName } from "../lib/team/arrange";
 import { backOnText, bestHoursText, STATUS_LABEL, STATUS_MARKER, workingHoursSentence } from "../lib/team/copy";
 import { bestHours, DAY_MINUTES, hourlyOverlap, positionInDay, timelineSegments, viewerDay } from "../lib/time";
+import { NameButton, SelectCheckbox } from "./RowControls";
+import type { RowActions } from "./rowActions";
 import { StatusText } from "./StatusText";
 import { focusRing, secondaryText } from "./styles";
 
@@ -26,9 +27,10 @@ interface TimelineViewProps {
   groups: Group[];
   now: Date;
   viewerZone: string;
+  actions: RowActions;
 }
 
-export function TimelineView({ groups, now, viewerZone }: TimelineViewProps) {
+export function TimelineView({ groups, now, viewerZone, actions }: TimelineViewProps) {
   const day = useMemo(() => viewerDay(now, viewerZone), [now, viewerZone]);
   const nowLeft = percent(positionInDay(now, day));
   const shown = groups.flatMap((group) => group.people.map((view) => view.person));
@@ -80,7 +82,12 @@ export function TimelineView({ groups, now, viewerZone }: TimelineViewProps) {
                   return (
                     <li key={view.person.id} className={`${ROW_GRID} border-t border-[var(--separator)] py-3 text-sm`}>
                       <div className={`${STICKY_TEXT} flex flex-col gap-1`}>
-                        <h4 className="m-0 text-sm font-medium">{fullName(view.person)}</h4>
+                        <div className="-ml-2.5 flex items-center gap-1">
+                          <SelectCheckbox person={view.person} actions={actions} />
+                          <h4 className="m-0 text-sm">
+                            <NameButton person={view.person} actions={actions} />
+                          </h4>
+                        </div>
                         <p className="m-0">
                           <StatusText status={view.status} />
                           {backOn && <span className={`block ${secondaryText}`}>{backOn}</span>}

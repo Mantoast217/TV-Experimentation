@@ -1,5 +1,5 @@
 import { Button, Input } from "@heroui/react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   arrange,
   describePeople,
@@ -8,12 +8,27 @@ import {
   type SortKey,
   type StatusFilter,
 } from "../lib/team/arrange";
-import { asOfText, emptyStateText, resultsText, sortAnnouncement, STATUS_LABEL, STATUS_MARKER, summaryItem } from "../lib/team/copy";
+import {
+  asOfText,
+  emptyStateText,
+  resultsText,
+  selectionText,
+  sortAnnouncement,
+  STATUS_LABEL,
+  STATUS_MARKER,
+  summaryItem,
+} from "../lib/team/copy";
 import { countByStatus, type Person } from "../lib/time";
+import { HAND_OFF_TITLE, HandOff } from "./HandOff";
 import { PeopleCards } from "./PeopleCards";
 import { PeopleTable } from "./PeopleTable";
+import { PersonDialog } from "./PersonDialog";
+import type { RowActions } from "./rowActions";
+import { SelectionBar } from "./SelectionBar";
 import { TimelineView } from "./TimelineView";
 import { focusRing, secondaryText, selectClass } from "./styles";
+
+const PAGE_TITLE = "Team dashboard";
 
 type View = "list" | "timeline";
 
@@ -41,9 +56,11 @@ interface TeamDashboardProps {
   /** Read once by the caller. The page never updates by itself. */
   now: Date;
   viewerZone: string;
+  /** Called with the selected people, in team order, when someone chooses "Find a meeting time". */
+  onFindTime?: (selectedPeople: Person[]) => void;
 }
 
-export function TeamDashboard({ people, now, viewerZone }: TeamDashboardProps) {
+export function TeamDashboard({ people, now, viewerZone, onFindTime }: TeamDashboardProps) {
   const views = useMemo(() => describePeople(people, now, viewerZone), [people, now, viewerZone]);
   const counts = useMemo(() => countByStatus(people, now), [people, now]);
 
@@ -53,6 +70,47 @@ export function TeamDashboard({ people, now, viewerZone }: TeamDashboardProps) {
   const [sortMessage, setSortMessage] = useState("");
   const [view, setView] = useState<View>("list");
   const searchRef = useRef<HTMLInputElement>(null);
+
+  const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
+  const [selectionMessage, setSelectionMessage] = useState("");
+  const [detailsId, setDetailsId] = useState<string | null>(null);
+  const [step, setStep] = useState<"dashboard" | "handOff">("dashboard");
+  const findTimeRef = useRef<HTMLButtonElement>(null);
+  const returnFocusToFindTime = useRef(false);
+
+  const selectedPeople = people.filter((person) => selected.has(person.id));
+
+  const toggleSelected = (id: string) => {
+    const next = new Set(selected);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    setSelected(next);
+    setSelectionMessage(selectionText(next.size));
+  };
+
+  const actions: RowActions = {
+    isSelected: (id) => selected.has(id),
+    toggleSelected,
+    openDetails: (person) => setDetailsId(person.id),
+  };
+
+  const findTime = () => {
+    setStep("handOff");
+    onFindTime?.(selectedPeople);
+  };
+
+  const backToDashboard = () => {
+    returnFocusToFindTime.current = true;
+    setStep("dashboard");
+  };
+
+  useEffect(() => {
+    document.title = step === "handOff" ? HAND_OFF_TITLE : PAGE_TITLE;
+    if (step === "dashboard" && returnFocusToFindTime.current) {
+      returnFocusToFindTime.current = false;
+      findTimeRef.current?.focus();
+    }
+  }, [step]);
 
   const { groups, shown } = arrange(views, { query, status, sortKey: sort.key, direction: sort.direction });
 
@@ -92,6 +150,10 @@ export function TeamDashboard({ people, now, viewerZone }: TeamDashboardProps) {
 
       <main id="main" tabIndex={-1} className="flex flex-1 justify-center px-6 pt-6 pb-12 outline-none">
         <div className="flex w-full max-w-[1040px] flex-col gap-8">
+          {step === "handOff" ? (
+            <HandOff people={selectedPeople} onBack={backToDashboard} />
+          ) : (
+          <>
           <div className="flex flex-col gap-2">
             <h1 className="m-0 text-xl font-medium">Team dashboard</h1>
             <p className={`m-0 text-sm ${secondaryText}`}>
@@ -207,22 +269,40 @@ export function TeamDashboard({ people, now, viewerZone }: TeamDashboardProps) {
                 </Button>
               </div>
             ) : view === "timeline" ? (
-              <TimelineView groups={groups} now={now} viewerZone={viewerZone} />
+              <TimelineView groups={groups} now={now} viewerZone={viewerZone} actions={actions} />
             ) : (
               <>
                 <div className="max-[760px]:hidden">
-                  <PeopleTable groups={groups} sort={sort} onSort={sortByColumn} />
+                  <PeopleTable groups={groups} sort={sort} onSort={sortByColumn} actions={actions} />
                 </div>
                 <div className="min-[761px]:hidden">
-                  <PeopleCards groups={groups} />
+                  <PeopleCards groups={groups} actions={actions} />
                 </div>
               </>
             )}
           </section>
+          </>
+          )}
+          <p role="status" className="sr-only">
+            {selectionMessage}
+          </p>
         </div>
       </main>
 
-      <footer className="flex justify-center px-6 pb-8">
+      {step === "dashboard" && selected.size > 0 && (
+        <SelectionBar ref={findTimeRef} count={selected.size} onFindTime={findTime} />
+      )}
+      <PersonDialog
+        view={views.find((v) => v.person.id === detailsId) ?? null}
+        now={now}
+        viewerZone={viewerZone}
+        isSelected={detailsId !== null && selected.has(detailsId)}
+        selectedCount={selected.size}
+        onToggleSelected={() => detailsId && toggleSelected(detailsId)}
+        onClose={() => setDetailsId(null)}
+      />
+
+      <footer className="flex justify-center px-6 pb-[calc(2rem+var(--sticky-bottom-space,0px))]">
         <p className={`m-0 w-full max-w-[1040px] text-xs ${secondaryText}`}>
           Kestrel Global is a fictional company. Everyone shown here is sample data.
         </p>

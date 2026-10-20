@@ -1,10 +1,11 @@
 import type { Group, SortDirection, SortKey } from "../lib/team/arrange";
-import { fullName } from "../lib/team/arrange";
 import { backOnText, dayOffsetText, localHoursText, STATUS_LABEL, STATUS_MARKER, viewerHoursText } from "../lib/team/copy";
+import { NameButton, SelectCheckbox } from "./RowControls";
+import type { RowActions } from "./rowActions";
 import { StatusText } from "./StatusText";
 import { focusRing, secondaryText } from "./styles";
 
-const COLUMN_COUNT = 6;
+const COLUMN_COUNT = 7;
 
 interface SortableHeaderProps {
   label: string;
@@ -35,14 +36,18 @@ interface PeopleTableProps {
   groups: Group[];
   sort: { key: SortKey; direction: SortDirection };
   onSort: (key: SortKey) => void;
+  actions: RowActions;
 }
 
-export function PeopleTable({ groups, sort, onSort }: PeopleTableProps) {
+export function PeopleTable({ groups, sort, onSort, actions }: PeopleTableProps) {
   return (
     <table className="w-full border-collapse text-sm">
       <caption className="sr-only">Kestrel Global team, grouped by status</caption>
       <thead>
         <tr className="border-b border-[var(--control-border)]">
+          <th scope="col" className="w-12 px-1">
+            <span className="sr-only">Select</span>
+          </th>
           <SortableHeader label="Name" sortKey="name" current={sort} onSort={onSort} />
           <th scope="col" className="px-3 text-left font-medium">
             Role
@@ -72,8 +77,11 @@ export function PeopleTable({ groups, sort, onSort }: PeopleTableProps) {
             const backOn = backOnText(view);
             return (
               <tr key={view.person.id} className="border-t border-[var(--separator)] align-top">
-                <th scope="row" className="px-3 py-3 text-left font-medium">
-                  {fullName(view.person)}
+                <td className="px-1 py-1">
+                  <SelectCheckbox person={view.person} actions={actions} />
+                </td>
+                <th scope="row" className="px-3 py-3 text-left">
+                  <NameButton person={view.person} actions={actions} />
                 </th>
                 <td className="px-3 py-3">{view.person.role}</td>
                 <td className="px-3 py-3">

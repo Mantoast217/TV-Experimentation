@@ -9,6 +9,7 @@ import {
   nextWorkingWindow,
   statusAt,
   timelineSegments,
+  upcomingOutOfOffice,
   viewerDay,
   workingHoursInZone,
   type Person,
@@ -207,5 +208,26 @@ describe("clock changes", () => {
     const overlap = hourlyOverlap(KESTREL_GLOBAL, new Date("2026-03-29T12:00:00Z"), LONDON);
     expect(overlap.hours).toHaveLength(24);
     expect(overlap.hours[1]).toEqual({ hour: 1, count: 0 });
+  });
+});
+
+describe("upcoming out-of-office dates", () => {
+  it("keeps ranges that haven't ended in the person's own zone, earliest first", () => {
+    const person = {
+      ...KESTREL_GLOBAL[0],
+      outOfOffice: [
+        { start: "2026-12-21", end: "2026-12-31" },
+        { start: "2026-10-01", end: "2026-10-15" },
+        { start: "2026-10-16", end: "2026-10-16" },
+      ],
+    };
+    expect(upcomingOutOfOffice(person, ACCEPTANCE_NOW)).toEqual([
+      { start: "2026-10-16", end: "2026-10-16" },
+      { start: "2026-12-21", end: "2026-12-31" },
+    ]);
+  });
+
+  it("includes the holiday someone is on now", () => {
+    expect(upcomingOutOfOffice(person("liam-sinclair"), ACCEPTANCE_NOW)).toEqual([{ start: "2026-10-12", end: "2026-10-23" }]);
   });
 });

@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import type { Status } from "../time";
+import type { DateRange, Status } from "../time";
 import type { PersonView, SortDirection, SortKey } from "./arrange";
 
 export const STATUS_LABEL: Record<Status, string> = {
@@ -97,4 +97,37 @@ export function bestHoursText(best: { hours: number[]; count: number }, availabl
   const verb = best.hours.length === 1 ? "is" : "are";
   const people = available === 1 ? "person is" : "people are";
   return `The best ${hours} to meet ${verb} ${listText(best.hours.map(hourRange))} your time, when ${best.count} of ${available} available ${people} working.`;
+}
+
+export function selectionText(count: number): string {
+  if (count === 0) return "No one selected";
+  return `${count} ${count === 1 ? "person" : "people"} selected`;
+}
+
+/** e.g. "Monday 19 October, 09:00–17:00", or "Sunday 18 October 23:00 to Monday 19 October 07:00" across midnight. */
+export function windowText(start: Date, end: Date, zone: string): string {
+  const from = DateTime.fromJSDate(start, { zone }).setLocale("en-GB");
+  const to = DateTime.fromJSDate(end, { zone }).setLocale("en-GB");
+  if (from.toISODate() === to.toISODate()) {
+    return `${from.toFormat("cccc d LLLL")}, ${from.toFormat("HH:mm")}–${to.toFormat("HH:mm")}`;
+  }
+  return `${from.toFormat("cccc d LLLL HH:mm")} to ${to.toFormat("cccc d LLLL HH:mm")}`;
+}
+
+/** e.g. "2 to 6 November 2026", "30 October to 2 November 2026" or "2 November 2026". */
+export function dateRangeText(range: DateRange): string {
+  const from = DateTime.fromISO(range.start, { locale: "en-GB" });
+  const to = DateTime.fromISO(range.end, { locale: "en-GB" });
+  if (range.start === range.end) return to.toFormat("d LLLL yyyy");
+  if (from.year !== to.year) return `${from.toFormat("d LLLL yyyy")} to ${to.toFormat("d LLLL yyyy")}`;
+  if (from.month !== to.month) return `${from.toFormat("d LLLL")} to ${to.toFormat("d LLLL yyyy")}`;
+  return `${from.toFormat("d")} to ${to.toFormat("d LLLL yyyy")}`;
+}
+
+export const COPY_SUCCESS = "Email address copied.";
+export const COPY_FAILURE = "Could not copy the email address. Select it and copy it yourself.";
+
+/** e.g. "Friday 16 October, 17:00". */
+export function momentText(at: Date, zone: string): string {
+  return DateTime.fromJSDate(at, { zone }).setLocale("en-GB").toFormat("cccc d LLLL, HH:mm");
 }

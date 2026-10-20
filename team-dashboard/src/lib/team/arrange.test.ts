@@ -4,13 +4,17 @@ import { arrange, describePeople, fullName, matchesSearch, type ArrangeOptions }
 import {
   backOnText,
   bestHoursText,
+  dateRangeText,
   dayOffsetText,
   emptyStateText,
   hourRange,
+  momentText,
   resultsText,
+  selectionText,
   sortAnnouncement,
   summaryItem,
   viewerHoursText,
+  windowText,
   workingHoursSentence,
 } from "./copy";
 
@@ -95,5 +99,21 @@ describe("copy", () => {
     );
     expect(bestHoursText({ hours: [], count: 0 }, 3)).toBe("No one shown is working for a whole hour today.");
     expect(bestHoursText({ hours: [], count: 0 }, 0)).toBe("No one shown is available today.");
+  });
+
+  it("describes selection, working windows and out-of-office dates", () => {
+    expect(selectionText(0)).toBe("No one selected");
+    expect(selectionText(1)).toBe("1 person selected");
+    expect(selectionText(3)).toBe("3 people selected");
+    // Zoe's Monday in Sydney, shown in Sydney and then in London.
+    const start = new Date("2026-10-18T22:00:00Z");
+    const end = new Date("2026-10-19T06:00:00Z");
+    expect(windowText(start, end, "Australia/Sydney")).toBe("Monday 19 October, 09:00–17:00");
+    expect(windowText(start, end, "Europe/London")).toBe("Sunday 18 October 23:00 to Monday 19 October 07:00");
+    expect(dateRangeText({ start: "2026-11-02", end: "2026-11-06" })).toBe("2 to 6 November 2026");
+    expect(dateRangeText({ start: "2026-10-30", end: "2026-11-02" })).toBe("30 October to 2 November 2026");
+    expect(dateRangeText({ start: "2026-12-28", end: "2027-01-04" })).toBe("28 December 2026 to 4 January 2027");
+    expect(dateRangeText({ start: "2026-11-02", end: "2026-11-02" })).toBe("2 November 2026");
+    expect(momentText(new Date("2026-10-16T16:00:00Z"), "Europe/London")).toBe("Friday 16 October, 17:00");
   });
 });

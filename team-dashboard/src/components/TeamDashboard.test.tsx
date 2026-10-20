@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
 import { KESTREL_GLOBAL } from "../data/kestrelGlobal";
@@ -179,5 +179,140 @@ describe("TeamDashboard timeline view", () => {
   it("has no axe violations", async () => {
     const { container } = await renderTimeline();
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe("TeamDashboard selection and hand-off", () => {
+  const checkbox = (name: string) => within(table()).getByRole("checkbox", { name: `Select ${name}` });
+
+  it("shows a sticky bar with the count once someone is selected, and announces each change", async () => {
+    const user = userEvent.setup();
+    renderDashboard();
+    expect(screen.queryByRole("region", { name: "Selected people" })).not.toBeInTheDocument();
+
+    await user.click(checkbox("Hana Kobayashi"));
+    await user.click(checkbox("Arnold Beethoven"));
+    const bar = screen.getByRole("region", { name: "Selected people" });
+    expect(bar).toHaveTextContent("2 people selected");
+    expect(within(bar).getByRole("button", { name: "Find a meeting time" })).toBeInTheDocument();
+    expect(screen.getAllByText("2 people selected").some((el) => el.getAttribute("role") === "status")).toBe(true);
+
+    await user.click(checkbox("Hana Kobayashi"));
+    await user.click(checkbox("Arnold Beethoven"));
+    expect(screen.queryByRole("region", { name: "Selected people" })).not.toBeInTheDocument();
+    expect(screen.getByText("No one selected")).toHaveAttribute("role", "status");
+  });
+
+  it("keeps selections while searching, and in the timeline", async () => {
+    const user = userEvent.setup();
+    renderDashboard();
+    await user.click(checkbox("Zoe Fitzgerald"));
+    await user.type(screen.getByRole("searchbox", { name: "Search by name, role or city" }), "tokyo");
+    expect(screen.getByRole("region", { name: "Selected people" })).toHaveTextContent("1 person selected");
+    await user.clear(screen.getByRole("searchbox", { name: "Search by name, role or city" }));
+    await user.click(screen.getByRole("radio", { name: "Timeline" }));
+    const timeline = screen.getByRole("region", { name: /^Timeline/ });
+    expect(within(timeline).getByRole("checkbox", { name: "Select Zoe Fitzgerald" })).toBeChecked();
+  });
+
+  it("hands the selected people to onFindTime, moves focus to the heading and back again", async () => {
+    const user = userEvent.setup();
+    const onFindTime = vi.fn();
+    render(<TeamDashboard people={KESTREL_GLOBAL} now={NOW} viewerZone="Europe/London" onFindTime={onFindTime} />);
+    // Selected out of team order; the hand-off lists them in team order.
+    await user.click(checkbox("Zoe Fitzgerald"));
+    await user.click(checkbox("Amara Okafor"));
+    await user.click(screen.getByRole("button", { name: "Find a meeting time" }));
+
+    expect(onFindTime).toHaveBeenCalledWith([KESTREL_GLOBAL[0], KESTREL_GLOBAL[7]]);
+    const heading = screen.getByRole("heading", { level: 1, name: "Find a meeting time" });
+    expect(heading).toHaveFocus();
+    expect(document.title).toBe("Find a meeting time – Team dashboard");
+    expect(screen.getByText("Amara Okafor")).toBeInTheDocument();
+    expect(screen.getByText("Zoe Fitzgerald")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Back" }));
+    expect(document.title).toBe("Team dashboard");
+    expect(screen.getByRole("button", { name: "Find a meeting time" })).toHaveFocus();
+    expect(checkbox("Zoe Fitzgerald")).toBeChecked();
+  });
+
+  it("has no axe violations on the hand-off step", async () => {
+    const user = userEvent.setup();
+    const { container } = renderDashboard();
+    await user.click(checkbox("Hana Kobayashi"));
+    await user.click(screen.getByRole("button", { name: "Find a meeting time" }));
+    expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe("TeamDashboard person details", () => {
+  async function openDetails(name: string) {
+    const user = userEvent.setup();
+    renderDashboard();
+    const trigger = within(table()).getByRole("button", { name });
+    await user.click(trigger);
+    return { user, trigger, dialog: await screen.findByRole("dialog", { name }) };
+  }
+
+  it("shows the next working time, time off and email", async () => {
+    const { dialog } = await openDetails("Zoe Fitzgerald");
+    expect(dialog).toHaveTextContent("00:00 Saturday, 1 day ahead (UTC+11)");
+    expect(dialog).toHaveTextContent("Next working time");
+    expect(dialog).toHaveTextContent("Monday 19 October, 09:00–17:00 local");
+    expect(dialog).toHaveTextContent("Sunday 18 October 23:00 to Monday 19 October 07:00 your time");
+    expect(dialog).toHaveTextContent("No time off booked");
+    expect(dialog).toHaveTextContent("zoe.fitzgerald@kestrelglobal.example");
+  });
+
+  it("says how long someone working now is working for, and lists their upcoming time off", async () => {
+    const { dialog } = await openDetails("Sofia Bergström");
+    expect(dialog).toHaveTextContent("Working until");
+    expect(dialog).toHaveTextContent("Friday 16 October, 16:00 local");
+    expect(dialog).toHaveTextContent("Friday 16 October, 15:00 your time");
+    expect(dialog).toHaveTextContent("2 to 6 November 2026");
+  });
+
+  it("closes with Esc and returns focus to the name button", async () => {
+    const { user, trigger } = await openDetails("Hana Kobayashi");
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    // React Aria restores focus on the next animation frame.
+    await waitFor(() => expect(trigger).toHaveFocus());
+  });
+
+  it("adds the person to the meeting", async () => {
+    const { user, dialog } = await openDetails("Hana Kobayashi");
+    await user.click(within(dialog).getByRole("button", { name: "Add to meeting" }));
+    expect(within(dialog).getByRole("button", { name: "Remove from meeting" })).toBeInTheDocument();
+    // The page behind is hidden from assistive technology, so the dialog announces it.
+    expect(within(dialog).getByRole("status")).toHaveTextContent("Added to the meeting. 1 person selected.");
+
+    await user.click(within(dialog).getByRole("button", { name: "Remove from meeting" }));
+    expect(within(dialog).getByRole("status")).toHaveTextContent("Removed from the meeting. No one selected.");
+    await user.click(within(dialog).getByRole("button", { name: "Add to meeting" }));
+    await user.click(within(dialog).getByRole("button", { name: "Close" }));
+    expect(screen.getByRole("region", { name: "Selected people" })).toHaveTextContent("1 person selected");
+  });
+
+  it("says when the email address was copied", async () => {
+    const { user, dialog } = await openDetails("Hana Kobayashi");
+    await user.click(within(dialog).getByRole("button", { name: "Copy email" }));
+    expect(within(dialog).getByRole("status")).toHaveTextContent("Email address copied.");
+    expect(await navigator.clipboard.readText()).toBe("hana.kobayashi@kestrelglobal.example");
+  });
+
+  it("says when copying fails, without throwing", async () => {
+    const { user, dialog } = await openDetails("Hana Kobayashi");
+    vi.spyOn(navigator.clipboard, "writeText").mockRejectedValue(new Error("Denied"));
+    await user.click(within(dialog).getByRole("button", { name: "Copy email" }));
+    expect(within(dialog).getByRole("status")).toHaveTextContent(
+      "Could not copy the email address. Select it and copy it yourself.",
+    );
+  });
+
+  it("has no axe violations with the dialog open", async () => {
+    await openDetails("Liam Sinclair");
+    expect(await axe(document.body)).toHaveNoViolations();
   });
 });

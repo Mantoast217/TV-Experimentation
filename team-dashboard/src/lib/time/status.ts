@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import type { Person, Status, TimeWindow } from "./types";
+import type { DateRange, Person, Status, TimeWindow } from "./types";
 import { addDays, daysBetween, formatTime, inZone, wallTimeToInstant } from "./zone";
 
 const SATURDAY = 6;
@@ -65,4 +65,10 @@ export function countByStatus(people: readonly Person[], now: Date): StatusCount
   const counts: StatusCounts = { working: 0, outside: 0, holiday: 0 };
   for (const person of people) counts[statusAt(person, now)]++;
   return counts;
+}
+
+/** Out-of-office ranges that haven't ended yet in the person's own zone, earliest first. */
+export function upcomingOutOfOffice(person: Person, now: Date): DateRange[] {
+  const today = inZone(now, person.ianaTimeZone).toISODate()!;
+  return person.outOfOffice.filter((range) => range.end >= today).sort((a, b) => a.start.localeCompare(b.start));
 }

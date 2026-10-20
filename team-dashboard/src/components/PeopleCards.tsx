@@ -1,11 +1,12 @@
 import type { Group } from "../lib/team/arrange";
-import { fullName } from "../lib/team/arrange";
 import { backOnText, dayOffsetText, localHoursText, STATUS_LABEL, STATUS_MARKER, viewerHoursText } from "../lib/team/copy";
+import { NameButton, SelectCheckbox } from "./RowControls";
+import type { RowActions } from "./rowActions";
 import { StatusText } from "./StatusText";
 import { secondaryText } from "./styles";
 
 /** The narrow-screen layout: the same groups and order as the table, as lists of cards. */
-export function PeopleCards({ groups }: { groups: Group[] }) {
+export function PeopleCards({ groups, actions }: { groups: Group[]; actions: RowActions }) {
   return (
     <div className="flex flex-col gap-6">
       {groups.map((group) => (
@@ -23,7 +24,12 @@ export function PeopleCards({ groups }: { groups: Group[] }) {
                   key={view.person.id}
                   className="flex flex-col gap-2 rounded-lg border border-[var(--control-border)] bg-[var(--surface)] p-4 text-sm"
                 >
-                  <h4 className="m-0 text-base font-medium">{fullName(view.person)}</h4>
+                  <div className="flex items-center gap-2">
+                    <SelectCheckbox person={view.person} actions={actions} />
+                    <h4 className="m-0 text-base">
+                      <NameButton person={view.person} actions={actions} />
+                    </h4>
+                  </div>
                   <p className={`m-0 ${secondaryText}`}>
                     {view.person.role}, {view.person.city}, {view.person.country} ({view.utcOffsetLabel})
                   </p>

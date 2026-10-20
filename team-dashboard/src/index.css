@@ -37,3 +37,8 @@ body {
   min-height: 100svh;
 }
 
+
+/* Set by SelectionBar while it's showing, so focused elements are never scrolled under it. */
+html {
+  scroll-padding-bottom: var(--sticky-bottom-space, 0px);
+}
