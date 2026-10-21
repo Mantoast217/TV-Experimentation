@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isValidTimeZone } from "../lib/time";
+import { isValidTimeZone, TIME_ZONE_ABBREVIATIONS } from "../lib/time";
 import { KESTREL_GLOBAL } from "./kestrelGlobal";
 
 const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
@@ -23,5 +23,10 @@ describe("Kestrel Global sample team", () => {
       expect(range.end).toMatch(DATE);
       expect(range.start <= range.end).toBe(true);
     }
+  });
+
+  it("has searchable abbreviations for every zone except São Paulo, which has no common one", () => {
+    const missing = [...new Set(KESTREL_GLOBAL.map((p) => p.ianaTimeZone))].filter((zone) => !TIME_ZONE_ABBREVIATIONS[zone]);
+    expect(missing).toEqual(["America/Sao_Paulo"]);
   });
 });

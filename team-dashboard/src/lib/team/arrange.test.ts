@@ -51,11 +51,44 @@ describe("arrange", () => {
   });
 
   it("searches name, role and city, ignoring case and accents", () => {
-    expect(matchesSearch(KESTREL_GLOBAL[5], "bergstrom")).toBe(true);
+    expect(matchesSearch(views[5], "bergstrom")).toBe(true);
     expect(arrange(views, { ...defaults, query: "designer" }).shown).toBe(2);
     expect(arrange(views, { ...defaults, query: "LONDON" }).shown).toBe(2);
     expect(arrange(views, { ...defaults, query: "  " }).shown).toBe(11);
     expect(arrange(views, { ...defaults, query: "nobody" })).toEqual({ groups: [], shown: 0 });
+  });
+
+  const found = (query: string) =>
+    arrange(views, { ...defaults, query, sortKey: "name" })
+      .groups.flatMap((g) => g.people.map((v) => v.person.firstName))
+      .sort();
+
+  it("searches by country", () => {
+    expect(found("japan")).toEqual(["Hana"]);
+    expect(found("United States")).toEqual(["Ethan", "Noah"]);
+    expect(found("kingdom")).toEqual(["Arnold", "Liam"]);
+  });
+
+  it("searches by time zone abbreviation, standard or summer time, from the start", () => {
+    expect(found("JST")).toEqual(["Hana"]);
+    expect(found("bst")).toEqual(["Arnold", "Liam"]);
+    expect(found("GMT")).toEqual(["Arnold", "Liam"]);
+    expect(found("aest")).toEqual(["Zoe"]);
+    expect(found("AEDT")).toEqual(["Zoe"]);
+    // From the start, so EST is New York and not Stockholm's CEST.
+    expect(found("EST")).toEqual(["Ethan"]);
+    expect(found("CEST")).toEqual(["Sofia"]);
+  });
+
+  it("searches by UTC offset exactly, with or without UTC or GMT in front", () => {
+    expect(found("UTC+9")).toEqual(["Hana"]);
+    expect(found("gmt+9")).toEqual(["Hana"]);
+    expect(found("+5:30")).toEqual(["Priya"]);
+    expect(found("UTC+0530")).toEqual(["Priya"]);
+    expect(found("UTC-7")).toEqual(["Noah"]);
+    // Exact, so +1 is London and not Sydney's +11.
+    expect(found("+1")).toEqual(["Arnold", "Liam"]);
+    expect(found("UTC+12")).toEqual([]);
   });
 });
 

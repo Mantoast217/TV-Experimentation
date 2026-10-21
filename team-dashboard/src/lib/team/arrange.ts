@@ -3,6 +3,7 @@ import {
   localTime,
   nextWorkingWindow,
   statusAt,
+  TIME_ZONE_ABBREVIATIONS,
   workingHoursInZone,
   type ConvertedHours,
   type Person,
@@ -63,11 +64,29 @@ function fold(text: string): string {
   return text.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
 }
 
-/** Matches name, role or city. An empty query matches everyone. */
-export function matchesSearch(person: Person, query: string): boolean {
+/** "UTC+5:30", "gmt-7", "+1" or "+0530" as minutes ahead of UTC, or null if the query isn't an offset. */
+function parseOffset(query: string): number | null {
+  const match = /^(?:utc|gmt)?\s*([+-])\s*(\d{1,2})(?::?(\d{2}))?$/.exec(query);
+  if (!match) return null;
+  const minutes = Number(match[2]) * 60 + Number(match[3] ?? 0);
+  return match[1] === "-" ? -minutes : minutes;
+}
+
+/**
+ * Matches name, role, city or country anywhere in the text; a time zone abbreviation from its
+ * start ("ES" finds EST but not CEST); or a UTC offset exactly ("+1" doesn't find UTC+11). An
+ * empty query matches everyone.
+ */
+export function matchesSearch(view: PersonView, query: string): boolean {
   const needle = fold(query.trim());
   if (!needle) return true;
-  return [fullName(person), person.role, person.city].some((field) => fold(field).includes(needle));
+  const { person } = view;
+  const offset = parseOffset(needle);
+  if (offset !== null) return offset === view.utcOffsetMinutes;
+  return (
+    [fullName(person), person.role, person.city, person.country].some((field) => fold(field).includes(needle)) ||
+    (TIME_ZONE_ABBREVIATIONS[person.ianaTimeZone] ?? []).some((abbreviation) => fold(abbreviation).startsWith(needle))
+  );
 }
 
 const collator = new Intl.Collator("en-GB");
@@ -102,7 +121,7 @@ export interface Group {
 export function arrange(views: readonly PersonView[], options: ArrangeOptions): { groups: Group[]; shown: number } {
   const sign = options.direction === "ascending" ? 1 : -1;
   const matching = views.filter(
-    (view) => (options.status === "all" || view.status === options.status) && matchesSearch(view.person, options.query),
+    (view) => (options.status === "all" || view.status === options.status) && matchesSearch(view, options.query),
   );
   const sorted = [...matching].sort((a, b) => sign * compare(a, b, options.sortKey));
   const groups = STATUS_ORDER.map((status) => ({ status, people: sorted.filter((view) => view.status === status) })).filter(

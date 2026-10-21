@@ -1,4 +1,5 @@
 export type { DateRange, Person, Status, TimeWindow, WorkingHours } from "./types";
+export { TIME_ZONE_ABBREVIATIONS } from "./abbreviations";
 export { browserTimeZone, isValidTimeZone } from "./zone";
 export {
   countByStatus,

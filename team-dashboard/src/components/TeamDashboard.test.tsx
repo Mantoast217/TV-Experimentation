@@ -79,9 +79,24 @@ describe("TeamDashboard list view", () => {
     const user = userEvent.setup();
     renderDashboard();
     expect(screen.getByText("Showing 11 of 11 people")).toHaveAttribute("role", "status");
-    await user.type(screen.getByRole("searchbox", { name: "Search by name, role or city" }), "tokyo");
+    await user.type(screen.getByRole("searchbox", { name: "Search by name, role, city, country or time zone" }), "tokyo");
     expect(screen.getByText("Showing 1 of 11 people")).toBeInTheDocument();
     expect(rowNames()).toEqual(["Hana Kobayashi"]);
+  });
+
+  it("searches by country and time zone too, and explains how in a hint", async () => {
+    const user = userEvent.setup();
+    renderDashboard();
+    const search = screen.getByRole("searchbox", { name: "Search by name, role, city, country or time zone" });
+    expect(search).toHaveAccessibleDescription("For example, Tokyo, Japan, JST or UTC+9");
+    await user.type(search, "united states");
+    expect(rowNames()).toEqual(["Ethan Walker", "Noah Bergman"]);
+    await user.clear(search);
+    await user.type(search, "aedt");
+    expect(rowNames()).toEqual(["Zoe Fitzgerald"]);
+    await user.clear(search);
+    await user.type(search, "UTC+5:30");
+    expect(rowNames()).toEqual(["Priya Nair"]);
   });
 
   it("filters by status", async () => {
@@ -108,7 +123,7 @@ describe("TeamDashboard empty state", () => {
   it("names the search, offers to clear it and returns focus to the search box", async () => {
     const user = userEvent.setup();
     renderDashboard();
-    const search = screen.getByRole("searchbox", { name: "Search by name, role or city" });
+    const search = screen.getByRole("searchbox", { name: "Search by name, role, city, country or time zone" });
     await user.type(search, "zzz");
     await user.selectOptions(screen.getByRole("combobox", { name: "Status" }), "working");
 
@@ -126,7 +141,7 @@ describe("TeamDashboard empty state", () => {
   it("has no axe violations", async () => {
     const user = userEvent.setup();
     const { container } = renderDashboard();
-    await user.type(screen.getByRole("searchbox", { name: "Search by name, role or city" }), "zzz");
+    await user.type(screen.getByRole("searchbox", { name: "Search by name, role, city, country or time zone" }), "zzz");
     expect(await axe(container)).toHaveNoViolations();
   });
 });
@@ -207,9 +222,9 @@ describe("TeamDashboard selection and hand-off", () => {
     const user = userEvent.setup();
     renderDashboard();
     await user.click(checkbox("Zoe Fitzgerald"));
-    await user.type(screen.getByRole("searchbox", { name: "Search by name, role or city" }), "tokyo");
+    await user.type(screen.getByRole("searchbox", { name: "Search by name, role, city, country or time zone" }), "tokyo");
     expect(screen.getByRole("region", { name: "Selected people" })).toHaveTextContent("1 person selected");
-    await user.clear(screen.getByRole("searchbox", { name: "Search by name, role or city" }));
+    await user.clear(screen.getByRole("searchbox", { name: "Search by name, role, city, country or time zone" }));
     await user.click(screen.getByRole("radio", { name: "Timeline" }));
     const timeline = screen.getByRole("region", { name: /^Timeline/ });
     expect(within(timeline).getByRole("checkbox", { name: "Select Zoe Fitzgerald" })).toBeChecked();

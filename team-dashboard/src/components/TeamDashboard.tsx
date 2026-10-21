@@ -181,20 +181,24 @@ export function TeamDashboard({ people, now, viewerZone, onFindTime }: TeamDashb
             </h2>
 
             <form role="search" aria-label="Filter and sort the team" onSubmit={(e) => e.preventDefault()} className="grid gap-4 sm:grid-cols-3">
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col justify-end gap-1.5">
                 <label htmlFor="team-search" className="text-sm font-medium">
-                  Search by name, role or city
+                  Search by name, role, city, country or time zone
                 </label>
+                <p id="team-search-hint" className={`m-0 text-sm ${secondaryText}`}>
+                  For example, Tokyo, Japan, JST or UTC+9
+                </p>
                 <Input
                   ref={searchRef}
                   id="team-search"
                   type="search"
+                  aria-describedby="team-search-hint"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   className="min-h-11 border border-[var(--control-border)]"
                 />
               </div>
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col justify-end gap-1.5">
                 <label htmlFor="team-status" className="text-sm font-medium">
                   Status
                 </label>
@@ -212,7 +216,7 @@ export function TeamDashboard({ people, now, viewerZone, onFindTime }: TeamDashb
                   ))}
                 </select>
               </div>
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col justify-end gap-1.5">
                 <label htmlFor="team-sort" className="text-sm font-medium">
                   Sort by
                 </label>
