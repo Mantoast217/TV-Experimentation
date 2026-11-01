@@ -2783,8 +2783,7 @@
     "country": "Canada",
     "countryCode": "CA",
     "timezone": "America/Inuvik",
-    "stdAbbreviation": "MST",
-    "dstAbbreviation": "MDT"
+    "stdAbbreviation": "CST"
   },
   {
     "id": "ca-iqaluit-zone",
@@ -7278,8 +7277,7 @@
     "country": "Canada",
     "countryCode": "CA",
     "timezone": "America/Winnipeg",
-    "stdAbbreviation": "CST",
-    "dstAbbreviation": "CDT"
+    "stdAbbreviation": "EST"
   },
   {
     "id": "cn-wuchang-1791351",
