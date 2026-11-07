@@ -4,7 +4,7 @@ import { fullName, type PersonView } from "../lib/team/arrange";
 import { COPY_FAILURE, COPY_SUCCESS, dateRangeText, dayOffsetText, momentText, selectionText, windowText } from "../lib/team/copy";
 import { nextWorkingWindow, upcomingOutOfOffice } from "../lib/time";
 import { StatusText } from "./StatusText";
-import { secondaryText } from "./styles";
+import { focusRing, secondaryText } from "./styles";
 
 interface PersonDialogProps {
   view: PersonView | null;
@@ -138,13 +138,13 @@ function Details({ view, now, viewerZone, isSelected, onToggleSelected, message,
         </p>
       </Modal.Body>
       <Modal.Footer className="flex flex-wrap gap-3">
-        <Button className="min-h-11 bg-[var(--brand-blue)] text-[var(--background)]" onPress={onToggleSelected}>
+        <Button className={`min-h-11 bg-[var(--brand-blue)] text-[var(--background)] ${focusRing}`} onPress={onToggleSelected}>
           {isSelected ? "Remove from meeting" : "Add to meeting"}
         </Button>
-        <Button variant="outline" className="min-h-11 border-[var(--control-border)]" onPress={onCopy}>
+        <Button variant="outline" className={`min-h-11 border-[var(--control-border)] ${focusRing}`} onPress={onCopy}>
           Copy email
         </Button>
-        <Button variant="outline" className="min-h-11 border-[var(--control-border)]" onPress={onClose}>
+        <Button variant="outline" className={`min-h-11 border-[var(--control-border)] ${focusRing}`} onPress={onClose}>
           Close
         </Button>
       </Modal.Footer>

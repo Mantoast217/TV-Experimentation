@@ -195,7 +195,7 @@ export function TeamDashboard({ people, now, viewerZone, onFindTime }: TeamDashb
                   aria-describedby="team-search-hint"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="min-h-11 border border-[var(--control-border)]"
+                  className={`min-h-11 border border-[var(--control-border)] ${focusRing}`}
                 />
               </div>
               <div className="flex flex-col justify-end gap-1.5">
@@ -268,7 +268,7 @@ export function TeamDashboard({ people, now, viewerZone, onFindTime }: TeamDashb
             {shown === 0 ? (
               <div className="flex flex-col items-start gap-3 rounded-lg border border-[var(--control-border)] p-6">
                 <p className="m-0">{emptyStateText(query)}</p>
-                <Button variant="outline" className="min-h-11 border-[var(--control-border)]" onPress={clearSearchAndFilters}>
+                <Button variant="outline" className={`min-h-11 border-[var(--control-border)] ${focusRing}`} onPress={clearSearchAndFilters}>
                   Clear search and filters
                 </Button>
               </div>

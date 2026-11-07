@@ -1,6 +1,7 @@
 import { Button } from "@heroui/react";
 import { forwardRef, useLayoutEffect, useRef } from "react";
 import { selectionText } from "../lib/team/copy";
+import { focusRing } from "./styles";
 
 const SPACE_VAR = "--sticky-bottom-space";
 /** Gap kept between a focused element and the top of the bar. */
@@ -45,7 +46,7 @@ export const SelectionBar = forwardRef<HTMLButtonElement, SelectionBarProps>(fun
     >
       <div className="flex w-full max-w-[1040px] flex-wrap items-center justify-between gap-3">
         <p className="m-0 text-sm font-medium">{selectionText(count)}</p>
-        <Button ref={findTimeRef} className="min-h-11 bg-[var(--brand-blue)] text-[var(--background)]" onPress={onFindTime}>
+        <Button ref={findTimeRef} className={`min-h-11 bg-[var(--brand-blue)] text-[var(--background)] ${focusRing}`} onPress={onFindTime}>
           Find a meeting time
         </Button>
       </div>

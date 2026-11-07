@@ -109,7 +109,8 @@ export function TimelineView({ groups, now, viewerZone, actions }: TimelineViewP
                             style={{ left: percent(segment.startMinute), width: percent(segment.endMinute - segment.startMinute) }}
                           />
                         ))}
-                        <span className="absolute -inset-y-3 w-0.5 bg-[var(--timeline-now)]" style={{ left: nowLeft }} />
+                        {/* A border, not a background, so it still shows in forced colours mode. */}
+                        <span className="absolute -inset-y-3 border-l-2 border-[var(--timeline-now)]" style={{ left: nowLeft }} />
                       </div>
                     </li>
                   );
