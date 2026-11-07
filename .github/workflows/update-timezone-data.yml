@@ -52,7 +52,7 @@ jobs:
           fi
 
       - if: steps.diff.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "Update timezone data from GeoNames"
           title: "Update timezone data from GeoNames"
