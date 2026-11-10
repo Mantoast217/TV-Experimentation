@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
 import { useState } from "react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { TimePickerField } from "./TimePickerField";
 
 /** Mirrors how MeetingScheduler wires the field: controlled value + onChange. */
@@ -175,6 +175,33 @@ describe("TimePickerField", () => {
     expect(screen.getByRole("button", { name: "Increase start time by 15 minutes, currently 09:00" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Decrease end time by 15 minutes, currently 17:00" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Increase end time by 15 minutes, currently 17:00" })).toBeInTheDocument();
+  });
+
+  it("opens without scrolling the page, which would make React Aria close the list straight away", async () => {
+    const user = userEvent.setup();
+    const scrollIntoView = vi.spyOn(Element.prototype, "scrollIntoView");
+    render(<Harness initialValue="09:00" />);
+    await user.click(field());
+    expect(await screen.findByRole("listbox")).toBeInTheDocument();
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    // Centring the current time with scrollIntoView also scrolled the page on short windows.
+    // (React Aria's own "nearest" call for the focused option only scrolls the list.)
+    expect(scrollIntoView).not.toHaveBeenCalledWith(expect.objectContaining({ block: "center" }));
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+    scrollIntoView.mockRestore();
+  });
+
+  it("reopens the list when the focused box is clicked again after picking a time", async () => {
+    const user = userEvent.setup();
+    render(<Harness initialValue="09:00" />);
+    await user.click(field());
+    await user.click(await screen.findByRole("option", { name: "10:30" }));
+    await waitFor(() => expect(screen.queryByRole("listbox")).not.toBeInTheDocument());
+    expect(field()).toHaveValue("10:30");
+    expect(field()).toHaveFocus();
+
+    await user.click(field());
+    expect(await screen.findByRole("listbox")).toBeInTheDocument();
   });
 
   it("has no axe-detectable accessibility violations", async () => {

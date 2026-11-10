@@ -20,6 +20,9 @@ interface TimePickerFieldProps {
  * A Google Maps "Depart at"-style time field: step chevrons, direct typing of any
  * exact time, and a dropdown of preset options, all reading and writing one value.
  */
+/** Only called from event handlers, never while rendering. */
+const nowMs = () => performance.now();
+
 export function TimePickerField({
   value,
   onChange,
@@ -77,17 +80,71 @@ export function TimePickerField({
   const selectedKey = timeOptions.some((option) => option.id === inputValue) ? inputValue : null;
 
   const popoverRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  // Refs, not state: they're read inside callbacks that may run after React re-renders.
+  const isOpenRef = useRef(false);
+  const openedAtRef = useRef(0);
+  const closedOnPurposeRef = useRef(false);
+
+  const openList = () => {
+    const input = inputRef.current;
+    if (isOpenRef.current || !input || document.activeElement !== input) return;
+    input.parentElement?.querySelector<HTMLButtonElement>('[data-slot="combo-box-trigger"]')?.click();
+  };
+
+  // Reopens once the closing list has left the page: React Aria ignores the trigger while the
+  // old list is still animating out. Gives up after about half a second.
+  const reopenAfterClose = (framesLeft = 30) => {
+    if (isOpenRef.current || document.activeElement !== inputRef.current) return;
+    if (popoverRef.current && framesLeft > 0) {
+      requestAnimationFrame(() => reopenAfterClose(framesLeft - 1));
+      return;
+    }
+    openList();
+  };
+
+  // React Aria closes the list whenever the page scrolls. Focusing a field at the edge of the
+  // window makes the browser scroll it into view just after the list opens, so the list flashed
+  // open and shut. If it closes within moments of opening, without the user picking a time or
+  // pressing Esc, and the field still has focus, that was the scroll: open it again.
+  const handleOpenChange = (open: boolean) => {
+    isOpenRef.current = open;
+    if (open) {
+      openedAtRef.current = nowMs();
+      closedOnPurposeRef.current = false;
+      scrollSelectedIntoView();
+      return;
+    }
+    const closedByScroll = !closedOnPurposeRef.current && nowMs() - openedAtRef.current < 400;
+    closedOnPurposeRef.current = false;
+    if (closedByScroll) requestAnimationFrame(() => reopenAfterClose());
+  };
+
+  // Centres the current time by scrolling the popover itself, never the page. scrollIntoView
+  // also scrolls the page when the field is near the edge of a short window, and React Aria
+  // closes a combobox's popover whenever the page scrolls, so the list would flash open and shut.
   const scrollSelectedIntoView = () => {
     requestAnimationFrame(() => {
-      popoverRef.current
-        ?.querySelector('[aria-selected="true"]')
-        ?.scrollIntoView({ block: "center" });
+      const popover = popoverRef.current;
+      const option = popover?.querySelector<HTMLElement>('[aria-selected="true"]');
+      if (!popover || !option) return;
+      // Layout offsets, not on-screen positions: the popover is still mid opening animation here,
+      // and its transform would skew getBoundingClientRect.
+      let optionTop = 0;
+      for (let el: HTMLElement | null = option; el && el !== popover; el = el.offsetParent as HTMLElement | null) {
+        optionTop += el.offsetTop;
+      }
+      popover.scrollTop = optionTop - (popover.clientHeight - option.offsetHeight) / 2;
     });
   };
 
   return (
     <>
     <div
+      // Capture phase, so this runs before React Aria closes the list for these keys.
+      onKeyDownCapture={(e) => {
+        if (e.key === "Escape" || e.key === "Enter" || e.key === "Tab") closedOnPurposeRef.current = true;
+      }}
       className={`flex h-[38px] items-center gap-0.5 rounded-field border border-[#767676] bg-field shadow-field pl-3 pr-0.5 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--brand-blue)] ${className ?? ""}`}
     >
       <ComboBox.Root<TimeOption>
@@ -100,6 +157,7 @@ export function TimePickerField({
         selectedKey={selectedKey}
         onSelectionChange={(key) => {
           if (key == null) return;
+          closedOnPurposeRef.current = true;
           const id = String(key);
           setError(null);
           setInputValue(id);
@@ -109,14 +167,16 @@ export function TimePickerField({
         aria-label={ariaLabel}
         fullWidth
         className="min-w-0 flex-1"
-        onOpenChange={(isOpen) => {
-          if (isOpen) scrollSelectedIntoView();
-        }}
+        onOpenChange={handleOpenChange}
       >
         <ComboBox.InputGroup className="border-0 bg-transparent p-0 shadow-none">
           <Input
             className="border-0 bg-transparent p-0 text-left shadow-none"
             onBlur={(e) => commitTyped(e.target.value)}
+            ref={inputRef}
+            // The list opens on focus, so clicking a box that already has focus (for example
+            // straight after picking a time) wouldn't open it again. This does.
+            onClick={openList}
             onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
               if (e.key === "Enter") commitTyped(e.currentTarget.value);
             }}
